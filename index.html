@@ -2094,20 +2094,45 @@ let prevTab = null;
 let selectedProduct = null;
 let autocompleteIndex = -1;
 let calDate = new Date();
+const SPLASH_WAIT_MS = 2400;
+const SPLASH_FADE_MS = 400;
+
+function hasSeenOnboarding() {
+  return !!(localStorage.getItem && localStorage.getItem('ns_onboarded'));
+}
+
+function showOnboarding() {
+  const onboarding = document.getElementById('onboarding');
+  if (!onboarding) {
+    launchMainApp();
+    return;
+  }
+  onboarding.classList.remove('hidden');
+  onboarding.classList.add('active');
+}
+
+function hideSplash() {
+  const splash = document.getElementById('splash');
+  if (!splash) return;
+  splash.style.opacity = '0';
+  splash.style.transition = `opacity ${SPLASH_FADE_MS}ms ease`;
+  splash.classList.remove('active');
+  splash.classList.add('hidden');
+  setTimeout(() => {
+    splash.style.display = 'none';
+  }, SPLASH_FADE_MS);
+}
 
 // ============ SPLASH ============
 window.addEventListener('load', () => {
-  const seen = localStorage.getItem ? localStorage.getItem('ns_onboarded') : null;
   setTimeout(() => {
-    document.getElementById('splash').classList.add('slide-left');
-    document.getElementById('splash').classList.remove('active');
-    if (seen) {
+    hideSplash();
+    if (hasSeenOnboarding()) {
       launchMainApp();
     } else {
-      document.getElementById('onboarding').classList.remove('hidden');
-      document.getElementById('onboarding').classList.add('active');
+      showOnboarding();
     }
-  }, 2400);
+  }, SPLASH_WAIT_MS);
 
   // Set date
   const now = new Date();
