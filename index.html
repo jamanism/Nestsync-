@@ -378,14 +378,13 @@ body {
   inset: 0;
   overflow-y: auto;
   padding: 1.25rem 1.25rem 90px;
-  opacity: 0;
-  transform: translateX(100%);
-  transition: transform 0.36s cubic-bezier(0.4,0,0.2,1), opacity 0.36s ease;
-  pointer-events: none;
+  display: none;
 }
 
-.tab.active { opacity: 1; transform: translateX(0); pointer-events: all; }
-.tab.slide-left { opacity: 0.3; transform: translateX(-22%); }
+.tab.active {
+  display: block;
+  animation: fadeUp 0.22s ease;
+}
 
 /* BOTTOM NAV */
 .bot-nav {
@@ -1096,7 +1095,7 @@ body.dark .loc-map { background: linear-gradient(135deg,#1a2e1d,#162819); }
       <div class="sc-title">Settings</div>
       <div class="profile-card">
         <div class="p-av" id="pAv" style="background:var(--clay)">S</div>
-        <div><div class="p-nm" id="pNm">Sarah Thompson</div><div class="p-em" id="pEm">sarah@email.com</div></div>
+        <div><div class="p-nm" id="pNm">Sarah Thompson</div><div class="p-em" id="pEm"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f2819380939ab2979f939b9edc919d9f">[email&#160;protected]</a></div></div>
         <span class="p-edit">Edit</span>
       </div>
       <div class="plan-card">
@@ -1205,7 +1204,7 @@ body.dark .loc-map { background: linear-gradient(135deg,#1a2e1d,#162819); }
     <div>
       <div class="ms-nm" id="msNm">Sarah</div>
       <div class="ms-role" id="msRole">Parent</div>
-      <div class="ms-email" id="msEmail">sarah@email.com</div>
+      <div class="ms-email" id="msEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ff8c9e8d9e97bf9a929e9693d19c9092">[email&#160;protected]</a></div>
     </div>
     <button class="ms-x" onclick="closeMem()">✕</button>
   </div>
@@ -1237,7 +1236,7 @@ body.dark .loc-map { background: linear-gradient(135deg,#1a2e1d,#162819); }
 
 <div class="toast" id="toastEl"></div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ── DATA ──
 const COLORS = [
   {id:'clay',hex:'#C97B52'},{id:'sage',hex:'#7A9E87'},{id:'dusk',hex:'#8B7EA8'},
@@ -1463,29 +1462,24 @@ function launchApp() {
 // ── TAB NAVIGATION ──
 function goTab(id) {
   if (id === curTab) return;
-  const ci = TABS.indexOf(curTab);
-  const ni = TABS.indexOf(id);
-  const right = ni > ci;
 
-  const cur = document.getElementById(`t-${curTab}`);
+  // Hide all tabs
+  TABS.forEach(t => {
+    const el = document.getElementById(`t-${t}`);
+    if (el) {
+      el.classList.remove('active', 'slide-left');
+    }
+  });
+
+  // Show the new tab
   const nxt = document.getElementById(`t-${id}`);
+  if (nxt) nxt.classList.add('active');
 
-  cur.classList.remove('active');
-  cur.classList.add('slide-left');
+  // Update nav buttons
+  document.querySelectorAll('.nav-btn').forEach((b, i) => {
+    b.classList.toggle('active', TABS[i] === id);
+  });
 
-  nxt.style.transform = right ? 'translateX(100%)' : 'translateX(-22%)';
-  nxt.style.opacity = right ? '0' : '0.3';
-  nxt.style.transition = 'none';
-  nxt.classList.remove('slide-left','active');
-
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    nxt.style.transition = '';
-    nxt.classList.add('active');
-  }));
-
-  setTimeout(() => { cur.classList.remove('slide-left'); cur.classList.add(''); }, 380);
-
-  document.querySelectorAll('.nav-btn').forEach((b,i) => b.classList.toggle('active', TABS[i] === id));
   curTab = id;
 }
 
@@ -1670,14 +1664,4 @@ function getEmoji(t){
 
 // ── INSTALL ──
 function openInstall() { document.getElementById('instOv').classList.add('on'); document.getElementById('instSheet').classList.add('on'); }
-function closeInstall() { document.getElementById('instOv').classList.remove('on'); document.getElementById('instSheet').classList.remove('on'); }
-
-// ── TOAST ──
-function toast(msg) {
-  const t=document.getElementById('toastEl');
-  t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2400);
-}
-</script>
-</body>
-</html>
+function closeInsta
