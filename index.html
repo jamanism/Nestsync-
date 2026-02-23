@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NestSync — Family OS</title>
+<style>
+  @font-face {
+    font-family: 'SF Pro Rounded';
+    src: local('-apple-system'), local('SF Pro Rounded');
+  }
+</style>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #F7F3EE;
+    --warm-white: #FDFAF7;
+    --bark: #2C1F14;
+    --bark-light: #5C4033;
+    --clay: #C97B52;
+    --clay-light: #E8A97A;
+    --sage: #7A9E87;
+    --sage-light: #B2CDBA;
+    --dusk: #8B7EA8;
+    --dusk-light: #C4BAD9;
+    --sand: #D4BFA0;
+    --sand-light: #EDE4D6;
+    --alert: #E07B5A;
+  }
+
+  body {
+    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
+    background: var(--cream);
+    color: var(--bark);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--bark);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--cream);
+    letter-spacing: -0.02em;
+  }
+
+  .logo span {
+    color: var(--clay-light);
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .date-chip {
+    font-size: 0.8rem;
+    color: var(--sand);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .avatar-stack {
+    display: flex;
+    align-items: center;
+  }
+
+  .avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 2px solid var(--bark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-left: -8px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .avatar:first-child { margin-left: 0; }
+  .avatar:hover { transform: translateY(-3px); z-index: 10; }
+
+  .av1 { background: var(--clay); color: white; }
+  .av2 { background: var(--sage); color: white; }
+  .av3 { background: var(--dusk); color: white; }
+  .av4 { background: var(--sand); color: var(--bark); }
+
+  /* MAIN LAYOUT */
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .greeting {
+    margin-bottom: 2rem;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .greeting h1 {
+    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 400;
+    color: var(--bark);
+    line-height: 1.1;
+  }
+
+  .greeting h1 em {
+    font-style: normal;
+    font-weight: 600;
+    color: var(--clay);
+  }
+
+  .greeting p {
+    margin-top: 0.4rem;
+    font-size: 0.9rem;
+    color: var(--bark-light);
+    font-weight: 300;
+  }
+
+  /* ALERT BANNER */
+  .alert-banner {
+    background: var(--alert);
+    color: white;
+    border-radius: 12px;
+    padding: 0.9rem 1.2rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 0.875rem;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .alert-icon { font-size: 1.1rem; }
+  .alert-banner strong { font-weight: 500; }
+  .alert-dismiss {
+    margin-left: auto;
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    border-radius: 6px;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
+  }
+
+  /* GRID */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 1.25rem;
+  }
+
+  @media (max-width: 900px) {
+    .dashboard-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 600px) {
+    .dashboard-grid { grid-template-columns: 1fr; }
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--warm-white);
+    border-radius: 18px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(44,31,20,0.1);
+  }
+
+  .card:nth-child(1) { animation-delay: 0.15s; }
+  .card:nth-child(2) { animation-delay: 0.2s; }
+  .card:nth-child(3) { animation-delay: 0.25s; }
+  .card:nth-child(4) { animation-delay: 0.3s; }
+  .card:nth-child(5) { animation-delay: 0.35s; }
+
+  .card-wide { grid-column: span 2; }
+  .card-tall { grid-row: span 2; }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.2rem;
+  }
+
+  .card-title {
+    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--bark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .card-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+  }
+
+  .icon-clay { background: #FCEEE5; }
+  .icon-sage { background: #E8F2EB; }
+  .icon-dusk { background: #EDE9F5; }
+  .icon-sand { background: #F5EFE6; }
+
+  .card-action {
+    font-size: 0.75rem;
+    color: var(--clay);
+    cursor: pointer;
+    font-weight: 500;
+    border: none;
+    background: none;
+    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
+  }
+
+  /* SCHEDULE CARD */
+  .schedule-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+  .event {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .event-time {
+    font-size: 0.72rem;
+    color: var(--bark-light);
+    font-weight: 400;
+    min-width: 42px;
+    padding-top: 2px;
+    text-align: right;
+  }
+
+  .event-bar {
+    width: 3px;
+    border-radius: 2px;
+    min-height: 36px;
+    flex-shrink: 0;
+  }
+
+  .bar-clay { background: var(--clay); }
+  .bar-sage { background: var(--sage); }
+  .bar-dusk { background: var(--dusk); }
+  .bar-alert { background: var(--alert); }
+
+  .event-info {}
+
+  .event-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--bark);
+  }
+
+  .event-who {
+    font-size: 0.75rem;
+    color: var(--bark-light);
+    font-weight: 300;
+    margin-top: 1px;
+  }
+
+  .event-conflict {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.7rem;
+    background: #FFF0EC;
+    color: var(--alert);
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-top: 3px;
+    font-weight: 500;
+  }
+
+  /* CHORES CARD */
+  .chore-list { display: flex; flex-direction: column; gap: 0.6rem; }
+
+  .chore-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 10px;
+    background: var(--cream);
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .chore-item:hover { background: var(--sand-light); }
+
+  .chore-check {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--sand);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .chore-item.done .chore-check {
+    background: var(--sage);
+    border-color: var(--sage);
+    color: white;
+    font-size: 0.7rem;
+  }
+
+  .chore-item.done .chore-name {
+    text-decoration: line-through;
+    color: var(--bark-light);
+    opacity: 0.6;
+  }
+
+  .chore-name {
+    font-size: 0.85rem;
+    font-weight: 400;
+    flex: 1;
+  }
+
+  .chore-assignee {
+    font-size: 0.72rem;
+    color: white;
+    background: var(--bark-light);
+    border-radius: 20px;
+    padding: 2px 8px;
+  }
+
+  .chore-progress {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .progress-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--sand-light);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--sage);
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+
+  .progress-label {
+    font-size: 0.75rem;
+    color: var(--bark-light);
+    white-space: nowrap;
+  }
+
+  /* GROCERY CARD */
+  .grocery-list { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .grocery-section-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--bark-light);
+    font-weight: 500;
+    margin-top: 0.5rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .grocery-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.85rem;
+    padding: 0.35rem 0;
+    cursor: pointer;
+    border-bottom: 1px solid var(--sand-light);
+  }
+
+  .grocery-item:last-child { border-bottom: none; }
+
+  .grocery-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot-clay { background: var(--clay); }
+  .dot-dusk { background: var(--dusk); }
+  .dot-sage { background: var(--sage); }
+
+  .grocery-item.checked { opacity: 0.4; text-decoration: line-through; }
+
+  .grocery-count {
+    margin-left: auto;
+    font-size: 0.72rem;
+    color: var(--bark-light);
+  }
+
+  .add-grocery {
+    margin-top: 0.75rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--cream);
+    border: 1.5px dashed var(--sand);
+    border-radius: 10px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.82rem;
+    color: var(--bark-light);
+    cursor: pointer;
+    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
+    transition: border-color 0.2s;
+  }
+
+  .add-grocery:hover { border-color: var(--clay); color: var(--clay); }
+
+  /* LOCATION CARD */
+  .location-map {
+    background: linear-gradient(135deg, #E8F0E9 0%, #D4E6D6 50%, #BDD4C0 100%);
+    border-radius: 12px;
+    height: 120px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+
+  .map-grid {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  .map-road-h {
+    position: absolute;
+    left: 0; right: 0;
+    height: 6px;
+    background: rgba(255,255,255,0.5);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .map-road-v {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 6px;
+    background: rgba(255,255,255,0.5);
+    left: 35%;
+  }
+
+  .map-pin {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .pin-bubble {
+    width: 28px;
+    height: 28px;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  .pin-bubble span {
+    transform: rotate(45deg);
+    font-size: 0.7rem;
+    color: white;
+    font-weight: 600;
+  }
+
+  .pin-label {
+    font-size: 0.65rem;
+    font-weight: 500;
+    margin-top: 2px;
+    color: var(--bark);
+    white-space: nowrap;
+  }
+
+  .pin-home { top: 30%; left: 32%; }
+  .pin-mom { top: 15%; left: 55%; }
+  .pin-kid { top: 55%; left: 65%; }
+
+  .pin-bubble.home { background: var(--bark); border-radius: 50%; transform: none; }
+  .pin-bubble.mom-pin { background: var(--clay); }
+  .pin-bubble.kid-pin { background: var(--dusk); }
+
+  .location-list { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .location-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .loc-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .loc-name { font-weight: 500; flex: 1; }
+  .loc-place { font-size: 0.75rem; color: var(--bark-light); }
+  .loc-time { font-size: 0.72rem; color: var(--bark-light); }
+
+  /* INSIGHTS CARD */
+  .insight-score {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .score-ring {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+  }
+
+  .score-ring svg {
+    transform: rotate(-90deg);
+    width: 72px;
+    height: 72px;
+  }
+
+  .score-ring circle {
+    fill: none;
+    stroke-width: 6;
+  }
+
+  .ring-bg { stroke: var(--sand-light); }
+  .ring-fill { stroke: var(--sage); stroke-linecap: round; stroke-dasharray: 188; stroke-dashoffset: 47; }
+
+  .score-number {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .score-num {
+    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--bark);
+  }
+
+  .score-label { font-size: 0.55rem; color: var(--bark-light); text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .score-details { flex: 1; }
+
+  .score-title {
+    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .score-breakdown { display: flex; flex-direction: column; gap: 0.4rem; }
+
+  .breakdown-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+  }
+
+  .breakdown-label { color: var(--bark-light); min-width: 80px; }
+
+  .mini-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--sand-light);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .mini-fill { height: 100%; border-radius: 2px; }
+
+  .insight-tips { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.8rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 8px;
+    background: var(--cream);
+  }
+
+  .tip-icon { font-size: 0.9rem; flex-shrink: 0; }
+  .tip-text { color: var(--bark); line-height: 1.4; }
+  .tip-text strong { font-weight: 500; }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bark);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0.75rem 1rem 1.2rem;
+    z-index: 100;
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    color: var(--cream);
+  }
+
+  .nav-item.active { opacity: 1; }
+  .nav-item.active .nav-dot { background: var(--clay); }
+
+  .nav-icon { font-size: 1.2rem; }
+  .nav-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
+  .nav-dot { width: 4px; height: 4px; border-radius: 50%; background: transparent; }
+
+  .main-content-pad { padding-bottom: 80px; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ADD ITEM INPUT */
+  .add-input-row {
+    display: none;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .add-input-row.visible { display: flex; }
+
+  .add-input {
+    flex: 1;
+    border: 1.5px solid var(--clay);
+    border-radius: 8px;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.82rem;
+    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
+    background: white;
+    color: var(--bark);
+    outline: none;
+  }
+
+  .add-btn {
+    background: var(--clay);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.82rem;
+    cursor: pointer;
+    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
+  }
+
+  /* ITEM SEARCH BOTTOM SHEET */
+  .sheet-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(44,31,20,0.45);
+    z-index: 200;
+    backdrop-filter: blur(2px);
+    animation: fadein 0.2s ease;
+  }
+
+  .sheet-overlay.open { display: block; }
+
+  .item-sheet {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--warm-white);
+    border-radius: 24px 24px 0 0;
+    z-index: 201;
+    padding: 1.25rem 1.25rem 2rem;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.34, 1.1, 0.64, 1);
+  }
+
+  .item-sheet.open { transform: translateY(0); }
+
+  .sheet-handle {
+    width: 40px;
+    height: 4px;
+    background: var(--sand);
+    border-radius: 2px;
+    margin: 0 auto 1.2rem;
+  }
+
+  .sheet-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--bark);
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  .sheet-search-wrap {
+    display: flex;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+  }
+
+  .sheet-search {
+    flex: 1;
+    border: 2px solid var(--sand);
+    border-radius: 12px;
+    padding: 0.65rem 1rem;
+    font-size: 0.92rem;
+    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
+    background: var(--cream);
+    color: var(--bark);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .sheet-search:focus { border-color: var(--clay); }
+
+  .sheet-search-btn {
+    background: var(--clay);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 0 1rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+
+  .sheet-search-btn:hover { background: var(--bark); }
+
+  .sheet-results {
+    overflow-y: auto;
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+  }
+
+  .result-card {
+    background: var(--cream);
+    border-radius: 14px;
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+  }
+
+  .result-card:hover {
+    border-color: var(--clay);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(201,123,82,0.15);
+  }
+
+  .result-card.selected {
+    border-color: var(--sage);
+    background: #EEF6F1;
+  }
+
+  .result-img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 10px;
+    background: white;
+    padding: 4px;
+  }
+
+  .result-img-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    background: var(--sand-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+  }
+
+  .result-name {
+    font-size: 0.78rem;
+    font-weight: 500;
+    text-align: center;
+    color: var(--bark);
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .result-brand {
+    font-size: 0.68rem;
+    color: var(--bark-light);
+    text-align: center;
+  }
+
+  .result-add-badge {
+    display: none;
+    font-size: 0.7rem;
+    background: var(--sage);
+    color: white;
+    border-radius: 20px;
+    padding: 2px 8px;
+    font-weight: 500;
+  }
+
+  .result-card.selected .result-add-badge { display: block; }
+
+  .sheet-empty {
+    grid-column: span 2;
+    text-align: center;
+    color: var(--bark-light);
+    font-size: 0.85rem;
+    padding: 2rem;
+  }
+
+  .sheet-loading {
+    grid-column: span 2;
+    text-align: center;
+    color: var(--bark-light);
+    font-size: 0.85rem;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .spinner {
+    width: 28px;
+    height: 28px;
+    border: 3px solid var(--sand);
+    border-top-color: var(--clay);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .sheet-confirm {
+    background: var(--clay);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 0.85rem;
+    width: 100%;
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
+    cursor: pointer;
+    margin-top: 0.75rem;
+    transition: background 0.2s, opacity 0.2s;
+  }
+
+  .sheet-confirm:disabled { background: var(--sand); cursor: default; }
+
+  /* grocery item with image */
+  .grocery-item-img {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    object-fit: contain;
+    background: white;
+    border: 1px solid var(--sand-light);
+    flex-shrink: 0;
+    padding: 2px;
+  }
+
+  .grocery-img-placeholder {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--sand-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+
+  /* Quick suggestions */
+  .sheet-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .suggestion-chip {
+    background: var(--cream);
+    border: 1.5px solid var(--sand);
+    border-radius: 20px;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.78rem;
+    color: var(--bark);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
+  }
+
+  .suggestion-chip:hover { border-color: var(--clay); color: var(--clay); background: #FDF0E8; }
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Nest<span>Sync</span></div>
+  <div class="header-right">
+    <span class="date-chip">Mon · Feb 23</span>
+    <div class="avatar-stack">
+      <div class="avatar av1" title="Sarah">S</div>
+      <div class="avatar av2" title="Marcus">M</div>
+      <div class="avatar av3" title="Lily">L</div>
+      <div class="avatar av4" title="Jake">J</div>
+    </div>
+  </div>
+</header>
+
+<main class="main-content-pad">
+  <div class="greeting">
+    <h1>Good morning, <em>Thompson family.</em></h1>
+    <p>You have 6 events today · 4 chores pending · 3 items needed</p>
+  </div>
+
+  <div class="alert-banner" id="alertBanner">
+    <span class="alert-icon">⚡</span>
+    <div><strong>Schedule conflict:</strong> Lily's soccer practice overlaps with Jake's dentist at 4:00 PM — someone needs to adjust.</div>
+    <button class="alert-dismiss" onclick="document.getElementById('alertBanner').style.display='none'">Dismiss</button>
+  </div>
+
+  <div class="dashboard-grid">
+
+    <!-- SCHEDULE -->
+    <div class="card card-wide">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="card-icon icon-clay">📅</div>
+          Today's Schedule
+        </div>
+        <button class="card-action">+ Add Event</button>
+      </div>
+      <div class="schedule-list">
+        <div class="event">
+          <span class="event-time">8:00a</span>
+          <div class="event-bar bar-clay"></div>
+          <div class="event-info">
+            <div class="event-name">School drop-off</div>
+            <div class="event-who">Marcus · Lily, Jake</div>
+          </div>
+        </div>
+        <div class="event">
+          <span class="event-time">9:30a</span>
+          <div class="event-bar bar-sage"></div>
+          <div class="event-info">
+            <div class="event-name">Sarah's team standup</div>
+            <div class="event-who">Sarah · Work</div>
+          </div>
+        </div>
+        <div class="event">
+          <span class="event-time">3:30p</span>
+          <div class="event-bar bar-dusk"></div>
+          <div class="event-info">
+            <div class="event-name">School pickup</div>
+            <div class="event-who">Sarah · Lily, Jake</div>
+          </div>
+        </div>
+        <div class="event">
+          <span class="event-time">4:00p</span>
+          <div class="event-bar bar-alert"></div>
+          <div class="event-info">
+            <div class="event-name">Lily — Soccer Practice</div>
+            <div class="event-who">Riverside Field</div>
+            <div class="event-conflict">⚠ Conflicts with Jake's dentist</div>
+          </div>
+        </div>
+        <div class="event">
+          <span class="event-time">4:00p</span>
+          <div class="event-bar bar-alert"></div>
+          <div class="event-info">
+            <div class="event-name">Jake — Dentist Appt.</div>
+            <div class="event-who">Dr. Kim · Elm St. Dental</div>
+            <div class="event-conflict">⚠ Conflicts with Lily's soccer</div>
+          </div>
+        </div>
+        <div class="event">
+          <span class="event-time">6:30p</span>
+          <div class="event-bar bar-clay"></div>
+          <div class="event-info">
+            <div class="event-name">Family dinner</div>
+            <div class="event-who">Everyone · Home</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHORES -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="card-icon icon-sage">🧹</div>
+          Chores
+        </div>
+        <button class="card-action">Assign</button>
+      </div>
+      <div class="chore-list" id="choreList">
+        <div class="chore-item done" onclick="toggleChore(this)">
+          <div class="chore-check">✓</div>
+          <span class="chore-name">Unload dishwasher</span>
+          <span class="chore-assignee">Lily</span>
+        </div>
+        <div class="chore-item" onclick="toggleChore(this)">
+          <div class="chore-check"></div>
+          <span class="chore-name">Take out trash</span>
+          <span class="chore-assignee">Jake</span>
+        </div>
+        <div class="chore-item" onclick="toggleChore(this)">
+          <div class="chore-check"></div>
+          <span class="chore-name">Vacuum living room</span>
+          <span class="chore-assignee">Marcus</span>
+        </div>
+        <div class="chore-item done" onclick="toggleChore(this)">
+          <div class="chore-check">✓</div>
+          <span class="chore-name">Laundry — start wash</span>
+          <span class="chore-assignee">Sarah</span>
+        </div>
+        <div class="chore-item" onclick="toggleChore(this)">
+          <div class="chore-check"></div>
+          <span class="chore-name">Wipe kitchen counters</span>
+          <span class="chore-assignee">Jake</span>
+        </div>
+      </div>
+      <div class="chore-progress">
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 40%"></div></div>
+        <span class="progress-label" id="progressLabel">2 of 5 done</span>
+      </div>
+    </div>
+
+    <!-- GROCERY -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="card-icon icon-sand">🛒</div>
+          Grocery List
+        </div>
+        <button class="card-action">Share</button>
+      </div>
+      <div class="grocery-list" id="groceryList">
+        <div class="grocery-section-label">Produce</div>
+        <div class="grocery-item" onclick="toggleGrocery(this)">
+          <div class="grocery-dot dot-sage"></div>
+          Bananas
+          <span class="grocery-count">Added by Sarah</span>
+        </div>
+        <div class="grocery-item" onclick="toggleGrocery(this)">
+          <div class="grocery-dot dot-sage"></div>
+          Spinach
+          <span class="grocery-count">Added by Marcus</span>
+        </div>
+        <div class="grocery-section-label">Dairy & Eggs</div>
+        <div class="grocery-item" onclick="toggleGrocery(this)">
+          <div class="grocery-dot dot-dusk"></div>
+          Whole milk (1 gal)
+          <span class="grocery-count">Added by Sarah</span>
+        </div>
+        <div class="grocery-item checked" onclick="toggleGrocery(this)">
+          <div class="grocery-dot dot-dusk"></div>
+          Greek yogurt
+          <span class="grocery-count">✓ Got it</span>
+        </div>
+        <div class="grocery-section-label">Pantry</div>
+        <div class="grocery-item" onclick="toggleGrocery(this)">
+          <div class="grocery-dot dot-clay"></div>
+          Olive oil
+          <span class="grocery-count">Added by Marcus</span>
+        </div>
+      </div>
+      <button class="add-grocery" onclick="openItemSearch()">+ Add item</button>
+    </div>
+
+    <!-- LOCATION -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="card-icon icon-sage">📍</div>
+          Family Location
+        </div>
+        <button class="card-action">Privacy</button>
+      </div>
+      <div class="location-map">
+        <div class="map-grid"></div>
+        <div class="map-road-h"></div>
+        <div class="map-road-v"></div>
+        <div class="map-pin pin-home">
+          <div class="pin-bubble home"><span>🏠</span></div>
+        </div>
+        <div class="map-pin pin-mom">
+          <div class="pin-bubble mom-pin"><span>S</span></div>
+          <div class="pin-label">Sarah</div>
+        </div>
+        <div class="map-pin pin-kid">
+          <div class="pin-bubble kid-pin"><span>L</span></div>
+          <div class="pin-label">Lily</div>
+        </div>
+      </div>
+      <div class="location-list">
+        <div class="location-item">
+          <div class="loc-dot" style="background: var(--clay)"></div>
+          <span class="loc-name">Sarah</span>
+          <span class="loc-place">Downtown Office</span>
+          <span class="loc-time">12m ago</span>
+        </div>
+        <div class="location-item">
+          <div class="loc-dot" style="background: var(--sage)"></div>
+          <span class="loc-name">Marcus</span>
+          <span class="loc-place">Home</span>
+          <span class="loc-time">Now</span>
+        </div>
+        <div class="location-item">
+          <div class="loc-dot" style="background: var(--dusk)"></div>
+          <span class="loc-name">Lily</span>
+          <span class="loc-place">Lincoln Middle School</span>
+          <span class="loc-time">Now</span>
+        </div>
+        <div class="location-item">
+          <div class="loc-dot" style="background: var(--sand)"></div>
+          <span class="loc-name">Jake</span>
+          <span class="loc-place">Lincoln Middle School</span>
+          <span class="loc-time">Now</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- INSIGHTS -->
+    <div class="card card-wide">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="card-icon icon-dusk">✨</div>
+          Family Harmony Score
+        </div>
+        <button class="card-action">This week →</button>
+      </div>
+      <div class="insight-score">
+        <div class="score-ring">
+          <svg viewBox="0 0 72 72">
+            <circle class="ring-bg" cx="36" cy="36" r="30"/>
+            <circle class="ring-fill" cx="36" cy="36" r="30"/>
+          </svg>
+          <div class="score-number">
+            <span class="score-num">75</span>
+            <span class="score-label">/ 100</span>
+          </div>
+        </div>
+        <div class="score-details">
+          <div class="score-title">Good week — one conflict to resolve</div>
+          <div class="score-breakdown">
+            <div class="breakdown-row">
+              <span class="breakdown-label">Chores</span>
+              <div class="mini-bar"><div class="mini-fill" style="width: 80%; background: var(--sage)"></div></div>
+              <span>80%</span>
+            </div>
+            <div class="breakdown-row">
+              <span class="breakdown-label">Communication</span>
+              <div class="mini-bar"><div class="mini-fill" style="width: 70%; background: var(--dusk)"></div></div>
+              <span>70%</span>
+            </div>
+            <div class="breakdown-row">
+              <span class="breakdown-label">Schedule sync</span>
+              <div class="mini-bar"><div class="mini-fill" style="width: 65%; background: var(--clay)"></div></div>
+              <span>65%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="insight-tips">
+        <div class="tip">
+          <span class="tip-icon">💡</span>
+          <div class="tip-text"><strong>AI Tip:</strong> Jake and Lily have a schedule conflict at 4 PM today. Consider moving Jake's dentist appointment to Thursday at 3 PM — it's open on your calendar.</div>
+        </div>
+        <div class="tip">
+          <span class="tip-icon">🛒</span>
+          <div class="tip-text"><strong>Grocery reminder:</strong> Marcus passes Whole Foods on the way home. 5 items on the list could be grabbed today.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<nav>
+  <div class="nav-item active">
+    <span class="nav-icon">🏠</span>
+    <span class="nav-label">Dashboard</span>
+    <div class="nav-dot"></div>
+  </div>
+  <div class="nav-item" onclick="setNav(this)">
+    <span class="nav-icon">📅</span>
+    <span class="nav-label">Family Time</span>
+    <div class="nav-dot"></div>
+  </div>
+  <div class="nav-item" onclick="setNav(this)">
+    <span class="nav-icon">🧹</span>
+    <span class="nav-label">Tasks</span>
+    <div class="nav-dot"></div>
+  </div>
+  <div class="nav-item" onclick="setNav(this)">
+    <span class="nav-icon">🛒</span>
+    <span class="nav-label">Shopping</span>
+    <div class="nav-dot"></div>
+  </div>
+  <div class="nav-item" onclick="setNav(this)">
+    <span class="nav-icon">👤</span>
+    <span class="nav-label">Members</span>
+    <div class="nav-dot"></div>
+  </div>
+</nav>
+
+<script>
+  function toggleChore(el) {
+    el.classList.toggle('done');
+    const check = el.querySelector('.chore-check');
+    check.textContent = el.classList.contains('done') ? '✓' : '';
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const items = document.querySelectorAll('.chore-item');
+    const done = document.querySelectorAll('.chore-item.done').length;
+    const pct = Math.round((done / items.length) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = `${done} of ${items.length} done`;
+  }
+
+  function toggleGrocery(el) {
+    el.classList.toggle('checked');
+    const count = el.querySelector('.grocery-count');
+    if (el.classList.contains('checked')) {
+      count.textContent = '✓ Got it';
+    } else {
+      count.textContent = 'Added';
+    }
+  }
+
+  let selectedProduct = null;
+
+  function openItemSearch() {
+    document.getElementById('sheetOverlay').classList.add('open');
+    document.getElementById('itemSheet').classList.add('open');
+    setTimeout(() => document.getElementById('sheetSearch').focus(), 350);
+  }
+
+  function closeItemSearch() {
+    document.getElementById('sheetOverlay').classList.remove('open');
+    document.getElementById('itemSheet').classList.remove('open');
+    selectedProduct = null;
+    document.getElementById('sheetSearch').value = '';
+    document.getElementById('sheetResults').innerHTML = '<div class="sheet-empty">Search above or tap a suggestion to find products 🛒</div>';
+    document.getElementById('sheetConfirm').disabled = true;
+    document.getElementById('sheetSuggestions').style.display = 'flex';
+  }
+
+  function quickSearch(term) {
+    document.getElementById('sheetSearch').value = term;
+    searchItems();
+  }
+
+  // Local grocery product database with Unsplash photos
+  const PRODUCTS = [
+    // Dairy
+    { id: 1, product_name: "Whole Milk", brands: "Organic Valley", category: "dairy", emoji: "🥛", img: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=200&q=80" },
+    { id: 2, product_name: "2% Reduced Fat Milk", brands: "Horizon Organic", category: "dairy", emoji: "🥛", img: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=200&q=80" },
+    { id: 3, product_name: "Greek Yogurt", brands: "Chobani", category: "dairy", emoji: "🫙", img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=200&q=80" },
+    { id: 4, product_name: "Vanilla Greek Yogurt", brands: "Fage", category: "dairy", emoji: "🫙", img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=200&q=80" },
+    { id: 5, product_name: "Cheddar Cheese Block", brands: "Tillamook", category: "dairy", emoji: "🧀", img: "https://images.unsplash.com/photo-1618164436241-4473940d1f5c?w=200&q=80" },
+    { id: 6, product_name: "Shredded Mozzarella", brands: "Kraft", category: "dairy", emoji: "🧀", img: "https://images.unsplash.com/photo-1618164436241-4473940d1f5c?w=200&q=80" },
+    { id: 7, product_name: "Salted Butter", brands: "Land O Lakes", category: "dairy", emoji: "🧈", img: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=200&q=80" },
+    { id: 8, product_name: "Unsalted Butter", brands: "Kerrygold", category: "dairy", emoji: "🧈", img: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=200&q=80" },
+    { id: 9, product_name: "Cream Cheese", brands: "Philadelphia", category: "dairy", emoji: "🧀", img: "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=200&q=80" },
+    { id: 10, product_name: "Almond Milk", brands: "Califia Farms", category: "dairy", emoji: "🥛", img: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=200&q=80" },
+    // Eggs
+    { id: 11, product_name: "Large White Eggs (12ct)", brands: "Happy Egg Co", category: "eggs", emoji: "🥚", img: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=200&q=80" },
+    { id: 12, product_name: "Free Range Brown Eggs", brands: "Pete & Gerry's", category: "eggs", emoji: "🥚", img: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=200&q=80" },
+    { id: 13, product_name: "Organic Eggs (18ct)", brands: "Vital Farms", category: "eggs", emoji: "🥚", img: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=200&q=80" },
+    // Produce
+    { id: 14, product_name: "Bananas", brands: "Chiquita", category: "produce", emoji: "🍌", img: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=200&q=80" },
+    { id: 15, product_name: "Baby Spinach", brands: "Earthbound Farm", category: "produce", emoji: "🥬", img: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=200&q=80" },
+    { id: 16, product_name: "Romaine Lettuce", brands: "Fresh Express", category: "produce", emoji: "🥬", img: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=200&q=80" },
+    { id: 17, product_name: "Roma Tomatoes", brands: "Local Farm", category: "produce", emoji: "🍅", img: "https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=200&q=80" },
+    { id: 18, product_name: "Cherry Tomatoes", brands: "Sunset", category: "produce", emoji: "🍅", img: "https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=200&q=80" },
+    { id: 19, product_name: "Honeycrisp Apples", brands: "Stemilt", category: "produce", emoji: "🍎", img: "https://images.unsplash.com/photo-1570913149827-d2ac84ab3f9a?w=200&q=80" },
+    { id: 20, product_name: "Gala Apples (3lb bag)", brands: "Rainier Fruit", category: "produce", emoji: "🍎", img: "https://images.unsplash.com/photo-1570913149827-d2ac84ab3f9a?w=200&q=80" },
+    { id: 21, product_name: "Strawberries (1lb)", brands: "Driscoll's", category: "produce", emoji: "🍓", img: "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=200&q=80" },
+    { id: 22, product_name: "Blueberries", brands: "Driscoll's", category: "produce", emoji: "🫐", img: "https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=200&q=80" },
+    { id: 23, product_name: "Broccoli Crown", brands: "Local Farm", category: "produce", emoji: "🥦", img: "https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?w=200&q=80" },
+    { id: 24, product_name: "Baby Carrots", brands: "Bolthouse Farms", category: "produce", emoji: "🥕", img: "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=200&q=80" },
+    { id: 25, product_name: "Avocados (4ct)", brands: "Hass", category: "produce", emoji: "🥑", img: "https://images.unsplash.com/photo-1519162808019-7de1683fa2ad?w=200&q=80" },
+    { id: 26, product_name: "Lemons (3ct)", brands: "Local Farm", category: "produce", emoji: "🍋", img: "https://images.unsplash.com/photo-1587486913049-53fc88980cfc?w=200&q=80" },
+    { id: 27, product_name: "Oranges (4lb bag)", brands: "Sunkist", category: "produce", emoji: "🍊", img: "https://images.unsplash.com/photo-1547514701-42782101795e?w=200&q=80" },
+    // Bread & Bakery
+    { id: 28, product_name: "Sourdough Bread Loaf", brands: "Dave's Killer Bread", category: "bread", emoji: "🍞", img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200&q=80" },
+    { id: 29, product_name: "Whole Wheat Bread", brands: "Arnold", category: "bread", emoji: "🍞", img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200&q=80" },
+    { id: 30, product_name: "Everything Bagels (6ct)", brands: "Thomas'", category: "bread", emoji: "🥯", img: "https://images.unsplash.com/photo-1585378606295-da76a64a4a6a?w=200&q=80" },
+    { id: 31, product_name: "Plain Bagels (6ct)", brands: "Thomas'", category: "bread", emoji: "🥯", img: "https://images.unsplash.com/photo-1585378606295-da76a64a4a6a?w=200&q=80" },
+    { id: 32, product_name: "Flour Tortillas (10ct)", brands: "Mission", category: "bread", emoji: "🫓", img: "https://images.unsplash.com/photo-1584278860047-22db9ff82bed?w=200&q=80" },
+    // Meat & Protein
+    { id: 33, product_name: "Boneless Chicken Breast", brands: "Perdue", category: "meat", emoji: "🍗", img: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=200&q=80" },
+    { id: 34, product_name: "Ground Beef 80/20 (1lb)", brands: "Local Butcher", category: "meat", emoji: "🥩", img: "https://images.unsplash.com/photo-1602470520998-f4a52199a3d6?w=200&q=80" },
+    { id: 35, product_name: "Salmon Fillet", brands: "Wild Planet", category: "meat", emoji: "🐟", img: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=200&q=80" },
+    { id: 36, product_name: "Bacon (12oz)", brands: "Applegate", category: "meat", emoji: "🥓", img: "https://images.unsplash.com/photo-1528607929212-2636ec44253e?w=200&q=80" },
+    // Pantry
+    { id: 37, product_name: "Extra Virgin Olive Oil", brands: "California Olive Ranch", category: "pantry", emoji: "🫙", img: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=200&q=80" },
+    { id: 38, product_name: "Penne Pasta (1lb)", brands: "Barilla", category: "pantry", emoji: "🍝", img: "https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=200&q=80" },
+    { id: 39, product_name: "Spaghetti (1lb)", brands: "Barilla", category: "pantry", emoji: "🍝", img: "https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=200&q=80" },
+    { id: 40, product_name: "Jasmine Rice (5lb)", brands: "Lundberg", category: "pantry", emoji: "🍚", img: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=200&q=80" },
+    { id: 41, product_name: "Rolled Oats", brands: "Bob's Red Mill", category: "pantry", emoji: "🥣", img: "https://images.unsplash.com/photo-1614961233913-a5113a4a34ed?w=200&q=80" },
+    { id: 42, product_name: "Chicken Broth (32oz)", brands: "Swanson", category: "pantry", emoji: "🫙", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=200&q=80" },
+    { id: 43, product_name: "Diced Tomatoes (can)", brands: "Muir Glen", category: "pantry", emoji: "🍅", img: "https://images.unsplash.com/photo-1561136594-7f68413baa99?w=200&q=80" },
+    { id: 44, product_name: "Black Beans (can)", brands: "Bush's", category: "pantry", emoji: "🫘", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=200&q=80" },
+    { id: 45, product_name: "Peanut Butter (creamy)", brands: "Jif", category: "pantry", emoji: "🥜", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=200&q=80" },
+    { id: 46, product_name: "Strawberry Jam", brands: "Smucker's", category: "pantry", emoji: "🍓", img: "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=200&q=80" },
+    { id: 47, product_name: "Honey (12oz)", brands: "Nature Nate's", category: "pantry", emoji: "🍯", img: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=200&q=80" },
+    { id: 48, product_name: "All-Purpose Flour (5lb)", brands: "King Arthur", category: "pantry", emoji: "🌾", img: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=200&q=80" },
+    // Beverages
+    { id: 49, product_name: "Orange Juice (52oz)", brands: "Tropicana", category: "beverages", emoji: "🍊", img: "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=200&q=80" },
+    { id: 50, product_name: "Apple Juice (64oz)", brands: "Mott's", category: "beverages", emoji: "🍎", img: "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=200&q=80" },
+    { id: 51, product_name: "Sparkling Water (12pk)", brands: "LaCroix", category: "beverages", emoji: "💧", img: "https://images.unsplash.com/photo-1622543925917-763c34d1a86e?w=200&q=80" },
+    { id: 52, product_name: "Ground Coffee (12oz)", brands: "Peet's", category: "beverages", emoji: "☕", img: "https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=200&q=80" },
+    { id: 53, product_name: "Cold Brew Coffee", brands: "Chameleon", category: "beverages", emoji: "☕", img: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=200&q=80" },
+    // Snacks
+    { id: 54, product_name: "Tortilla Chips", brands: "Tostitos", category: "snacks", emoji: "🌮", img: "https://images.unsplash.com/photo-1600952841320-db92ec4047ca?w=200&q=80" },
+    { id: 55, product_name: "Salsa (16oz)", brands: "Pace", category: "snacks", emoji: "🍅", img: "https://images.unsplash.com/photo-1561136594-7f68413baa99?w=200&q=80" },
+    { id: 56, product_name: "Mixed Nuts (10oz)", brands: "Planters", category: "snacks", emoji: "🥜", img: "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=200&q=80" },
+    { id: 57, product_name: "Dark Chocolate Bar", brands: "Lindt", category: "snacks", emoji: "🍫", img: "https://images.unsplash.com/photo-1481391319762-47dff72954d9?w=200&q=80" },
+    { id: 58, product_name: "Granola Bars (6ct)", brands: "KIND", category: "snacks", emoji: "🥜", img: "https://images.unsplash.com/photo-1505252585461-04db1eb84625?w=200&q=80" },
+    // Frozen
+    { id: 59, product_name: "Frozen Broccoli (12oz)", brands: "Birds Eye", category: "frozen", emoji: "🥦", img: "https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?w=200&q=80" },
+    { id: 60, product_name: "Vanilla Ice Cream (48oz)", brands: "Häagen-Dazs", category: "frozen", emoji: "🍦", img: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=200&q=80" },
+    { id: 61, product_name: "Frozen Pizza", brands: "Amy's", category: "frozen", emoji: "🍕", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200&q=80" },
+  ];
+
+  function searchLocal(query) {
+    const q = query.toLowerCase().trim();
+    if (!q) return [];
+    return PRODUCTS.filter(p =>
+      p.product_name.toLowerCase().includes(q) ||
+      p.brands.toLowerCase().includes(q) ||
+      p.category.toLowerCase().includes(q) ||
+      p.emoji === q
+    );
+  }
+
+  async function searchItems() {
+    const query = document.getElementById('sheetSearch').value.trim();
+    if (!query) return;
+    document.getElementById('sheetSuggestions').style.display = 'none';
+    const results = document.getElementById('sheetResults');
+    results.innerHTML = '<div class="sheet-loading"><div class="spinner"></div>Finding products...</div>';
+    selectedProduct = null;
+    document.getElementById('sheetConfirm').disabled = true;
+    document.getElementById('sheetConfirm').textContent = 'Add to List';
+
+    // Try Open Food Facts API first, fall back to local DB
+    try {
+      const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=12&fields=id,product_name,brands,image_front_small_url`;
+      const res = await fetch(url);
+      const data = await res.json();
+      const apiProducts = (data.products || []).filter(p => p.product_name && p.product_name.trim() && p.image_front_small_url);
+
+      if (apiProducts.length) {
+        results.innerHTML = '';
+        apiProducts.slice(0, 8).forEach(p => {
+          const product = { product_name: p.product_name, brands: p.brands || '', img: p.image_front_small_url, emoji: getEmoji(query) };
+          const card = document.createElement('div');
+          card.className = 'result-card';
+          card.innerHTML = `
+            <img class="result-img" src="${product.img}" alt="${product.product_name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="result-img-placeholder" style="display:none">${product.emoji}</div>
+            <div class="result-name">${product.product_name}</div>
+            ${product.brands ? `<div class="result-brand">${product.brands.split(',')[0]}</div>` : ''}
+            <div class="result-add-badge">✓ Selected</div>
+          `;
+          card.onclick = () => selectProduct(card, product);
+          results.appendChild(card);
+        });
+        return;
+      }
+    } catch(e) {
+      // API unavailable — fall through to local
+    }
+
+    // Fallback: local database
+    await new Promise(r => setTimeout(r, 200));
+    const found = searchLocal(query);
+
+    if (!found.length) {
+      results.innerHTML = `<div class="sheet-empty">No products found for "<strong>${query}</strong>".<br><br>Try: milk, eggs, bread, chicken, pasta, yogurt...</div>`;
+      return;
+    }
+
+    results.innerHTML = '';
+    found.slice(0, 8).forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'result-card';
+      card.innerHTML = `
+        <img class="result-img" src="${p.img}" alt="${p.product_name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="result-img-placeholder" style="display:none">${p.emoji}</div>
+        <div class="result-name">${p.product_name}</div>
+        <div class="result-brand">${p.brands}</div>
+        <div class="result-add-badge">✓ Selected</div>
+      `;
+      card.onclick = () => selectProduct(card, p);
+      results.appendChild(card);
+    });
+  }
+
+  function selectProduct(card, product) {
+    document.querySelectorAll('.result-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedProduct = product;
+    document.getElementById('sheetConfirm').disabled = false;
+    document.getElementById('sheetConfirm').textContent = `Add "${product.product_name}" to list`;
+  }
+
+  function confirmAdd() {
+    if (!selectedProduct) return;
+    const list = document.getElementById('groceryList');
+    const item = document.createElement('div');
+    item.className = 'grocery-item';
+    item.onclick = function() { toggleGrocery(this); };
+    const imgHtml = `<img class="grocery-item-img" src="${selectedProduct.img}" alt="${selectedProduct.product_name}" onerror="this.style.display='none'">`;
+    item.innerHTML = `${imgHtml}<span style="flex:1;font-size:0.85rem;font-weight:500">${selectedProduct.product_name}</span><span class="grocery-count">Added by you</span>`;
+    list.appendChild(item);
+    closeItemSearch();
+  }
+
+  function getEmoji(term) {
+    const t = term.toLowerCase();
+    if (t.includes('milk')) return '🥛';
+    if (t.includes('egg')) return '🥚';
+    if (t.includes('bread')) return '🍞';
+    if (t.includes('banana')) return '🍌';
+    if (t.includes('chicken')) return '🍗';
+    if (t.includes('juice') || t.includes('orange')) return '🍊';
+    if (t.includes('pasta') || t.includes('noodle')) return '🍝';
+    if (t.includes('butter')) return '🧈';
+    if (t.includes('cheese')) return '🧀';
+    if (t.includes('apple')) return '🍎';
+    if (t.includes('tomato')) return '🍅';
+    if (t.includes('water')) return '💧';
+    if (t.includes('coffee')) return '☕';
+    if (t.includes('cereal') || t.includes('oat')) return '🥣';
+    return '🛒';
+  }
+
+  function setNav(el) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+  }
+</script>
+
+<!-- ITEM SEARCH SHEET -->
+<div class="sheet-overlay" id="sheetOverlay" onclick="closeItemSearch()"></div>
+<div class="item-sheet" id="itemSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Add Grocery Item</div>
+  <div class="sheet-search-wrap">
+    <input class="sheet-search" id="sheetSearch" placeholder="Search for an item..." onkeydown="if(event.key==='Enter') searchItems()">
+    <button class="sheet-search-btn" onclick="searchItems()">Search</button>
+  </div>
+  <div class="sheet-suggestions" id="sheetSuggestions">
+    <button class="suggestion-chip" onclick="quickSearch('milk')">🥛 Milk</button>
+    <button class="suggestion-chip" onclick="quickSearch('eggs')">🥚 Eggs</button>
+    <button class="suggestion-chip" onclick="quickSearch('bread')">🍞 Bread</button>
+    <button class="suggestion-chip" onclick="quickSearch('banana')">🍌 Bananas</button>
+    <button class="suggestion-chip" onclick="quickSearch('chicken')">🍗 Chicken</button>
+    <button class="suggestion-chip" onclick="quickSearch('orange juice')">🍊 OJ</button>
+    <button class="suggestion-chip" onclick="quickSearch('pasta')">🍝 Pasta</button>
+    <button class="suggestion-chip" onclick="quickSearch('butter')">🧈 Butter</button>
+  </div>
+  <div class="sheet-results" id="sheetResults">
+    <div class="sheet-empty">Search above or tap a suggestion to find products 🛒</div>
+  </div>
+  <button class="sheet-confirm" id="sheetConfirm" disabled onclick="confirmAdd()">Add to List</button>
+</div>
+
+</body>
+</html>
