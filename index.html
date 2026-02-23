@@ -2,1560 +2,1682 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NestSync — Family OS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1A1008">
+<title>NestSync</title>
 <style>
-  @font-face {
-    font-family: 'SF Pro Rounded';
-    src: local('-apple-system'), local('SF Pro Rounded');
-  }
-</style>
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --cream: #F7F3EE;
-    --warm-white: #FDFAF7;
-    --bark: #2C1F14;
-    --bark-light: #5C4033;
-    --clay: #C97B52;
-    --clay-light: #E8A97A;
-    --sage: #7A9E87;
-    --sage-light: #B2CDBA;
-    --dusk: #8B7EA8;
-    --dusk-light: #C4BAD9;
-    --sand: #D4BFA0;
-    --sand-light: #EDE4D6;
-    --alert: #E07B5A;
-  }
-
-  body {
-    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
-    background: var(--cream);
-    color: var(--bark);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* HEADER */
-  header {
-    background: var(--bark);
-    padding: 0 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 64px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .logo {
-    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--cream);
-    letter-spacing: -0.02em;
-  }
-
-  .logo span {
-    color: var(--clay-light);
-  }
-
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .date-chip {
-    font-size: 0.8rem;
-    color: var(--sand);
-    font-weight: 300;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-
-  .avatar-stack {
-    display: flex;
-    align-items: center;
-  }
-
-  .avatar {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    border: 2px solid var(--bark);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-    font-weight: 500;
-    margin-left: -8px;
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
-
-  .avatar:first-child { margin-left: 0; }
-  .avatar:hover { transform: translateY(-3px); z-index: 10; }
-
-  .av1 { background: var(--clay); color: white; }
-  .av2 { background: var(--sage); color: white; }
-  .av3 { background: var(--dusk); color: white; }
-  .av4 { background: var(--sand); color: var(--bark); }
-
-  /* MAIN LAYOUT */
-  main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-  }
-
-  .greeting {
-    margin-bottom: 2rem;
-    animation: fadeUp 0.6s ease both;
-  }
-
-  .greeting h1 {
-    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
-    font-size: clamp(1.8rem, 4vw, 2.6rem);
-    font-weight: 400;
-    color: var(--bark);
-    line-height: 1.1;
-  }
-
-  .greeting h1 em {
-    font-style: normal;
-    font-weight: 600;
-    color: var(--clay);
-  }
-
-  .greeting p {
-    margin-top: 0.4rem;
-    font-size: 0.9rem;
-    color: var(--bark-light);
-    font-weight: 300;
-  }
-
-  /* ALERT BANNER */
-  .alert-banner {
-    background: var(--alert);
-    color: white;
-    border-radius: 12px;
-    padding: 0.9rem 1.2rem;
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    font-size: 0.875rem;
-    animation: fadeUp 0.6s 0.1s ease both;
-  }
-
-  .alert-icon { font-size: 1.1rem; }
-  .alert-banner strong { font-weight: 500; }
-  .alert-dismiss {
-    margin-left: auto;
-    background: rgba(255,255,255,0.2);
-    border: none;
-    color: white;
-    border-radius: 6px;
-    padding: 0.25rem 0.6rem;
-    font-size: 0.75rem;
-    cursor: pointer;
-    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
-  }
-
-  /* GRID */
-  .dashboard-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: auto auto;
-    gap: 1.25rem;
-  }
-
-  @media (max-width: 900px) {
-    .dashboard-grid { grid-template-columns: 1fr 1fr; }
-  }
-  @media (max-width: 600px) {
-    .dashboard-grid { grid-template-columns: 1fr; }
-  }
-
-  /* CARDS */
-  .card {
-    background: var(--warm-white);
-    border-radius: 18px;
-    padding: 1.5rem;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s;
-    animation: fadeUp 0.6s ease both;
-  }
-
-  .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 40px rgba(44,31,20,0.1);
-  }
-
-  .card:nth-child(1) { animation-delay: 0.15s; }
-  .card:nth-child(2) { animation-delay: 0.2s; }
-  .card:nth-child(3) { animation-delay: 0.25s; }
-  .card:nth-child(4) { animation-delay: 0.3s; }
-  .card:nth-child(5) { animation-delay: 0.35s; }
-
-  .card-wide { grid-column: span 2; }
-  .card-tall { grid-row: span 2; }
-
-  .card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1.2rem;
-  }
-
-  .card-title {
-    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--bark);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .card-icon {
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.9rem;
-  }
-
-  .icon-clay { background: #FCEEE5; }
-  .icon-sage { background: #E8F2EB; }
-  .icon-dusk { background: #EDE9F5; }
-  .icon-sand { background: #F5EFE6; }
-
-  .card-action {
-    font-size: 0.75rem;
-    color: var(--clay);
-    cursor: pointer;
-    font-weight: 500;
-    border: none;
-    background: none;
-    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
-  }
-
-  /* SCHEDULE CARD */
-  .schedule-list { display: flex; flex-direction: column; gap: 0.75rem; }
-
-  .event {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-
-  .event-time {
-    font-size: 0.72rem;
-    color: var(--bark-light);
-    font-weight: 400;
-    min-width: 42px;
-    padding-top: 2px;
-    text-align: right;
-  }
-
-  .event-bar {
-    width: 3px;
-    border-radius: 2px;
-    min-height: 36px;
-    flex-shrink: 0;
-  }
-
-  .bar-clay { background: var(--clay); }
-  .bar-sage { background: var(--sage); }
-  .bar-dusk { background: var(--dusk); }
-  .bar-alert { background: var(--alert); }
-
-  .event-info {}
-
-  .event-name {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--bark);
-  }
-
-  .event-who {
-    font-size: 0.75rem;
-    color: var(--bark-light);
-    font-weight: 300;
-    margin-top: 1px;
-  }
-
-  .event-conflict {
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    font-size: 0.7rem;
-    background: #FFF0EC;
-    color: var(--alert);
-    padding: 2px 6px;
-    border-radius: 4px;
-    margin-top: 3px;
-    font-weight: 500;
-  }
-
-  /* CHORES CARD */
-  .chore-list { display: flex; flex-direction: column; gap: 0.6rem; }
-
-  .chore-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.6rem 0.75rem;
-    border-radius: 10px;
-    background: var(--cream);
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-
-  .chore-item:hover { background: var(--sand-light); }
-
-  .chore-check {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    border: 2px solid var(--sand);
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-  }
-
-  .chore-item.done .chore-check {
-    background: var(--sage);
-    border-color: var(--sage);
-    color: white;
-    font-size: 0.7rem;
-  }
-
-  .chore-item.done .chore-name {
-    text-decoration: line-through;
-    color: var(--bark-light);
-    opacity: 0.6;
-  }
-
-  .chore-name {
-    font-size: 0.85rem;
-    font-weight: 400;
-    flex: 1;
-  }
-
-  .chore-assignee {
-    font-size: 0.72rem;
-    color: white;
-    background: var(--bark-light);
-    border-radius: 20px;
-    padding: 2px 8px;
-  }
-
-  .chore-progress {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-top: 1rem;
-  }
-
-  .progress-bar {
-    flex: 1;
-    height: 6px;
-    background: var(--sand-light);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: var(--sage);
-    border-radius: 3px;
-    transition: width 0.5s ease;
-  }
-
-  .progress-label {
-    font-size: 0.75rem;
-    color: var(--bark-light);
-    white-space: nowrap;
-  }
-
-  /* GROCERY CARD */
-  .grocery-list { display: flex; flex-direction: column; gap: 0.5rem; }
-
-  .grocery-section-label {
-    font-size: 0.68rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--bark-light);
-    font-weight: 500;
-    margin-top: 0.5rem;
-    margin-bottom: 0.2rem;
-  }
-
-  .grocery-item {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    font-size: 0.85rem;
-    padding: 0.35rem 0;
-    cursor: pointer;
-    border-bottom: 1px solid var(--sand-light);
-  }
-
-  .grocery-item:last-child { border-bottom: none; }
-
-  .grocery-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .dot-clay { background: var(--clay); }
-  .dot-dusk { background: var(--dusk); }
-  .dot-sage { background: var(--sage); }
-
-  .grocery-item.checked { opacity: 0.4; text-decoration: line-through; }
-
-  .grocery-count {
-    margin-left: auto;
-    font-size: 0.72rem;
-    color: var(--bark-light);
-  }
-
-  .add-grocery {
-    margin-top: 0.75rem;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: var(--cream);
-    border: 1.5px dashed var(--sand);
-    border-radius: 10px;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.82rem;
-    color: var(--bark-light);
-    cursor: pointer;
-    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
-    transition: border-color 0.2s;
-  }
-
-  .add-grocery:hover { border-color: var(--clay); color: var(--clay); }
-
-  /* LOCATION CARD */
-  .location-map {
-    background: linear-gradient(135deg, #E8F0E9 0%, #D4E6D6 50%, #BDD4C0 100%);
-    border-radius: 12px;
-    height: 120px;
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 1rem;
-  }
-
-  .map-grid {
-    position: absolute;
-    inset: 0;
-    background-image: 
-      linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px);
-    background-size: 20px 20px;
-  }
-
-  .map-road-h {
-    position: absolute;
-    left: 0; right: 0;
-    height: 6px;
-    background: rgba(255,255,255,0.5);
-    top: 50%;
-    transform: translateY(-50%);
-  }
-
-  .map-road-v {
-    position: absolute;
-    top: 0; bottom: 0;
-    width: 6px;
-    background: rgba(255,255,255,0.5);
-    left: 35%;
-  }
-
-  .map-pin {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-  }
-
-  .pin-bubble {
-    width: 28px;
-    height: 28px;
-    border-radius: 50% 50% 50% 0;
-    transform: rotate(-45deg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  }
-
-  .pin-bubble span {
-    transform: rotate(45deg);
-    font-size: 0.7rem;
-    color: white;
-    font-weight: 600;
-  }
-
-  .pin-label {
-    font-size: 0.65rem;
-    font-weight: 500;
-    margin-top: 2px;
-    color: var(--bark);
-    white-space: nowrap;
-  }
-
-  .pin-home { top: 30%; left: 32%; }
-  .pin-mom { top: 15%; left: 55%; }
-  .pin-kid { top: 55%; left: 65%; }
-
-  .pin-bubble.home { background: var(--bark); border-radius: 50%; transform: none; }
-  .pin-bubble.mom-pin { background: var(--clay); }
-  .pin-bubble.kid-pin { background: var(--dusk); }
-
-  .location-list { display: flex; flex-direction: column; gap: 0.5rem; }
-
-  .location-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-size: 0.85rem;
-  }
-
-  .loc-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .loc-name { font-weight: 500; flex: 1; }
-  .loc-place { font-size: 0.75rem; color: var(--bark-light); }
-  .loc-time { font-size: 0.72rem; color: var(--bark-light); }
-
-  /* INSIGHTS CARD */
-  .insight-score {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    margin-bottom: 1.2rem;
-  }
-
-  .score-ring {
-    position: relative;
-    width: 72px;
-    height: 72px;
-    flex-shrink: 0;
-  }
-
-  .score-ring svg {
-    transform: rotate(-90deg);
-    width: 72px;
-    height: 72px;
-  }
-
-  .score-ring circle {
-    fill: none;
-    stroke-width: 6;
-  }
-
-  .ring-bg { stroke: var(--sand-light); }
-  .ring-fill { stroke: var(--sage); stroke-linecap: round; stroke-dasharray: 188; stroke-dashoffset: 47; }
-
-  .score-number {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .score-num {
-    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
-    font-size: 1.4rem;
-    font-weight: 600;
-    line-height: 1;
-    color: var(--bark);
-  }
-
-  .score-label { font-size: 0.55rem; color: var(--bark-light); text-transform: uppercase; letter-spacing: 0.05em; }
-
-  .score-details { flex: 1; }
-
-  .score-title {
-    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .score-breakdown { display: flex; flex-direction: column; gap: 0.4rem; }
-
-  .breakdown-row {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.78rem;
-  }
-
-  .breakdown-label { color: var(--bark-light); min-width: 80px; }
-
-  .mini-bar {
-    flex: 1;
-    height: 4px;
-    background: var(--sand-light);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .mini-fill { height: 100%; border-radius: 2px; }
-
-  .insight-tips { display: flex; flex-direction: column; gap: 0.5rem; }
-
-  .tip {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.6rem;
-    font-size: 0.8rem;
-    padding: 0.6rem 0.75rem;
-    border-radius: 8px;
-    background: var(--cream);
-  }
-
-  .tip-icon { font-size: 0.9rem; flex-shrink: 0; }
-  .tip-text { color: var(--bark); line-height: 1.4; }
-  .tip-text strong { font-weight: 500; }
-
-  /* NAV */
-  nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--bark);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 0.75rem 1rem 1.2rem;
-    z-index: 100;
-  }
-
-  .nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    cursor: pointer;
-    opacity: 0.5;
-    transition: opacity 0.2s;
-    color: var(--cream);
-  }
-
-  .nav-item.active { opacity: 1; }
-  .nav-item.active .nav-dot { background: var(--clay); }
-
-  .nav-icon { font-size: 1.2rem; }
-  .nav-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
-  .nav-dot { width: 4px; height: 4px; border-radius: 50%; background: transparent; }
-
-  .main-content-pad { padding-bottom: 80px; }
-
-  /* ANIMATIONS */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ADD ITEM INPUT */
-  .add-input-row {
-    display: none;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-  }
-
-  .add-input-row.visible { display: flex; }
-
-  .add-input {
-    flex: 1;
-    border: 1.5px solid var(--clay);
-    border-radius: 8px;
-    padding: 0.4rem 0.75rem;
-    font-size: 0.82rem;
-    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
-    background: white;
-    color: var(--bark);
-    outline: none;
-  }
-
-  .add-btn {
-    background: var(--clay);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 0.4rem 0.75rem;
-    font-size: 0.82rem;
-    cursor: pointer;
-    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
-  }
-
-  /* ITEM SEARCH BOTTOM SHEET */
-  .sheet-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(44,31,20,0.45);
-    z-index: 200;
-    backdrop-filter: blur(2px);
-    animation: fadein 0.2s ease;
-  }
-
-  .sheet-overlay.open { display: block; }
-
-  .item-sheet {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background: var(--warm-white);
-    border-radius: 24px 24px 0 0;
-    z-index: 201;
-    padding: 1.25rem 1.25rem 2rem;
-    max-height: 85vh;
-    display: flex;
-    flex-direction: column;
-    transform: translateY(100%);
-    transition: transform 0.35s cubic-bezier(0.34, 1.1, 0.64, 1);
-  }
-
-  .item-sheet.open { transform: translateY(0); }
-
-  .sheet-handle {
-    width: 40px;
-    height: 4px;
-    background: var(--sand);
-    border-radius: 2px;
-    margin: 0 auto 1.2rem;
-  }
-
-  .sheet-title {
-    font-size: 1.05rem;
-    font-weight: 600;
-    color: var(--bark);
-    margin-bottom: 1rem;
-    text-align: center;
-  }
-
-  .sheet-search-wrap {
-    display: flex;
-    gap: 0.6rem;
-    margin-bottom: 1rem;
-  }
-
-  .sheet-search {
-    flex: 1;
-    border: 2px solid var(--sand);
-    border-radius: 12px;
-    padding: 0.65rem 1rem;
-    font-size: 0.92rem;
-    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
-    background: var(--cream);
-    color: var(--bark);
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .sheet-search:focus { border-color: var(--clay); }
-
-  .sheet-search-btn {
-    background: var(--clay);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    padding: 0 1rem;
-    font-size: 0.9rem;
-    cursor: pointer;
-    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
-    font-weight: 500;
-    transition: background 0.2s;
-  }
-
-  .sheet-search-btn:hover { background: var(--bark); }
-
-  .sheet-results {
-    overflow-y: auto;
-    flex: 1;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-    padding-bottom: 1rem;
-  }
-
-  .result-card {
-    background: var(--cream);
-    border-radius: 14px;
-    padding: 0.75rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    border: 2px solid transparent;
-    transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
-  }
-
-  .result-card:hover {
-    border-color: var(--clay);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(201,123,82,0.15);
-  }
-
-  .result-card.selected {
-    border-color: var(--sage);
-    background: #EEF6F1;
-  }
-
-  .result-img {
-    width: 80px;
-    height: 80px;
-    object-fit: contain;
-    border-radius: 10px;
-    background: white;
-    padding: 4px;
-  }
-
-  .result-img-placeholder {
-    width: 80px;
-    height: 80px;
-    border-radius: 10px;
-    background: var(--sand-light);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-  }
-
-  .result-name {
-    font-size: 0.78rem;
-    font-weight: 500;
-    text-align: center;
-    color: var(--bark);
-    line-height: 1.3;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .result-brand {
-    font-size: 0.68rem;
-    color: var(--bark-light);
-    text-align: center;
-  }
-
-  .result-add-badge {
-    display: none;
-    font-size: 0.7rem;
-    background: var(--sage);
-    color: white;
-    border-radius: 20px;
-    padding: 2px 8px;
-    font-weight: 500;
-  }
-
-  .result-card.selected .result-add-badge { display: block; }
-
-  .sheet-empty {
-    grid-column: span 2;
-    text-align: center;
-    color: var(--bark-light);
-    font-size: 0.85rem;
-    padding: 2rem;
-  }
-
-  .sheet-loading {
-    grid-column: span 2;
-    text-align: center;
-    color: var(--bark-light);
-    font-size: 0.85rem;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .spinner {
-    width: 28px;
-    height: 28px;
-    border: 3px solid var(--sand);
-    border-top-color: var(--clay);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .sheet-confirm {
-    background: var(--clay);
-    color: white;
-    border: none;
-    border-radius: 14px;
-    padding: 0.85rem;
-    width: 100%;
-    font-size: 0.95rem;
-    font-weight: 600;
-    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
-    cursor: pointer;
-    margin-top: 0.75rem;
-    transition: background 0.2s, opacity 0.2s;
-  }
-
-  .sheet-confirm:disabled { background: var(--sand); cursor: default; }
-
-  /* grocery item with image */
-  .grocery-item-img {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    object-fit: contain;
-    background: white;
-    border: 1px solid var(--sand-light);
-    flex-shrink: 0;
-    padding: 2px;
-  }
-
-  .grocery-img-placeholder {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    background: var(--sand-light);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    flex-shrink: 0;
-  }
-
-  @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
-
-  /* Quick suggestions */
-  .sheet-suggestions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .suggestion-chip {
-    background: var(--cream);
-    border: 1.5px solid var(--sand);
-    border-radius: 20px;
-    padding: 0.35rem 0.75rem;
-    font-size: 0.78rem;
-    color: var(--bark);
-    cursor: pointer;
-    transition: all 0.15s;
-    font-family: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
-  }
-
-  .suggestion-chip:hover { border-color: var(--clay); color: var(--clay); background: #FDF0E8; }
-
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #F7F3EE;
+  --card: #FDFAF7;
+  --bark: #2C1F14;
+  --bark2: #5C4033;
+  --clay: #C97B52;
+  --orange: #FF6B2C;
+  --sage: #7A9E87;
+  --dusk: #8B7EA8;
+  --sand: #D4BFA0;
+  --sand2: #EDE4D6;
+  --alert: #E07B5A;
+  --text: #2C1F14;
+  --text2: #5C4033;
+  --border: #EDE4D6;
+  --nav: #1A1008;
+  --font: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
+}
+
+body.dark {
+  --bg: #111111;
+  --card: #1C1C1C;
+  --text: #F0EDE8;
+  --text2: #9A8F84;
+  --border: #2A2A2A;
+  --nav: #0A0A0A;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  overflow: hidden;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* ── SCREENS ── */
+#app { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+/* ── SPLASH ── */
+#splash {
+  background: var(--nav);
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  z-index: 999;
+  transition: opacity 0.5s ease;
+}
+
+.splash-wordmark {
+  font-size: 3.2rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  opacity: 0;
+  transform: translateY(16px);
+  animation: riseIn 0.9s 0.4s cubic-bezier(0.34,1.2,0.64,1) forwards;
+}
+
+.w { color: #FFFFFF; }
+.o { color: #FF6B2C; }
+
+.splash-tag {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: riseIn 0.6s 0.9s ease forwards;
+}
+
+.splash-loader {
+  position: absolute;
+  bottom: 56px;
+  width: 100px;
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.splash-loader-fill {
+  height: 100%;
+  background: var(--orange);
+  border-radius: 2px;
+  animation: loadFill 2.2s ease forwards;
+}
+
+@keyframes riseIn { to { opacity: 1; transform: translateY(0); } }
+@keyframes loadFill { from { width: 0; } to { width: 100%; } }
+
+/* ── ONBOARDING ── */
+#onboarding { z-index: 100; overflow: hidden; }
+
+.ob-top {
+  background: var(--nav);
+  padding: 3.5rem 1.5rem 1.5rem;
+  flex-shrink: 0;
+}
+
+.ob-steps { display: flex; gap: 5px; margin-bottom: 1.25rem; }
+.ob-dot { flex: 1; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.15); transition: background 0.3s; }
+.ob-dot.active { background: var(--orange); }
+.ob-dot.done { background: var(--sage); }
+
+.ob-title {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.3rem;
+}
+
+.ob-sub { font-size: 0.82rem; color: rgba(255,255,255,0.45); font-weight: 400; }
+
+.ob-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ob-step { display: none; flex-direction: column; gap: 1rem; }
+.ob-step.on { display: flex; animation: fadeUp 0.3s ease; }
+
+.f-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text2);
+  margin-bottom: 0.35rem;
+}
+
+.f-input {
+  width: 100%;
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 0.85rem 1rem;
+  font-size: 1rem;
+  font-family: var(--font);
+  background: var(--card);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.f-input:focus { border-color: var(--orange); }
+
+.f-select {
+  width: 100%;
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 0.85rem 1rem;
+  font-size: 1rem;
+  font-family: var(--font);
+  background: var(--card);
+  color: var(--text);
+  outline: none;
+  appearance: none;
+}
+
+.ob-foot {
+  padding: 0.75rem 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+}
+
+.ob-buttons { display: flex; gap: 0.75rem; }
+
+.btn-main {
+  flex: 1;
+  background: var(--orange);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn-main:active { transform: scale(0.98); }
+
+.btn-back {
+  background: var(--border);
+  color: var(--text);
+  border: none;
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+}
+
+.btn-skip {
+  background: none;
+  border: none;
+  color: var(--text2);
+  font-size: 0.8rem;
+  font-family: var(--font);
+  cursor: pointer;
+  text-decoration: underline;
+  text-align: center;
+  padding: 0.25rem;
+}
+
+/* COLOR GRID */
+.color-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.85rem; }
+
+.c-swatch {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: white;
+  border: 3px solid transparent;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.c-swatch:hover:not(.taken) { transform: scale(1.12); }
+.c-swatch.picked { border-color: white; box-shadow: 0 0 0 3px var(--orange); transform: scale(1.1); }
+.c-swatch.taken { cursor: not-allowed; }
+.c-swatch.taken::after {
+  content: attr(data-init);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.5);
+  border-radius: 50%;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+/* MEMBER CARD IN ONBOARDING */
+.ob-member {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1.5px solid var(--border);
+  margin-bottom: 0.5rem;
+}
+
+.ob-av { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; color: white; flex-shrink: 0; }
+.ob-mname { font-weight: 700; font-size: 0.88rem; color: var(--text); }
+.ob-mrole { font-size: 0.72rem; color: var(--text2); }
+.ob-mremove { margin-left: auto; background: none; border: none; color: var(--text2); cursor: pointer; font-size: 1.1rem; }
+
+.add-member-btn {
+  width: 100%;
+  background: var(--card);
+  border: 2px dashed var(--border);
+  border-radius: 14px;
+  padding: 0.85rem;
+  font-size: 0.88rem;
+  color: var(--text2);
+  cursor: pointer;
+  font-family: var(--font);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.add-member-btn:hover { border-color: var(--orange); color: var(--orange); }
+
+.add-form {
+  display: none;
+  background: var(--card);
+  border-radius: 14px;
+  padding: 1rem;
+  border: 1.5px solid var(--border);
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.add-form.on { display: flex; }
+
+/* SUMMARY */
+.summary-box {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.summary-big { font-size: 3.5rem; margin-bottom: 0.75rem; }
+.summary-title { font-size: 1.2rem; font-weight: 800; color: var(--text); margin-bottom: 0.4rem; }
+.summary-sub { font-size: 0.85rem; color: var(--text2); line-height: 1.6; }
+
+.code-box {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 1.25rem;
+  text-align: center;
+  border: 1.5px solid var(--border);
+}
+
+.code-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text2); font-weight: 700; margin-bottom: 0.4rem; }
+.code-val { font-size: 2rem; font-weight: 800; color: var(--orange); letter-spacing: 0.2em; }
+.code-hint { font-size: 0.72rem; color: var(--text2); margin-top: 0.3rem; }
+
+/* ── MAIN APP ── */
+#mainApp { display: flex; flex-direction: column; }
+
+.app-header {
+  background: var(--nav);
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.app-wordmark { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.03em; }
+
+.hdr-right { display: flex; align-items: center; gap: 0.6rem; }
+.hdr-date { font-size: 0.68rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.06em; }
+
+.av-stack { display: flex; }
+.av {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 2px solid var(--nav);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.6rem; font-weight: 800; color: white;
+  margin-left: -5px; cursor: pointer;
+  transition: transform 0.2s;
+}
+.av:first-child { margin-left: 0; }
+.av:hover { transform: translateY(-3px); z-index: 5; }
+
+/* SCREEN CONTAINER */
+.screen-wrap { flex: 1; position: relative; overflow: hidden; }
+
+.tab {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  padding: 1.25rem 1.25rem 90px;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: transform 0.36s cubic-bezier(0.4,0,0.2,1), opacity 0.36s ease;
+  pointer-events: none;
+}
+
+.tab.active { opacity: 1; transform: translateX(0); pointer-events: all; }
+.tab.slide-left { opacity: 0.3; transform: translateX(-22%); }
+
+/* BOTTOM NAV */
+.bot-nav {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: var(--nav);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0.5rem 0.5rem 1.6rem;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  z-index: 50;
+}
+
+.nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+  padding: 0.3rem 0.7rem;
+  border-radius: 12px;
+  min-width: 54px;
+}
+
+.nav-btn.active { opacity: 1; background: rgba(255,107,44,0.12); }
+.nav-btn .ni { font-size: 1.1rem; line-height: 1; }
+.nav-btn .nl { font-size: 0.52rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; color: rgba(255,255,255,0.6); white-space: nowrap; }
+.nav-btn.active .nl { color: var(--orange); }
+
+/* ── CARDS ── */
+.card {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.card-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.card-title { font-size: 0.9rem; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 0.5rem; }
+.c-icon { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+.ic { background: #FCEEE5; }
+.ig { background: #E8F2EB; }
+.ip { background: #EDE9F5; }
+.is { background: #F5EFE6; }
+.card-link { font-size: 0.72rem; color: var(--orange); font-weight: 700; border: none; background: none; cursor: pointer; font-family: var(--font); }
+
+/* GREETING */
+.greet { margin-bottom: 1.25rem; }
+.greet h1 { font-size: clamp(1.5rem,5vw,2rem); font-weight: 800; color: var(--text); line-height: 1.1; letter-spacing: -0.02em; }
+.greet h1 em { font-style: normal; color: var(--orange); }
+.greet p { font-size: 0.8rem; color: var(--text2); margin-top: 0.3rem; }
+
+/* ALERT */
+.alert-bar {
+  background: var(--alert);
+  border-radius: 13px;
+  padding: 0.8rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+  font-size: 0.8rem;
+  color: white;
+}
+
+.alert-bar strong { font-weight: 700; }
+.alert-x { margin-left: auto; background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 6px; padding: 0.2rem 0.5rem; font-size: 0.7rem; cursor: pointer; font-family: var(--font); flex-shrink: 0; }
+
+/* SCHEDULE */
+.ev-list { display: flex; flex-direction: column; gap: 0.65rem; }
+.ev { display: flex; align-items: flex-start; gap: 0.6rem; }
+.ev-t { font-size: 0.65rem; color: var(--text2); min-width: 35px; padding-top: 2px; text-align: right; }
+.ev-bar { width: 3px; border-radius: 2px; min-height: 32px; flex-shrink: 0; }
+.bc { background: var(--clay); } .bg { background: var(--sage); } .bd { background: var(--dusk); } .ba { background: var(--alert); }
+.ev-name { font-size: 0.84rem; font-weight: 700; color: var(--text); }
+.ev-who { font-size: 0.7rem; color: var(--text2); margin-top: 1px; }
+.ev-flag { display: inline-flex; font-size: 0.65rem; background: #FFF0EC; color: var(--alert); padding: 1px 6px; border-radius: 4px; margin-top: 2px; font-weight: 700; }
+
+/* CHORES */
+.chore {
+  display: flex; align-items: center; gap: 0.65rem;
+  padding: 0.55rem 0.7rem; border-radius: 10px;
+  background: var(--bg); cursor: pointer; margin-bottom: 0.45rem;
+  transition: background 0.15s;
+}
+.chore:hover { background: var(--border); }
+.chore-ck { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--sand); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.62rem; transition: all 0.2s; }
+.chore.done .chore-ck { background: var(--sage); border-color: var(--sage); color: white; }
+.chore.done .chore-nm { text-decoration: line-through; opacity: 0.5; }
+.chore-nm { font-size: 0.85rem; flex: 1; color: var(--text); }
+.chore-tag { font-size: 0.65rem; color: white; border-radius: 20px; padding: 2px 7px; font-weight: 700; }
+
+.prog-row { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.75rem; }
+.prog-bar { flex: 1; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.prog-fill { height: 100%; background: var(--sage); border-radius: 3px; transition: width 0.5s ease; }
+.prog-lbl { font-size: 0.7rem; color: var(--text2); white-space: nowrap; }
+
+/* LOCATION */
+.loc-map {
+  background: linear-gradient(135deg,#E8F0E9,#BDD4C0);
+  border-radius: 12px; height: 108px; position: relative; overflow: hidden; margin-bottom: 0.75rem;
+}
+body.dark .loc-map { background: linear-gradient(135deg,#1a2e1d,#162819); }
+.map-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.2) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.2) 1px,transparent 1px); background-size: 20px 20px; }
+.map-rh { position: absolute; left:0;right:0;height:5px;background:rgba(255,255,255,0.4);top:50%;transform:translateY(-50%); }
+.map-rv { position: absolute; top:0;bottom:0;width:5px;background:rgba(255,255,255,0.4);left:35%; }
+.m-pin { position: absolute; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+.m-bub { width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.25); }
+.m-bub span { transform:rotate(45deg);font-size:0.62rem;color:white;font-weight:800; }
+.m-lbl { font-size:0.58rem;font-weight:700;margin-top:2px;color:var(--bark);white-space:nowrap; }
+.ph { top:28%;left:30%; } .pm { top:12%;left:53%; } .pk { top:52%;left:62%; }
+.m-bub.home { background:var(--bark);border-radius:50%;transform:none;font-size:0.75rem; }
+.m-bub.mc { background:var(--clay); } .m-bub.md { background:var(--dusk); }
+
+.loc-list { display: flex; flex-direction: column; gap: 0.45rem; }
+.loc-row { display: flex; align-items: center; gap: 0.6rem; font-size: 0.8rem; }
+.loc-dot { width:9px;height:9px;border-radius:50%;flex-shrink:0; }
+.loc-nm { font-weight:700;flex:1;color:var(--text); }
+.loc-pl { font-size:0.7rem;color:var(--text2); }
+.loc-tm { font-size:0.65rem;color:var(--text2); }
+
+/* HARMONY */
+.harmony-row { display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1rem; }
+.h-ring { position:relative;width:66px;height:66px;flex-shrink:0; }
+.h-ring svg { transform:rotate(-90deg);width:66px;height:66px; }
+.h-ring circle { fill:none;stroke-width:6; }
+.ring-bg { stroke:var(--border); }
+.ring-fg { stroke:var(--sage);stroke-linecap:round;stroke-dasharray:172;stroke-dashoffset:43; }
+.h-num { position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center; }
+.h-big { font-size:1.2rem;font-weight:800;color:var(--text); }
+.h-sm { font-size:0.48rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.05em; }
+.h-detail { flex:1; }
+.h-title { font-size:0.88rem;font-weight:700;color:var(--text);margin-bottom:0.5rem; }
+.h-row { display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;margin-bottom:0.3rem; }
+.h-lbl { color:var(--text2);min-width:75px; }
+.mini-bar { flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden; }
+.mini-fill { height:100%;border-radius:2px; }
+.tip { display:flex;gap:0.5rem;font-size:0.76rem;padding:0.55rem 0.7rem;border-radius:8px;background:var(--bg);margin-bottom:0.45rem; }
+.tip strong { font-weight:700; }
+
+/* WIDGET PREVIEWS */
+.w-section-title { font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text2);font-weight:700;margin-bottom:0.75rem; }
+.widgets-scroll { display:flex;gap:0.75rem;overflow-x:auto;padding-bottom:0.5rem;scrollbar-width:none; }
+.widgets-scroll::-webkit-scrollbar { display:none; }
+.w-card { flex-shrink:0;border-radius:20px;overflow:hidden;position:relative; }
+.ws { width:150px;height:150px; }
+.wm { width:310px;height:150px; }
+.w-sched { background:var(--nav);padding:0.9rem;display:flex;flex-direction:column;height:100%; }
+.w-tasks { background:linear-gradient(135deg,var(--sage),#4A7C5A);padding:0.9rem;display:flex;flex-direction:column;height:100%; }
+.w-title { font-size:0.58rem;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem; }
+.w-logo { position:absolute;bottom:7px;right:9px;font-size:0.52rem;font-weight:700;color:rgba(255,255,255,0.3); }
+.w-ev { margin-bottom:0.4rem; }
+.w-ev-t { font-size:0.55rem;color:var(--orange);font-weight:700; }
+.w-ev-n { font-size:0.68rem;font-weight:700;color:white; }
+.w-ch { display:flex;align-items:center;gap:0.35rem;margin-bottom:0.3rem; }
+.w-chd { width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.5);flex-shrink:0; }
+.w-chn { font-size:0.65rem;color:white;font-weight:500; }
+.w-done { text-decoration:line-through;opacity:0.4; }
+
+/* INSTALL BANNER */
+.install-banner {
+  background: var(--nav);
+  border-radius: 14px;
+  padding: 0.9rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.ib-text { flex: 1; }
+.ib-title { font-size: 0.82rem; font-weight: 700; color: white; }
+.ib-sub { font-size: 0.68rem; color: rgba(255,255,255,0.4); margin-top: 1px; }
+.ib-btn { background: var(--orange); color: white; border: none; border-radius: 9px; padding: 0.42rem 0.75rem; font-size: 0.72rem; font-family: var(--font); font-weight: 700; cursor: pointer; white-space: nowrap; }
+.ib-x { background: none; border: none; color: rgba(255,255,255,0.3); cursor: pointer; font-size: 0.9rem; }
+
+/* ── FAMILY TIME ── */
+.sc-title { font-size: 1.3rem; font-weight: 800; color: var(--text); margin-bottom: 1.25rem; letter-spacing: -0.02em; }
+
+.cal-hdr { display:flex;align-items:center;justify-content:space-between;margin-bottom:0.85rem; }
+.cal-month { font-size:1rem;font-weight:800;color:var(--text); }
+.cal-nav { background:var(--card);border:none;border-radius:8px;width:30px;height:30px;font-size:1rem;cursor:pointer;color:var(--text);display:flex;align-items:center;justify-content:center; }
+.cal-days { display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px; }
+.cal-dl { text-align:center;font-size:0.6rem;font-weight:700;color:var(--text2);text-transform:uppercase; }
+.cal-grid { display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:1.25rem; }
+.cal-d { aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.78rem;cursor:pointer;transition:background 0.15s;color:var(--text);position:relative; }
+.cal-d:hover { background:var(--border); }
+.cal-d.today { background:var(--orange);color:white;font-weight:800; }
+.cal-d.hasevent::after { content:'';position:absolute;bottom:2px;width:3px;height:3px;border-radius:50%;background:var(--sage); }
+.cal-d.today.hasevent::after { background:white; }
+.cal-d.other { opacity:0.25; }
+
+.ev-card { background:var(--card);border-radius:14px;padding:0.85rem 1rem;display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:0.6rem;border-left:4px solid var(--clay); }
+.evc-t { font-size:0.68rem;color:var(--text2);white-space:nowrap; }
+.evc-n { font-size:0.88rem;font-weight:700;color:var(--text); }
+.evc-w { font-size:0.72rem;color:var(--text2); }
+.evc-flag { font-size:0.65rem;background:#FFF0EC;color:var(--alert);padding:2px 6px;border-radius:4px;font-weight:700;display:inline-block;margin-top:3px; }
+
+.fab { position:fixed;bottom:88px;right:18px;width:50px;height:50px;border-radius:50%;background:var(--orange);color:white;border:none;font-size:1.4rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(255,107,44,0.4);z-index:40;transition:transform 0.2s; }
+.fab:active { transform:scale(0.92); }
+
+/* ── TASKS ── */
+.filter-row { display:flex;gap:0.45rem;overflow-x:auto;padding-bottom:0.5rem;margin-bottom:1rem;scrollbar-width:none; }
+.filter-row::-webkit-scrollbar { display:none; }
+.f-chip { flex-shrink:0;border:1.5px solid var(--border);border-radius:20px;padding:0.3rem 0.8rem;font-size:0.75rem;font-family:var(--font);background:var(--card);color:var(--text);cursor:pointer;transition:all 0.15s;font-weight:600; }
+.f-chip.on { background:var(--orange);border-color:var(--orange);color:white; }
+
+.sec-title { font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text2);font-weight:700;margin:0.85rem 0 0.5rem; }
+
+.task-card { background:var(--card);border-radius:14px;padding:0.8rem 1rem;display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;cursor:pointer;transition:opacity 0.2s; }
+.task-card.done { opacity:0.5; }
+.t-ck { width:22px;height:22px;border-radius:50%;border:2px solid var(--sand);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.65rem;transition:all 0.2s; }
+.task-card.done .t-ck { background:var(--sage);border-color:var(--sage);color:white; }
+.task-card.done .t-nm { text-decoration:line-through; }
+.t-nm { font-size:0.86rem;font-weight:600;flex:1;color:var(--text); }
+.t-tag { font-size:0.65rem;color:white;border-radius:20px;padding:2px 8px;font-weight:700; }
+.t-due { font-size:0.68rem;color:var(--text2);margin-right:0.4rem; }
+
+/* ── SHOPPING ── */
+.shop-hero { background:var(--orange);border-radius:18px;padding:1.25rem;margin-bottom:1rem;color:white; }
+.sh-title { font-size:1rem;font-weight:800; }
+.sh-stats { display:flex;gap:1.5rem;margin-top:0.75rem; }
+.sh-num { font-size:1.4rem;font-weight:800; }
+.sh-lbl { font-size:0.68rem;opacity:0.75; }
+
+.shop-sec { margin-bottom:1.1rem; }
+.shop-sec-title { font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text2);font-weight:700;margin-bottom:0.5rem;padding:0 0.2rem; }
+
+.shop-item { background:var(--card);border-radius:12px;padding:0.7rem 0.9rem;display:flex;align-items:center;gap:0.7rem;margin-bottom:0.45rem;cursor:pointer;transition:opacity 0.2s; }
+.shop-item.checked { opacity:0.45; }
+.shop-item.checked .sh-nm { text-decoration:line-through; }
+.sh-ck { width:22px;height:22px;border-radius:50%;border:2px solid var(--sand);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.65rem;transition:all 0.2s; }
+.shop-item.checked .sh-ck { background:var(--sage);border-color:var(--sage);color:white; }
+.sh-img { width:36px;height:36px;border-radius:9px;object-fit:contain;background:white;padding:3px;flex-shrink:0; }
+.sh-emoji { width:36px;height:36px;border-radius:9px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0; }
+.sh-nm { font-size:0.86rem;font-weight:600;flex:1;color:var(--text); }
+.sh-by { font-size:0.68rem;color:var(--text2); }
+
+.add-item-btn { width:100%;background:var(--bg);border:1.5px dashed var(--sand);border-radius:12px;padding:0.65rem;font-size:0.82rem;color:var(--text2);cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:0.4rem;margin-top:0.5rem;transition:border-color 0.2s,color 0.2s; }
+.add-item-btn:hover { border-color:var(--orange);color:var(--orange); }
+
+/* ── MEMBERS ── */
+.fam-code-card { background:var(--nav);border-radius:18px;padding:1.1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem; }
+.fc-label { font-size:0.65rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.25rem; }
+.fc-code { font-size:1.7rem;font-weight:800;color:white;letter-spacing:0.18em; }
+.fc-btn { background:var(--orange);color:white;border:none;border-radius:10px;padding:0.45rem 0.85rem;font-size:0.75rem;font-family:var(--font);cursor:pointer;font-weight:700; }
+
+.members-grid { display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-bottom:1rem; }
+.m-card { background:var(--card);border-radius:18px;padding:1.1rem 0.85rem;display:flex;flex-direction:column;align-items:center;gap:0.45rem;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s; }
+.m-card:hover { transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.08); }
+.m-av-lg { width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:800;color:white;position:relative; }
+.m-online { position:absolute;bottom:2px;right:2px;width:11px;height:11px;border-radius:50%;background:var(--sage);border:2px solid var(--card); }
+.m-nm { font-size:0.88rem;font-weight:800;color:var(--text); }
+.m-role { font-size:0.68rem;color:var(--text2); }
+.m-tasks { font-size:0.7rem;color:var(--orange);font-weight:700; }
+.m-loc { font-size:0.65rem;color:var(--text2); }
+
+.m-stat-row { display:grid;grid-template-columns:repeat(3,1fr);gap:0.65rem;margin-bottom:1rem; }
+.m-stat { background:var(--bg);border-radius:12px;padding:0.7rem 0.4rem;text-align:center; }
+.m-stat-n { font-size:1.2rem;font-weight:800;color:var(--orange); }
+.m-stat-l { font-size:0.6rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.05em; }
+
+/* ── SETTINGS ── */
+.profile-card { background:var(--card);border-radius:16px;padding:1rem;display:flex;align-items:center;gap:0.85rem;margin-bottom:1.25rem;cursor:pointer; }
+.p-av { width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;color:white; }
+.p-nm { font-size:0.95rem;font-weight:800;color:var(--text); }
+.p-em { font-size:0.75rem;color:var(--text2); }
+.p-edit { margin-left:auto;font-size:0.75rem;color:var(--orange);font-weight:700; }
+
+.plan-card { background:linear-gradient(135deg,var(--orange),#C85520);border-radius:16px;padding:1rem 1.1rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem; }
+.pl-nm { font-size:0.95rem;font-weight:800;color:white; }
+.pl-sub { font-size:0.7rem;color:rgba(255,255,255,0.7);margin-top:2px; }
+.pl-btn { background:white;color:var(--orange);border:none;border-radius:10px;padding:0.45rem 0.85rem;font-size:0.75rem;font-family:var(--font);cursor:pointer;font-weight:800; }
+
+.set-sec { margin-bottom:1.4rem; }
+.set-sec-title { font-size:0.62rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text2);font-weight:700;margin-bottom:0.45rem;padding:0 0.2rem; }
+.set-group { background:var(--card);border-radius:16px;overflow:hidden; }
+.set-row { display:flex;align-items:center;padding:0.88rem 1rem;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.15s; }
+.set-row:last-child { border-bottom:none; }
+.set-row:hover { background:var(--bg); }
+.sr-icon { font-size:1rem;width:26px; }
+.sr-label { font-size:0.88rem;color:var(--text);flex:1; }
+.sr-val { font-size:0.78rem;color:var(--text2);margin-right:0.35rem; }
+.sr-arrow { color:var(--text2);font-size:0.72rem; }
+.sr-danger { color:var(--alert) !important; }
+
+.toggle { width:42px;height:24px;border-radius:12px;background:var(--border);position:relative;cursor:pointer;transition:background 0.2s;flex-shrink:0; }
+.toggle.on { background:var(--sage); }
+.t-thumb { position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:white;transition:transform 0.2s cubic-bezier(0.34,1.2,0.64,1);box-shadow:0 1px 4px rgba(0,0,0,0.2); }
+.toggle.on .t-thumb { transform:translateX(18px); }
+
+/* ── GROCERY SHEET ── */
+.overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;backdrop-filter:blur(2px); }
+.overlay.on { display:block; }
+
+.sheet { position:fixed;bottom:0;left:0;right:0;background:var(--card);border-radius:24px 24px 0 0;z-index:201;padding:1.1rem 1.25rem 2rem;max-height:88vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.34,1.1,0.64,1); }
+.sheet.on { transform:translateY(0); }
+.sh-handle { width:38px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 1rem; }
+.sh-title { font-size:1rem;font-weight:800;color:var(--text);margin-bottom:0.85rem;text-align:center; }
+
+.ss-wrap { display:flex;gap:0.55rem;margin-bottom:0.85rem; }
+.ac-wrap { position:relative;flex:1; }
+.ss-input { width:100%;border:2px solid var(--border);border-radius:12px;padding:0.65rem 1rem;font-size:0.9rem;font-family:var(--font);background:var(--bg);color:var(--text);outline:none;transition:border-color 0.2s; }
+.ss-input:focus { border-color:var(--orange); }
+.ss-btn { background:var(--orange);color:white;border:none;border-radius:12px;padding:0 1rem;font-size:0.86rem;cursor:pointer;font-family:var(--font);font-weight:700; }
+
+.ac-drop { display:none;position:absolute;top:calc(100% + 5px);left:0;right:0;background:var(--card);border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,0.15);overflow:hidden;z-index:300;border:1.5px solid var(--border); }
+.ac-drop.on { display:block; }
+.ac-item { display:flex;align-items:center;gap:0.7rem;padding:0.6rem 1rem;cursor:pointer;font-size:0.83rem;color:var(--text);border-bottom:1px solid var(--border);transition:background 0.15s; }
+.ac-item:last-child { border-bottom:none; }
+.ac-item:hover { background:var(--bg); }
+.ac-em { font-size:0.95rem;width:20px;text-align:center; }
+.ac-nm { font-weight:600; }
+.ac-br { font-size:0.65rem;color:var(--text2); }
+.ac-hi { color:var(--orange); }
+
+.chips { display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.85rem; }
+.chip { background:var(--bg);border:1.5px solid var(--border);border-radius:20px;padding:0.28rem 0.68rem;font-size:0.72rem;color:var(--text);cursor:pointer;font-family:var(--font);transition:all 0.15s;font-weight:600; }
+.chip:hover { border-color:var(--orange);color:var(--orange); }
+
+.results-grid { overflow-y:auto;flex:1;display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;padding-bottom:0.25rem; }
+.r-card { background:var(--bg);border-radius:14px;padding:0.7rem;display:flex;flex-direction:column;align-items:center;gap:0.4rem;cursor:pointer;border:2px solid transparent;transition:border-color 0.15s,transform 0.15s; }
+.r-card:hover { border-color:var(--orange);transform:translateY(-2px); }
+.r-card.sel { border-color:var(--sage);background:#EEF6F1; }
+.r-img { width:70px;height:70px;object-fit:contain;border-radius:10px;background:white;padding:4px; }
+.r-ph { width:70px;height:70px;border-radius:10px;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:1.7rem; }
+.r-nm { font-size:0.72rem;font-weight:700;text-align:center;color:var(--text);line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden; }
+.r-br { font-size:0.62rem;color:var(--text2);text-align:center; }
+.r-badge { display:none;font-size:0.62rem;background:var(--sage);color:white;border-radius:20px;padding:2px 7px;font-weight:700; }
+.r-card.sel .r-badge { display:block; }
+.sh-empty { grid-column:span 2;text-align:center;color:var(--text2);font-size:0.83rem;padding:2rem; }
+.sh-loading { grid-column:span 2;text-align:center;color:var(--text2);font-size:0.83rem;padding:2rem;display:flex;flex-direction:column;align-items:center;gap:0.7rem; }
+.spinner { width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--orange);border-radius:50%;animation:spin 0.7s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+.sh-confirm { background:var(--orange);color:white;border:none;border-radius:14px;padding:0.85rem;width:100%;font-size:0.92rem;font-weight:800;font-family:var(--font);cursor:pointer;margin-top:0.65rem;transition:background 0.2s; }
+.sh-confirm:disabled { background:var(--border);cursor:default;color:var(--text2); }
+
+/* INSTALL SHEET */
+.install-step { background:var(--bg);border-radius:14px;padding:0.85rem 1rem;display:flex;gap:0.75rem;align-items:flex-start;margin-bottom:0.65rem; }
+.i-num { width:26px;height:26px;background:var(--orange);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:0.78rem;flex-shrink:0; }
+.i-head { font-weight:700;color:var(--text);font-size:0.85rem;margin-bottom:0.2rem; }
+.i-body { font-size:0.78rem;color:var(--text2);line-height:1.5; }
+
+/* MEMBER SHEET */
+.ms-hdr { display:flex;align-items:center;gap:0.85rem;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border); }
+.ms-av { width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;color:white; }
+.ms-nm { font-size:1rem;font-weight:800;color:var(--text); }
+.ms-role { font-size:0.75rem;color:var(--text2); }
+.ms-email { font-size:0.72rem;color:var(--orange);margin-top:2px; }
+.ms-x { margin-left:auto;background:var(--bg);border:none;border-radius:8px;padding:0.28rem 0.55rem;cursor:pointer;color:var(--text2);font-size:0.85rem; }
+
+/* TOAST */
+.toast { position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--nav);color:white;padding:0.6rem 1.2rem;border-radius:20px;font-size:0.78rem;font-weight:600;opacity:0;transition:all 0.3s;z-index:999;white-space:nowrap;pointer-events:none; }
+.toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
+
+/* UTIL */
+@keyframes fadeUp { from { opacity:0;transform:translateY(10px); } to { opacity:1;transform:translateY(0); } }
+.fu { animation:fadeUp 0.4s ease both; }
 </style>
 </head>
 <body>
+<div id="app">
 
-<header>
-  <div class="logo">Nest<span>Sync</span></div>
-  <div class="header-right">
-    <span class="date-chip">Mon · Feb 23</span>
-    <div class="avatar-stack">
-      <div class="avatar av1" title="Sarah">S</div>
-      <div class="avatar av2" title="Marcus">M</div>
-      <div class="avatar av3" title="Lily">L</div>
-      <div class="avatar av4" title="Jake">J</div>
-    </div>
-  </div>
-</header>
-
-<main class="main-content-pad">
-  <div class="greeting">
-    <h1>Good morning, <em>Thompson family.</em></h1>
-    <p>You have 6 events today · 4 chores pending · 3 items needed</p>
-  </div>
-
-  <div class="alert-banner" id="alertBanner">
-    <span class="alert-icon">⚡</span>
-    <div><strong>Schedule conflict:</strong> Lily's soccer practice overlaps with Jake's dentist at 4:00 PM — someone needs to adjust.</div>
-    <button class="alert-dismiss" onclick="document.getElementById('alertBanner').style.display='none'">Dismiss</button>
-  </div>
-
-  <div class="dashboard-grid">
-
-    <!-- SCHEDULE -->
-    <div class="card card-wide">
-      <div class="card-header">
-        <div class="card-title">
-          <div class="card-icon icon-clay">📅</div>
-          Today's Schedule
-        </div>
-        <button class="card-action">+ Add Event</button>
-      </div>
-      <div class="schedule-list">
-        <div class="event">
-          <span class="event-time">8:00a</span>
-          <div class="event-bar bar-clay"></div>
-          <div class="event-info">
-            <div class="event-name">School drop-off</div>
-            <div class="event-who">Marcus · Lily, Jake</div>
-          </div>
-        </div>
-        <div class="event">
-          <span class="event-time">9:30a</span>
-          <div class="event-bar bar-sage"></div>
-          <div class="event-info">
-            <div class="event-name">Sarah's team standup</div>
-            <div class="event-who">Sarah · Work</div>
-          </div>
-        </div>
-        <div class="event">
-          <span class="event-time">3:30p</span>
-          <div class="event-bar bar-dusk"></div>
-          <div class="event-info">
-            <div class="event-name">School pickup</div>
-            <div class="event-who">Sarah · Lily, Jake</div>
-          </div>
-        </div>
-        <div class="event">
-          <span class="event-time">4:00p</span>
-          <div class="event-bar bar-alert"></div>
-          <div class="event-info">
-            <div class="event-name">Lily — Soccer Practice</div>
-            <div class="event-who">Riverside Field</div>
-            <div class="event-conflict">⚠ Conflicts with Jake's dentist</div>
-          </div>
-        </div>
-        <div class="event">
-          <span class="event-time">4:00p</span>
-          <div class="event-bar bar-alert"></div>
-          <div class="event-info">
-            <div class="event-name">Jake — Dentist Appt.</div>
-            <div class="event-who">Dr. Kim · Elm St. Dental</div>
-            <div class="event-conflict">⚠ Conflicts with Lily's soccer</div>
-          </div>
-        </div>
-        <div class="event">
-          <span class="event-time">6:30p</span>
-          <div class="event-bar bar-clay"></div>
-          <div class="event-info">
-            <div class="event-name">Family dinner</div>
-            <div class="event-who">Everyone · Home</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- CHORES -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">
-          <div class="card-icon icon-sage">🧹</div>
-          Chores
-        </div>
-        <button class="card-action">Assign</button>
-      </div>
-      <div class="chore-list" id="choreList">
-        <div class="chore-item done" onclick="toggleChore(this)">
-          <div class="chore-check">✓</div>
-          <span class="chore-name">Unload dishwasher</span>
-          <span class="chore-assignee">Lily</span>
-        </div>
-        <div class="chore-item" onclick="toggleChore(this)">
-          <div class="chore-check"></div>
-          <span class="chore-name">Take out trash</span>
-          <span class="chore-assignee">Jake</span>
-        </div>
-        <div class="chore-item" onclick="toggleChore(this)">
-          <div class="chore-check"></div>
-          <span class="chore-name">Vacuum living room</span>
-          <span class="chore-assignee">Marcus</span>
-        </div>
-        <div class="chore-item done" onclick="toggleChore(this)">
-          <div class="chore-check">✓</div>
-          <span class="chore-name">Laundry — start wash</span>
-          <span class="chore-assignee">Sarah</span>
-        </div>
-        <div class="chore-item" onclick="toggleChore(this)">
-          <div class="chore-check"></div>
-          <span class="chore-name">Wipe kitchen counters</span>
-          <span class="chore-assignee">Jake</span>
-        </div>
-      </div>
-      <div class="chore-progress">
-        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 40%"></div></div>
-        <span class="progress-label" id="progressLabel">2 of 5 done</span>
-      </div>
-    </div>
-
-    <!-- GROCERY -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">
-          <div class="card-icon icon-sand">🛒</div>
-          Grocery List
-        </div>
-        <button class="card-action">Share</button>
-      </div>
-      <div class="grocery-list" id="groceryList">
-        <div class="grocery-section-label">Produce</div>
-        <div class="grocery-item" onclick="toggleGrocery(this)">
-          <div class="grocery-dot dot-sage"></div>
-          Bananas
-          <span class="grocery-count">Added by Sarah</span>
-        </div>
-        <div class="grocery-item" onclick="toggleGrocery(this)">
-          <div class="grocery-dot dot-sage"></div>
-          Spinach
-          <span class="grocery-count">Added by Marcus</span>
-        </div>
-        <div class="grocery-section-label">Dairy & Eggs</div>
-        <div class="grocery-item" onclick="toggleGrocery(this)">
-          <div class="grocery-dot dot-dusk"></div>
-          Whole milk (1 gal)
-          <span class="grocery-count">Added by Sarah</span>
-        </div>
-        <div class="grocery-item checked" onclick="toggleGrocery(this)">
-          <div class="grocery-dot dot-dusk"></div>
-          Greek yogurt
-          <span class="grocery-count">✓ Got it</span>
-        </div>
-        <div class="grocery-section-label">Pantry</div>
-        <div class="grocery-item" onclick="toggleGrocery(this)">
-          <div class="grocery-dot dot-clay"></div>
-          Olive oil
-          <span class="grocery-count">Added by Marcus</span>
-        </div>
-      </div>
-      <button class="add-grocery" onclick="openItemSearch()">+ Add item</button>
-    </div>
-
-    <!-- LOCATION -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">
-          <div class="card-icon icon-sage">📍</div>
-          Family Location
-        </div>
-        <button class="card-action">Privacy</button>
-      </div>
-      <div class="location-map">
-        <div class="map-grid"></div>
-        <div class="map-road-h"></div>
-        <div class="map-road-v"></div>
-        <div class="map-pin pin-home">
-          <div class="pin-bubble home"><span>🏠</span></div>
-        </div>
-        <div class="map-pin pin-mom">
-          <div class="pin-bubble mom-pin"><span>S</span></div>
-          <div class="pin-label">Sarah</div>
-        </div>
-        <div class="map-pin pin-kid">
-          <div class="pin-bubble kid-pin"><span>L</span></div>
-          <div class="pin-label">Lily</div>
-        </div>
-      </div>
-      <div class="location-list">
-        <div class="location-item">
-          <div class="loc-dot" style="background: var(--clay)"></div>
-          <span class="loc-name">Sarah</span>
-          <span class="loc-place">Downtown Office</span>
-          <span class="loc-time">12m ago</span>
-        </div>
-        <div class="location-item">
-          <div class="loc-dot" style="background: var(--sage)"></div>
-          <span class="loc-name">Marcus</span>
-          <span class="loc-place">Home</span>
-          <span class="loc-time">Now</span>
-        </div>
-        <div class="location-item">
-          <div class="loc-dot" style="background: var(--dusk)"></div>
-          <span class="loc-name">Lily</span>
-          <span class="loc-place">Lincoln Middle School</span>
-          <span class="loc-time">Now</span>
-        </div>
-        <div class="location-item">
-          <div class="loc-dot" style="background: var(--sand)"></div>
-          <span class="loc-name">Jake</span>
-          <span class="loc-place">Lincoln Middle School</span>
-          <span class="loc-time">Now</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- INSIGHTS -->
-    <div class="card card-wide">
-      <div class="card-header">
-        <div class="card-title">
-          <div class="card-icon icon-dusk">✨</div>
-          Family Harmony Score
-        </div>
-        <button class="card-action">This week →</button>
-      </div>
-      <div class="insight-score">
-        <div class="score-ring">
-          <svg viewBox="0 0 72 72">
-            <circle class="ring-bg" cx="36" cy="36" r="30"/>
-            <circle class="ring-fill" cx="36" cy="36" r="30"/>
-          </svg>
-          <div class="score-number">
-            <span class="score-num">75</span>
-            <span class="score-label">/ 100</span>
-          </div>
-        </div>
-        <div class="score-details">
-          <div class="score-title">Good week — one conflict to resolve</div>
-          <div class="score-breakdown">
-            <div class="breakdown-row">
-              <span class="breakdown-label">Chores</span>
-              <div class="mini-bar"><div class="mini-fill" style="width: 80%; background: var(--sage)"></div></div>
-              <span>80%</span>
-            </div>
-            <div class="breakdown-row">
-              <span class="breakdown-label">Communication</span>
-              <div class="mini-bar"><div class="mini-fill" style="width: 70%; background: var(--dusk)"></div></div>
-              <span>70%</span>
-            </div>
-            <div class="breakdown-row">
-              <span class="breakdown-label">Schedule sync</span>
-              <div class="mini-bar"><div class="mini-fill" style="width: 65%; background: var(--clay)"></div></div>
-              <span>65%</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="insight-tips">
-        <div class="tip">
-          <span class="tip-icon">💡</span>
-          <div class="tip-text"><strong>AI Tip:</strong> Jake and Lily have a schedule conflict at 4 PM today. Consider moving Jake's dentist appointment to Thursday at 3 PM — it's open on your calendar.</div>
-        </div>
-        <div class="tip">
-          <span class="tip-icon">🛒</span>
-          <div class="tip-text"><strong>Grocery reminder:</strong> Marcus passes Whole Foods on the way home. 5 items on the list could be grabbed today.</div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</main>
-
-<nav>
-  <div class="nav-item active">
-    <span class="nav-icon">🏠</span>
-    <span class="nav-label">Dashboard</span>
-    <div class="nav-dot"></div>
-  </div>
-  <div class="nav-item" onclick="setNav(this)">
-    <span class="nav-icon">📅</span>
-    <span class="nav-label">Family Time</span>
-    <div class="nav-dot"></div>
-  </div>
-  <div class="nav-item" onclick="setNav(this)">
-    <span class="nav-icon">🧹</span>
-    <span class="nav-label">Tasks</span>
-    <div class="nav-dot"></div>
-  </div>
-  <div class="nav-item" onclick="setNav(this)">
-    <span class="nav-icon">🛒</span>
-    <span class="nav-label">Shopping</span>
-    <div class="nav-dot"></div>
-  </div>
-  <div class="nav-item" onclick="setNav(this)">
-    <span class="nav-icon">👤</span>
-    <span class="nav-label">Members</span>
-    <div class="nav-dot"></div>
-  </div>
-</nav>
-
-<script>
-  function toggleChore(el) {
-    el.classList.toggle('done');
-    const check = el.querySelector('.chore-check');
-    check.textContent = el.classList.contains('done') ? '✓' : '';
-    updateProgress();
-  }
-
-  function updateProgress() {
-    const items = document.querySelectorAll('.chore-item');
-    const done = document.querySelectorAll('.chore-item.done').length;
-    const pct = Math.round((done / items.length) * 100);
-    document.getElementById('progressFill').style.width = pct + '%';
-    document.getElementById('progressLabel').textContent = `${done} of ${items.length} done`;
-  }
-
-  function toggleGrocery(el) {
-    el.classList.toggle('checked');
-    const count = el.querySelector('.grocery-count');
-    if (el.classList.contains('checked')) {
-      count.textContent = '✓ Got it';
-    } else {
-      count.textContent = 'Added';
-    }
-  }
-
-  let selectedProduct = null;
-
-  function openItemSearch() {
-    document.getElementById('sheetOverlay').classList.add('open');
-    document.getElementById('itemSheet').classList.add('open');
-    setTimeout(() => document.getElementById('sheetSearch').focus(), 350);
-  }
-
-  function closeItemSearch() {
-    document.getElementById('sheetOverlay').classList.remove('open');
-    document.getElementById('itemSheet').classList.remove('open');
-    selectedProduct = null;
-    document.getElementById('sheetSearch').value = '';
-    document.getElementById('sheetResults').innerHTML = '<div class="sheet-empty">Search above or tap a suggestion to find products 🛒</div>';
-    document.getElementById('sheetConfirm').disabled = true;
-    document.getElementById('sheetSuggestions').style.display = 'flex';
-  }
-
-  function quickSearch(term) {
-    document.getElementById('sheetSearch').value = term;
-    searchItems();
-  }
-
-  // Local grocery product database with Unsplash photos
-  const PRODUCTS = [
-    // Dairy
-    { id: 1, product_name: "Whole Milk", brands: "Organic Valley", category: "dairy", emoji: "🥛", img: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=200&q=80" },
-    { id: 2, product_name: "2% Reduced Fat Milk", brands: "Horizon Organic", category: "dairy", emoji: "🥛", img: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=200&q=80" },
-    { id: 3, product_name: "Greek Yogurt", brands: "Chobani", category: "dairy", emoji: "🫙", img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=200&q=80" },
-    { id: 4, product_name: "Vanilla Greek Yogurt", brands: "Fage", category: "dairy", emoji: "🫙", img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=200&q=80" },
-    { id: 5, product_name: "Cheddar Cheese Block", brands: "Tillamook", category: "dairy", emoji: "🧀", img: "https://images.unsplash.com/photo-1618164436241-4473940d1f5c?w=200&q=80" },
-    { id: 6, product_name: "Shredded Mozzarella", brands: "Kraft", category: "dairy", emoji: "🧀", img: "https://images.unsplash.com/photo-1618164436241-4473940d1f5c?w=200&q=80" },
-    { id: 7, product_name: "Salted Butter", brands: "Land O Lakes", category: "dairy", emoji: "🧈", img: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=200&q=80" },
-    { id: 8, product_name: "Unsalted Butter", brands: "Kerrygold", category: "dairy", emoji: "🧈", img: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=200&q=80" },
-    { id: 9, product_name: "Cream Cheese", brands: "Philadelphia", category: "dairy", emoji: "🧀", img: "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=200&q=80" },
-    { id: 10, product_name: "Almond Milk", brands: "Califia Farms", category: "dairy", emoji: "🥛", img: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=200&q=80" },
-    // Eggs
-    { id: 11, product_name: "Large White Eggs (12ct)", brands: "Happy Egg Co", category: "eggs", emoji: "🥚", img: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=200&q=80" },
-    { id: 12, product_name: "Free Range Brown Eggs", brands: "Pete & Gerry's", category: "eggs", emoji: "🥚", img: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=200&q=80" },
-    { id: 13, product_name: "Organic Eggs (18ct)", brands: "Vital Farms", category: "eggs", emoji: "🥚", img: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=200&q=80" },
-    // Produce
-    { id: 14, product_name: "Bananas", brands: "Chiquita", category: "produce", emoji: "🍌", img: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=200&q=80" },
-    { id: 15, product_name: "Baby Spinach", brands: "Earthbound Farm", category: "produce", emoji: "🥬", img: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=200&q=80" },
-    { id: 16, product_name: "Romaine Lettuce", brands: "Fresh Express", category: "produce", emoji: "🥬", img: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=200&q=80" },
-    { id: 17, product_name: "Roma Tomatoes", brands: "Local Farm", category: "produce", emoji: "🍅", img: "https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=200&q=80" },
-    { id: 18, product_name: "Cherry Tomatoes", brands: "Sunset", category: "produce", emoji: "🍅", img: "https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=200&q=80" },
-    { id: 19, product_name: "Honeycrisp Apples", brands: "Stemilt", category: "produce", emoji: "🍎", img: "https://images.unsplash.com/photo-1570913149827-d2ac84ab3f9a?w=200&q=80" },
-    { id: 20, product_name: "Gala Apples (3lb bag)", brands: "Rainier Fruit", category: "produce", emoji: "🍎", img: "https://images.unsplash.com/photo-1570913149827-d2ac84ab3f9a?w=200&q=80" },
-    { id: 21, product_name: "Strawberries (1lb)", brands: "Driscoll's", category: "produce", emoji: "🍓", img: "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=200&q=80" },
-    { id: 22, product_name: "Blueberries", brands: "Driscoll's", category: "produce", emoji: "🫐", img: "https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=200&q=80" },
-    { id: 23, product_name: "Broccoli Crown", brands: "Local Farm", category: "produce", emoji: "🥦", img: "https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?w=200&q=80" },
-    { id: 24, product_name: "Baby Carrots", brands: "Bolthouse Farms", category: "produce", emoji: "🥕", img: "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=200&q=80" },
-    { id: 25, product_name: "Avocados (4ct)", brands: "Hass", category: "produce", emoji: "🥑", img: "https://images.unsplash.com/photo-1519162808019-7de1683fa2ad?w=200&q=80" },
-    { id: 26, product_name: "Lemons (3ct)", brands: "Local Farm", category: "produce", emoji: "🍋", img: "https://images.unsplash.com/photo-1587486913049-53fc88980cfc?w=200&q=80" },
-    { id: 27, product_name: "Oranges (4lb bag)", brands: "Sunkist", category: "produce", emoji: "🍊", img: "https://images.unsplash.com/photo-1547514701-42782101795e?w=200&q=80" },
-    // Bread & Bakery
-    { id: 28, product_name: "Sourdough Bread Loaf", brands: "Dave's Killer Bread", category: "bread", emoji: "🍞", img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200&q=80" },
-    { id: 29, product_name: "Whole Wheat Bread", brands: "Arnold", category: "bread", emoji: "🍞", img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200&q=80" },
-    { id: 30, product_name: "Everything Bagels (6ct)", brands: "Thomas'", category: "bread", emoji: "🥯", img: "https://images.unsplash.com/photo-1585378606295-da76a64a4a6a?w=200&q=80" },
-    { id: 31, product_name: "Plain Bagels (6ct)", brands: "Thomas'", category: "bread", emoji: "🥯", img: "https://images.unsplash.com/photo-1585378606295-da76a64a4a6a?w=200&q=80" },
-    { id: 32, product_name: "Flour Tortillas (10ct)", brands: "Mission", category: "bread", emoji: "🫓", img: "https://images.unsplash.com/photo-1584278860047-22db9ff82bed?w=200&q=80" },
-    // Meat & Protein
-    { id: 33, product_name: "Boneless Chicken Breast", brands: "Perdue", category: "meat", emoji: "🍗", img: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=200&q=80" },
-    { id: 34, product_name: "Ground Beef 80/20 (1lb)", brands: "Local Butcher", category: "meat", emoji: "🥩", img: "https://images.unsplash.com/photo-1602470520998-f4a52199a3d6?w=200&q=80" },
-    { id: 35, product_name: "Salmon Fillet", brands: "Wild Planet", category: "meat", emoji: "🐟", img: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=200&q=80" },
-    { id: 36, product_name: "Bacon (12oz)", brands: "Applegate", category: "meat", emoji: "🥓", img: "https://images.unsplash.com/photo-1528607929212-2636ec44253e?w=200&q=80" },
-    // Pantry
-    { id: 37, product_name: "Extra Virgin Olive Oil", brands: "California Olive Ranch", category: "pantry", emoji: "🫙", img: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=200&q=80" },
-    { id: 38, product_name: "Penne Pasta (1lb)", brands: "Barilla", category: "pantry", emoji: "🍝", img: "https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=200&q=80" },
-    { id: 39, product_name: "Spaghetti (1lb)", brands: "Barilla", category: "pantry", emoji: "🍝", img: "https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=200&q=80" },
-    { id: 40, product_name: "Jasmine Rice (5lb)", brands: "Lundberg", category: "pantry", emoji: "🍚", img: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=200&q=80" },
-    { id: 41, product_name: "Rolled Oats", brands: "Bob's Red Mill", category: "pantry", emoji: "🥣", img: "https://images.unsplash.com/photo-1614961233913-a5113a4a34ed?w=200&q=80" },
-    { id: 42, product_name: "Chicken Broth (32oz)", brands: "Swanson", category: "pantry", emoji: "🫙", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=200&q=80" },
-    { id: 43, product_name: "Diced Tomatoes (can)", brands: "Muir Glen", category: "pantry", emoji: "🍅", img: "https://images.unsplash.com/photo-1561136594-7f68413baa99?w=200&q=80" },
-    { id: 44, product_name: "Black Beans (can)", brands: "Bush's", category: "pantry", emoji: "🫘", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=200&q=80" },
-    { id: 45, product_name: "Peanut Butter (creamy)", brands: "Jif", category: "pantry", emoji: "🥜", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=200&q=80" },
-    { id: 46, product_name: "Strawberry Jam", brands: "Smucker's", category: "pantry", emoji: "🍓", img: "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=200&q=80" },
-    { id: 47, product_name: "Honey (12oz)", brands: "Nature Nate's", category: "pantry", emoji: "🍯", img: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=200&q=80" },
-    { id: 48, product_name: "All-Purpose Flour (5lb)", brands: "King Arthur", category: "pantry", emoji: "🌾", img: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=200&q=80" },
-    // Beverages
-    { id: 49, product_name: "Orange Juice (52oz)", brands: "Tropicana", category: "beverages", emoji: "🍊", img: "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=200&q=80" },
-    { id: 50, product_name: "Apple Juice (64oz)", brands: "Mott's", category: "beverages", emoji: "🍎", img: "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=200&q=80" },
-    { id: 51, product_name: "Sparkling Water (12pk)", brands: "LaCroix", category: "beverages", emoji: "💧", img: "https://images.unsplash.com/photo-1622543925917-763c34d1a86e?w=200&q=80" },
-    { id: 52, product_name: "Ground Coffee (12oz)", brands: "Peet's", category: "beverages", emoji: "☕", img: "https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=200&q=80" },
-    { id: 53, product_name: "Cold Brew Coffee", brands: "Chameleon", category: "beverages", emoji: "☕", img: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=200&q=80" },
-    // Snacks
-    { id: 54, product_name: "Tortilla Chips", brands: "Tostitos", category: "snacks", emoji: "🌮", img: "https://images.unsplash.com/photo-1600952841320-db92ec4047ca?w=200&q=80" },
-    { id: 55, product_name: "Salsa (16oz)", brands: "Pace", category: "snacks", emoji: "🍅", img: "https://images.unsplash.com/photo-1561136594-7f68413baa99?w=200&q=80" },
-    { id: 56, product_name: "Mixed Nuts (10oz)", brands: "Planters", category: "snacks", emoji: "🥜", img: "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=200&q=80" },
-    { id: 57, product_name: "Dark Chocolate Bar", brands: "Lindt", category: "snacks", emoji: "🍫", img: "https://images.unsplash.com/photo-1481391319762-47dff72954d9?w=200&q=80" },
-    { id: 58, product_name: "Granola Bars (6ct)", brands: "KIND", category: "snacks", emoji: "🥜", img: "https://images.unsplash.com/photo-1505252585461-04db1eb84625?w=200&q=80" },
-    // Frozen
-    { id: 59, product_name: "Frozen Broccoli (12oz)", brands: "Birds Eye", category: "frozen", emoji: "🥦", img: "https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?w=200&q=80" },
-    { id: 60, product_name: "Vanilla Ice Cream (48oz)", brands: "Häagen-Dazs", category: "frozen", emoji: "🍦", img: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=200&q=80" },
-    { id: 61, product_name: "Frozen Pizza", brands: "Amy's", category: "frozen", emoji: "🍕", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200&q=80" },
-  ];
-
-  function searchLocal(query) {
-    const q = query.toLowerCase().trim();
-    if (!q) return [];
-    return PRODUCTS.filter(p =>
-      p.product_name.toLowerCase().includes(q) ||
-      p.brands.toLowerCase().includes(q) ||
-      p.category.toLowerCase().includes(q) ||
-      p.emoji === q
-    );
-  }
-
-  async function searchItems() {
-    const query = document.getElementById('sheetSearch').value.trim();
-    if (!query) return;
-    document.getElementById('sheetSuggestions').style.display = 'none';
-    const results = document.getElementById('sheetResults');
-    results.innerHTML = '<div class="sheet-loading"><div class="spinner"></div>Finding products...</div>';
-    selectedProduct = null;
-    document.getElementById('sheetConfirm').disabled = true;
-    document.getElementById('sheetConfirm').textContent = 'Add to List';
-
-    // Try Open Food Facts API first, fall back to local DB
-    try {
-      const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=12&fields=id,product_name,brands,image_front_small_url`;
-      const res = await fetch(url);
-      const data = await res.json();
-      const apiProducts = (data.products || []).filter(p => p.product_name && p.product_name.trim() && p.image_front_small_url);
-
-      if (apiProducts.length) {
-        results.innerHTML = '';
-        apiProducts.slice(0, 8).forEach(p => {
-          const product = { product_name: p.product_name, brands: p.brands || '', img: p.image_front_small_url, emoji: getEmoji(query) };
-          const card = document.createElement('div');
-          card.className = 'result-card';
-          card.innerHTML = `
-            <img class="result-img" src="${product.img}" alt="${product.product_name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="result-img-placeholder" style="display:none">${product.emoji}</div>
-            <div class="result-name">${product.product_name}</div>
-            ${product.brands ? `<div class="result-brand">${product.brands.split(',')[0]}</div>` : ''}
-            <div class="result-add-badge">✓ Selected</div>
-          `;
-          card.onclick = () => selectProduct(card, product);
-          results.appendChild(card);
-        });
-        return;
-      }
-    } catch(e) {
-      // API unavailable — fall through to local
-    }
-
-    // Fallback: local database
-    await new Promise(r => setTimeout(r, 200));
-    const found = searchLocal(query);
-
-    if (!found.length) {
-      results.innerHTML = `<div class="sheet-empty">No products found for "<strong>${query}</strong>".<br><br>Try: milk, eggs, bread, chicken, pasta, yogurt...</div>`;
-      return;
-    }
-
-    results.innerHTML = '';
-    found.slice(0, 8).forEach(p => {
-      const card = document.createElement('div');
-      card.className = 'result-card';
-      card.innerHTML = `
-        <img class="result-img" src="${p.img}" alt="${p.product_name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="result-img-placeholder" style="display:none">${p.emoji}</div>
-        <div class="result-name">${p.product_name}</div>
-        <div class="result-brand">${p.brands}</div>
-        <div class="result-add-badge">✓ Selected</div>
-      `;
-      card.onclick = () => selectProduct(card, p);
-      results.appendChild(card);
-    });
-  }
-
-  function selectProduct(card, product) {
-    document.querySelectorAll('.result-card').forEach(c => c.classList.remove('selected'));
-    card.classList.add('selected');
-    selectedProduct = product;
-    document.getElementById('sheetConfirm').disabled = false;
-    document.getElementById('sheetConfirm').textContent = `Add "${product.product_name}" to list`;
-  }
-
-  function confirmAdd() {
-    if (!selectedProduct) return;
-    const list = document.getElementById('groceryList');
-    const item = document.createElement('div');
-    item.className = 'grocery-item';
-    item.onclick = function() { toggleGrocery(this); };
-    const imgHtml = `<img class="grocery-item-img" src="${selectedProduct.img}" alt="${selectedProduct.product_name}" onerror="this.style.display='none'">`;
-    item.innerHTML = `${imgHtml}<span style="flex:1;font-size:0.85rem;font-weight:500">${selectedProduct.product_name}</span><span class="grocery-count">Added by you</span>`;
-    list.appendChild(item);
-    closeItemSearch();
-  }
-
-  function getEmoji(term) {
-    const t = term.toLowerCase();
-    if (t.includes('milk')) return '🥛';
-    if (t.includes('egg')) return '🥚';
-    if (t.includes('bread')) return '🍞';
-    if (t.includes('banana')) return '🍌';
-    if (t.includes('chicken')) return '🍗';
-    if (t.includes('juice') || t.includes('orange')) return '🍊';
-    if (t.includes('pasta') || t.includes('noodle')) return '🍝';
-    if (t.includes('butter')) return '🧈';
-    if (t.includes('cheese')) return '🧀';
-    if (t.includes('apple')) return '🍎';
-    if (t.includes('tomato')) return '🍅';
-    if (t.includes('water')) return '💧';
-    if (t.includes('coffee')) return '☕';
-    if (t.includes('cereal') || t.includes('oat')) return '🥣';
-    return '🛒';
-  }
-
-  function setNav(el) {
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    el.classList.add('active');
-  }
-</script>
-
-<!-- ITEM SEARCH SHEET -->
-<div class="sheet-overlay" id="sheetOverlay" onclick="closeItemSearch()"></div>
-<div class="item-sheet" id="itemSheet">
-  <div class="sheet-handle"></div>
-  <div class="sheet-title">Add Grocery Item</div>
-  <div class="sheet-search-wrap">
-    <input class="sheet-search" id="sheetSearch" placeholder="Search for an item..." onkeydown="if(event.key==='Enter') searchItems()">
-    <button class="sheet-search-btn" onclick="searchItems()">Search</button>
-  </div>
-  <div class="sheet-suggestions" id="sheetSuggestions">
-    <button class="suggestion-chip" onclick="quickSearch('milk')">🥛 Milk</button>
-    <button class="suggestion-chip" onclick="quickSearch('eggs')">🥚 Eggs</button>
-    <button class="suggestion-chip" onclick="quickSearch('bread')">🍞 Bread</button>
-    <button class="suggestion-chip" onclick="quickSearch('banana')">🍌 Bananas</button>
-    <button class="suggestion-chip" onclick="quickSearch('chicken')">🍗 Chicken</button>
-    <button class="suggestion-chip" onclick="quickSearch('orange juice')">🍊 OJ</button>
-    <button class="suggestion-chip" onclick="quickSearch('pasta')">🍝 Pasta</button>
-    <button class="suggestion-chip" onclick="quickSearch('butter')">🧈 Butter</button>
-  </div>
-  <div class="sheet-results" id="sheetResults">
-    <div class="sheet-empty">Search above or tap a suggestion to find products 🛒</div>
-  </div>
-  <button class="sheet-confirm" id="sheetConfirm" disabled onclick="confirmAdd()">Add to List</button>
+<!-- SPLASH -->
+<div class="screen" id="splash" style="position:absolute;inset:0;display:flex;flex-direction:column;">
+  <div class="splash-wordmark"><span class="w">Nest</span><span class="o">Sync</span></div>
+  <div class="splash-tag">The Family Operating System</div>
+  <div class="splash-loader"><div class="splash-loader-fill"></div></div>
 </div>
 
+<!-- ONBOARDING -->
+<div class="screen" id="onboarding" style="display:none;">
+  <div class="ob-top">
+    <div class="ob-steps">
+      <div class="ob-dot" id="d0"></div>
+      <div class="ob-dot" id="d1"></div>
+      <div class="ob-dot" id="d2"></div>
+      <div class="ob-dot" id="d3"></div>
+    </div>
+    <div class="ob-title" id="obTitle">Welcome to NestSync</div>
+    <div class="ob-sub" id="obSub">Let's set up your family in just a few steps.</div>
+  </div>
+
+  <div class="ob-body">
+    <!-- Step 0 -->
+    <div class="ob-step on" id="s0">
+      <div><div class="f-label">Family Name</div><input class="f-input" id="fName" placeholder="e.g. The Thompsons" maxlength="30"></div>
+      <div><div class="f-label">Your Name</div><input class="f-input" id="fCreator" placeholder="e.g. Sarah" maxlength="20"></div>
+      <div><div class="f-label">Email Address</div><input class="f-input" id="fEmail" type="email" placeholder="sarah@email.com"></div>
+      <div><div class="f-label">Create Password</div><input class="f-input" id="fPass" type="password" placeholder="Minimum 8 characters"></div>
+    </div>
+
+    <!-- Step 1: Color -->
+    <div class="ob-step" id="s1">
+      <div>
+        <div class="f-label">Your Color</div>
+        <p style="font-size:0.8rem;color:var(--text2);margin-bottom:1rem;line-height:1.5">This color represents you everywhere — calendar events, chores, location pin, and more. Once you pick it, it's yours.</p>
+        <div class="color-grid" id="colorGrid"></div>
+      </div>
+    </div>
+
+    <!-- Step 2: Members -->
+    <div class="ob-step" id="s2">
+      <div>
+        <div class="f-label">Add Family Members</div>
+        <p style="font-size:0.8rem;color:var(--text2);margin-bottom:0.75rem;line-height:1.5">They'll receive an invite to download NestSync and join your family.</p>
+        <div id="obMemberList"></div>
+        <button class="add-member-btn" onclick="showAddForm()">+ Add a family member</button>
+        <div class="add-form" id="addForm">
+          <div><div class="f-label">Name</div><input class="f-input" id="newName" placeholder="Name" maxlength="20"></div>
+          <div><div class="f-label">Role</div><select class="f-select" id="newRole"><option>Parent</option><option>Kid</option></select></div>
+          <button class="btn-main" onclick="addMember()">Add Member</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Done -->
+    <div class="ob-step" id="s3">
+      <div class="summary-box">
+        <div class="summary-big">🎉</div>
+        <div class="summary-title">You're all set!</div>
+        <div class="summary-sub" id="sumText">Your family hub is ready to go.</div>
+      </div>
+      <div class="code-box">
+        <div class="code-label">Family Invite Code</div>
+        <div class="code-val" id="codeVal">NS-0000</div>
+        <div class="code-hint">Share with your family to join NestSync</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ob-foot">
+    <div class="ob-buttons">
+      <button class="btn-back" id="obBack" onclick="obPrev()" style="display:none">Back</button>
+      <button class="btn-main" id="obNext" onclick="obNext()">Continue</button>
+    </div>
+    <button class="btn-skip" onclick="skipOb()">Skip setup for now</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="screen" id="mainApp" style="display:none;">
+  <div class="app-header">
+    <div class="app-wordmark"><span class="w">Nest</span><span class="o">Sync</span></div>
+    <div class="hdr-right">
+      <span class="hdr-date" id="hdrDate"></span>
+      <div class="av-stack" id="avStack">
+        <div class="av" style="background:#C97B52">S</div>
+        <div class="av" style="background:#7A9E87">M</div>
+        <div class="av" style="background:#8B7EA8">L</div>
+        <div class="av" style="background:#5A8BAA">J</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen-wrap">
+
+    <!-- DASHBOARD -->
+    <div class="tab active" id="t-dash">
+      <div class="greet fu">
+        <h1>Good <span id="gTime">morning</span>, <em id="gName">Thompson family.</em></h1>
+        <p>6 events today · 4 tasks pending · 3 items needed</p>
+      </div>
+
+      <div class="alert-bar fu" id="alertBar">
+        <span>⚡</span>
+        <div style="flex:1"><strong>Conflict:</strong> Lily's soccer overlaps Jake's dentist at 4:00 PM.</div>
+        <button class="alert-x" onclick="this.closest('.alert-bar').style.display='none'">Dismiss</button>
+      </div>
+
+      <!-- Install banner -->
+      <div class="install-banner fu" id="installBanner">
+        <div class="ib-text">
+          <div class="ib-title">Add to Home Screen</div>
+          <div class="ib-sub">Install NestSync like a native app</div>
+        </div>
+        <button class="ib-btn" onclick="openInstall()">Install</button>
+        <button class="ib-x" onclick="this.closest('.install-banner').style.display='none'">✕</button>
+      </div>
+
+      <!-- Widget previews -->
+      <div class="fu" style="margin-bottom:1rem">
+        <div class="w-section-title">Home Screen Widgets</div>
+        <div class="widgets-scroll">
+          <div class="w-card ws">
+            <div class="w-sched">
+              <div class="w-title">Today</div>
+              <div class="w-ev"><div class="w-ev-t">8:00 AM</div><div class="w-ev-n">School Drop-off</div></div>
+              <div class="w-ev"><div class="w-ev-t">4:00 PM</div><div class="w-ev-n">Soccer Practice</div></div>
+              <div class="w-ev"><div class="w-ev-t">6:30 PM</div><div class="w-ev-n">Family Dinner</div></div>
+              <div class="w-logo">NestSync</div>
+            </div>
+          </div>
+          <div class="w-card ws">
+            <div class="w-tasks">
+              <div class="w-title">My Tasks</div>
+              <div class="w-ch"><div class="w-chd" style="background:rgba(255,255,255,0.3)"></div><div class="w-chn w-done">Unload dishwasher</div></div>
+              <div class="w-ch"><div class="w-chd"></div><div class="w-chn">Vacuum living room</div></div>
+              <div class="w-ch"><div class="w-chd"></div><div class="w-chn">Take out trash</div></div>
+              <div class="w-logo">NestSync</div>
+            </div>
+          </div>
+          <div class="w-card wm">
+            <div class="w-sched" style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+              <div>
+                <div class="w-title">Schedule</div>
+                <div class="w-ev"><div class="w-ev-t">8:00 AM</div><div class="w-ev-n">Drop-off</div></div>
+                <div class="w-ev"><div class="w-ev-t">3:30 PM</div><div class="w-ev-n">Pickup</div></div>
+                <div class="w-ev"><div class="w-ev-t">6:30 PM</div><div class="w-ev-n">Dinner</div></div>
+              </div>
+              <div style="background:rgba(255,255,255,0.06);border-radius:10px;padding:0.5rem">
+                <div class="w-title">Tasks</div>
+                <div class="w-ch"><div class="w-chd" style="background:rgba(255,255,255,0.3)"></div><div class="w-chn w-done" style="font-size:0.6rem">Dishes</div></div>
+                <div class="w-ch"><div class="w-chd"></div><div class="w-chn" style="font-size:0.6rem">Vacuum</div></div>
+                <div class="w-ch"><div class="w-chd"></div><div class="w-chn" style="font-size:0.6rem">Trash</div></div>
+              </div>
+              <div class="w-logo">NestSync</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schedule -->
+      <div class="card fu">
+        <div class="card-hdr">
+          <div class="card-title"><div class="c-icon ic">📅</div>Today's Schedule</div>
+          <button class="card-link" onclick="goTab('family-time')">View All</button>
+        </div>
+        <div class="ev-list">
+          <div class="ev"><span class="ev-t">8:00a</span><div class="ev-bar bc"></div><div><div class="ev-name">School drop-off</div><div class="ev-who">Marcus · Lily, Jake</div></div></div>
+          <div class="ev"><span class="ev-t">9:30a</span><div class="ev-bar bg"></div><div><div class="ev-name">Sarah's standup</div><div class="ev-who">Sarah · Work</div></div></div>
+          <div class="ev"><span class="ev-t">4:00p</span><div class="ev-bar ba"></div><div><div class="ev-name">Lily — Soccer Practice</div><div class="ev-who">Riverside Field</div><div class="ev-flag">⚠ Conflict</div></div></div>
+          <div class="ev"><span class="ev-t">6:30p</span><div class="ev-bar bc"></div><div><div class="ev-name">Family dinner</div><div class="ev-who">Everyone · Home</div></div></div>
+        </div>
+      </div>
+
+      <!-- Chores -->
+      <div class="card fu">
+        <div class="card-hdr">
+          <div class="card-title"><div class="c-icon ig">🧹</div>Chores</div>
+          <button class="card-link" onclick="goTab('tasks')">View All</button>
+        </div>
+        <div class="chore done" onclick="toggleChore(this)"><div class="chore-ck">✓</div><span class="chore-nm">Unload dishwasher</span><span class="chore-tag" style="background:#7A9E87">Lily</span></div>
+        <div class="chore" onclick="toggleChore(this)"><div class="chore-ck"></div><span class="chore-nm">Take out trash</span><span class="chore-tag" style="background:#8B7EA8">Jake</span></div>
+        <div class="chore" onclick="toggleChore(this)"><div class="chore-ck"></div><span class="chore-nm">Vacuum living room</span><span class="chore-tag" style="background:#C97B52">Marcus</span></div>
+        <div class="prog-row"><div class="prog-bar"><div class="prog-fill" style="width:33%"></div></div><span class="prog-lbl">1 of 3 done</span></div>
+      </div>
+
+      <!-- Location -->
+      <div class="card fu">
+        <div class="card-hdr">
+          <div class="card-title"><div class="c-icon ig">📍</div>Family Location</div>
+          <button class="card-link">Privacy</button>
+        </div>
+        <div class="loc-map">
+          <div class="map-grid"></div>
+          <div class="map-rh"></div><div class="map-rv"></div>
+          <div class="m-pin ph"><div class="m-bub home">🏠</div></div>
+          <div class="m-pin pm"><div class="m-bub mc"><span>S</span></div><div class="m-lbl">Sarah</div></div>
+          <div class="m-pin pk"><div class="m-bub md"><span>L</span></div><div class="m-lbl">Lily</div></div>
+        </div>
+        <div class="loc-list">
+          <div class="loc-row"><div class="loc-dot" style="background:var(--clay)"></div><span class="loc-nm">Sarah</span><span class="loc-pl">Downtown Office</span><span class="loc-tm">12m ago</span></div>
+          <div class="loc-row"><div class="loc-dot" style="background:var(--sage)"></div><span class="loc-nm">Marcus</span><span class="loc-pl">Home</span><span class="loc-tm">Now</span></div>
+          <div class="loc-row"><div class="loc-dot" style="background:var(--dusk)"></div><span class="loc-nm">Lily</span><span class="loc-pl">Lincoln Middle School</span><span class="loc-tm">Now</span></div>
+          <div class="loc-row"><div class="loc-dot" style="background:#5A8BAA"></div><span class="loc-nm">Jake</span><span class="loc-pl">Lincoln Middle School</span><span class="loc-tm">Now</span></div>
+        </div>
+      </div>
+
+      <!-- Harmony -->
+      <div class="card fu">
+        <div class="card-hdr">
+          <div class="card-title"><div class="c-icon ip">✨</div>Family Harmony Score</div>
+          <button class="card-link">This week</button>
+        </div>
+        <div class="harmony-row">
+          <div class="h-ring">
+            <svg viewBox="0 0 66 66"><circle class="ring-bg" cx="33" cy="33" r="27"/><circle class="ring-fg" cx="33" cy="33" r="27"/></svg>
+            <div class="h-num"><div class="h-big">75</div><div class="h-sm">/ 100</div></div>
+          </div>
+          <div class="h-detail">
+            <div class="h-title">Good week — one conflict</div>
+            <div class="h-row"><span class="h-lbl">Chores</span><div class="mini-bar"><div class="mini-fill" style="width:80%;background:var(--sage)"></div></div><span style="font-size:0.72rem">80%</span></div>
+            <div class="h-row"><span class="h-lbl">Schedule</span><div class="mini-bar"><div class="mini-fill" style="width:65%;background:var(--orange)"></div></div><span style="font-size:0.72rem">65%</span></div>
+          </div>
+        </div>
+        <div class="tip"><span>💡</span><div><strong>AI Tip:</strong> Move Jake's dentist to Thursday 3 PM — no conflicts that day.</div></div>
+        <div class="tip"><span>🛒</span><div><strong>Grocery:</strong> Marcus passes Whole Foods going home. 5 items on the list.</div></div>
+      </div>
+    </div>
+
+    <!-- FAMILY TIME -->
+    <div class="tab" id="t-family-time">
+      <div class="sc-title">Family Time</div>
+      <div class="card">
+        <div class="cal-hdr">
+          <button class="cal-nav" onclick="chMon(-1)">‹</button>
+          <div class="cal-month" id="calMon"></div>
+          <button class="cal-nav" onclick="chMon(1)">›</button>
+        </div>
+        <div class="cal-days">
+          <div class="cal-dl">Su</div><div class="cal-dl">Mo</div><div class="cal-dl">Tu</div>
+          <div class="cal-dl">We</div><div class="cal-dl">Th</div><div class="cal-dl">Fr</div><div class="cal-dl">Sa</div>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+      </div>
+      <div class="sec-title">Today's Events</div>
+      <div class="ev-card" style="border-left-color:var(--clay)"><div><div class="evc-t">8:00 AM</div><div class="evc-n">School Drop-off</div><div class="evc-w">Marcus · Lily, Jake</div></div></div>
+      <div class="ev-card" style="border-left-color:var(--sage)"><div><div class="evc-t">9:30 AM</div><div class="evc-n">Sarah's Team Standup</div><div class="evc-w">Sarah · Work (Zoom)</div></div></div>
+      <div class="ev-card" style="border-left-color:var(--dusk)"><div><div class="evc-t">3:30 PM</div><div class="evc-n">School Pickup</div><div class="evc-w">Sarah · Lily, Jake</div></div></div>
+      <div class="ev-card" style="border-left-color:var(--alert)"><div><div class="evc-t">4:00 PM</div><div class="evc-n">Lily — Soccer Practice</div><div class="evc-w">Riverside Field</div><div class="evc-flag">⚠ Conflicts with Jake's dentist</div></div></div>
+      <div class="ev-card" style="border-left-color:var(--alert)"><div><div class="evc-t">4:00 PM</div><div class="evc-n">Jake — Dentist Appt.</div><div class="evc-w">Dr. Kim · Elm St. Dental</div><div class="evc-flag">⚠ Conflicts with Lily's soccer</div></div></div>
+      <div class="ev-card" style="border-left-color:var(--clay)"><div><div class="evc-t">6:30 PM</div><div class="evc-n">Family Dinner</div><div class="evc-w">Everyone · Home</div></div></div>
+      <button class="fab" onclick="toast('Add event coming soon!')">+</button>
+    </div>
+
+    <!-- TASKS -->
+    <div class="tab" id="t-tasks">
+      <div class="sc-title">Tasks</div>
+      <div class="filter-row">
+        <button class="f-chip on" onclick="filterTask(this,'all')">All</button>
+        <button class="f-chip" onclick="filterTask(this,'sarah')">Sarah</button>
+        <button class="f-chip" onclick="filterTask(this,'marcus')">Marcus</button>
+        <button class="f-chip" onclick="filterTask(this,'lily')">Lily</button>
+        <button class="f-chip" onclick="filterTask(this,'jake')">Jake</button>
+      </div>
+      <div class="sec-title">Due Today</div>
+      <div class="task-card done" onclick="toggleTask(this)" data-m="lily"><div class="t-ck">✓</div><span class="t-nm">Unload dishwasher</span><span class="t-tag" style="background:#7A9E87">Lily</span></div>
+      <div class="task-card" onclick="toggleTask(this)" data-m="jake"><div class="t-ck"></div><span class="t-nm">Take out trash</span><span class="t-tag" style="background:#8B7EA8">Jake</span></div>
+      <div class="task-card" onclick="toggleTask(this)" data-m="marcus"><div class="t-ck"></div><span class="t-nm">Vacuum living room</span><span class="t-tag" style="background:#C97B52">Marcus</span></div>
+      <div class="task-card" onclick="toggleTask(this)" data-m="sarah"><div class="t-ck"></div><span class="t-nm">Wipe kitchen counters</span><span class="t-tag" style="background:#5A8BAA">Sarah</span></div>
+      <div class="task-card done" onclick="toggleTask(this)" data-m="sarah"><div class="t-ck">✓</div><span class="t-nm">Start laundry</span><span class="t-tag" style="background:#5A8BAA">Sarah</span></div>
+      <div class="sec-title">Upcoming</div>
+      <div class="task-card" onclick="toggleTask(this)" data-m="marcus"><div class="t-ck"></div><span class="t-nm">Mow the lawn</span><span class="t-due">Sat</span><span class="t-tag" style="background:#C97B52">Marcus</span></div>
+      <div class="task-card" onclick="toggleTask(this)" data-m="jake"><div class="t-ck"></div><span class="t-nm">Clean bathroom</span><span class="t-due">Fri</span><span class="t-tag" style="background:#8B7EA8">Jake</span></div>
+      <div class="task-card" onclick="toggleTask(this)" data-m="lily"><div class="t-ck"></div><span class="t-nm">Organize bookshelf</span><span class="t-due">Sun</span><span class="t-tag" style="background:#7A9E87">Lily</span></div>
+      <button class="fab" onclick="toast('Add task coming soon!')">+</button>
+    </div>
+
+    <!-- SHOPPING -->
+    <div class="tab" id="t-shopping">
+      <div class="shop-hero">
+        <div class="sh-title">Shopping List</div>
+        <div class="sh-stats">
+          <div><div class="sh-num">8</div><div class="sh-lbl">Items</div></div>
+          <div><div class="sh-num">3</div><div class="sh-lbl">Got it</div></div>
+          <div><div class="sh-num">2</div><div class="sh-lbl">Members</div></div>
+        </div>
+      </div>
+      <div class="shop-sec">
+        <div class="shop-sec-title">Produce</div>
+        <div class="shop-item" onclick="toggleShop(this)"><div class="sh-ck"></div><div class="sh-emoji">🍌</div><div><div class="sh-nm">Bananas</div><div class="sh-by">Added by Sarah</div></div></div>
+        <div class="shop-item" onclick="toggleShop(this)"><div class="sh-ck"></div><div class="sh-emoji">🥬</div><div><div class="sh-nm">Baby Spinach</div><div class="sh-by">Added by Marcus</div></div></div>
+      </div>
+      <div class="shop-sec">
+        <div class="shop-sec-title">Dairy & Eggs</div>
+        <div class="shop-item checked" onclick="toggleShop(this)"><div class="sh-ck">✓</div><div class="sh-emoji">🥛</div><div><div class="sh-nm">Whole Milk (1 gal)</div><div class="sh-by">Added by Sarah</div></div></div>
+        <div class="shop-item" onclick="toggleShop(this)"><div class="sh-ck"></div><div class="sh-emoji">🥚</div><div><div class="sh-nm">Free Range Eggs</div><div class="sh-by">Added by Marcus</div></div></div>
+        <div class="shop-item checked" onclick="toggleShop(this)"><div class="sh-ck">✓</div><div class="sh-emoji">🫙</div><div><div class="sh-nm">Greek Yogurt</div><div class="sh-by">Added by Sarah</div></div></div>
+      </div>
+      <div class="shop-sec">
+        <div class="shop-sec-title">Pantry</div>
+        <div class="shop-item" onclick="toggleShop(this)"><div class="sh-ck"></div><div class="sh-emoji">🫙</div><div><div class="sh-nm">Olive Oil</div><div class="sh-by">Added by Marcus</div></div></div>
+        <div class="shop-item checked" onclick="toggleShop(this)"><div class="sh-ck">✓</div><div class="sh-emoji">🍝</div><div><div class="sh-nm">Penne Pasta</div><div class="sh-by">Added by Sarah</div></div></div>
+        <div class="shop-item" onclick="toggleShop(this)"><div class="sh-ck"></div><div class="sh-emoji">🍞</div><div><div class="sh-nm">Sourdough Bread</div><div class="sh-by">Added by Marcus</div></div></div>
+      </div>
+      <div id="shopAdded"></div>
+      <button class="add-item-btn" onclick="openSearch()">+ Add item with photo</button>
+    </div>
+
+    <!-- MEMBERS -->
+    <div class="tab" id="t-members">
+      <div class="sc-title">Members</div>
+      <div class="fam-code-card">
+        <div><div class="fc-label">Family Invite Code</div><div class="fc-code" id="fcCode">NS-4821</div></div>
+        <button class="fc-btn" onclick="copyCode()">Copy</button>
+      </div>
+      <div class="members-grid">
+        <div class="m-card" onclick="openMember('Sarah','Parent · Admin','sarah@email.com','#C97B52')">
+          <div class="m-av-lg" style="background:#C97B52">S<div class="m-online"></div></div>
+          <div class="m-nm">Sarah</div><div class="m-role">Parent · Admin</div>
+          <div class="m-tasks">1 task today</div><div class="m-loc">📍 Downtown Office</div>
+        </div>
+        <div class="m-card" onclick="openMember('Marcus','Parent','marcus@email.com','#7A9E87')">
+          <div class="m-av-lg" style="background:#7A9E87">M</div>
+          <div class="m-nm">Marcus</div><div class="m-role">Parent</div>
+          <div class="m-tasks">1 task today</div><div class="m-loc">📍 Home</div>
+        </div>
+        <div class="m-card" onclick="openMember('Lily','Kid','','#8B7EA8')">
+          <div class="m-av-lg" style="background:#8B7EA8">L<div class="m-online"></div></div>
+          <div class="m-nm">Lily</div><div class="m-role">Kid</div>
+          <div class="m-tasks">2 tasks today</div><div class="m-loc">📍 School</div>
+        </div>
+        <div class="m-card" onclick="openMember('Jake','Kid','','#5A8BAA')">
+          <div class="m-av-lg" style="background:#5A8BAA">J<div class="m-online"></div></div>
+          <div class="m-nm">Jake</div><div class="m-role">Kid</div>
+          <div class="m-tasks">1 task today</div><div class="m-loc">📍 School</div>
+        </div>
+      </div>
+      <button class="fab" onclick="toast('Invite sent!')">+</button>
+    </div>
+
+    <!-- SETTINGS (hidden tab, accessible via nav) -->
+    <div class="tab" id="t-settings">
+      <div class="sc-title">Settings</div>
+      <div class="profile-card">
+        <div class="p-av" id="pAv" style="background:var(--clay)">S</div>
+        <div><div class="p-nm" id="pNm">Sarah Thompson</div><div class="p-em" id="pEm">sarah@email.com</div></div>
+        <span class="p-edit">Edit</span>
+      </div>
+      <div class="plan-card">
+        <div><div class="pl-nm">Free Plan</div><div class="pl-sub">Upgrade for AI features, insights & more</div></div>
+        <button class="pl-btn" onclick="toast('Premium coming soon!')">Upgrade</button>
+      </div>
+      <div class="set-sec">
+        <div class="set-sec-title">Account</div>
+        <div class="set-group">
+          <div class="set-row"><span class="sr-icon">👤</span><span class="sr-label">Edit Profile</span><span class="sr-arrow">›</span></div>
+          <div class="set-row"><span class="sr-icon">🔑</span><span class="sr-label">Change Password</span><span class="sr-arrow">›</span></div>
+          <div class="set-row"><span class="sr-icon">📧</span><span class="sr-label">Change Email</span><span class="sr-arrow">›</span></div>
+        </div>
+      </div>
+      <div class="set-sec">
+        <div class="set-sec-title">Family</div>
+        <div class="set-group">
+          <div class="set-row"><span class="sr-icon">👥</span><span class="sr-label">Manage Members</span><span class="sr-arrow">›</span></div>
+          <div class="set-row"><span class="sr-icon">🏡</span><span class="sr-label">Family Name</span><span class="sr-val" id="sFamName">The Thompsons</span><span class="sr-arrow">›</span></div>
+          <div class="set-row"><span class="sr-icon">🔗</span><span class="sr-label">Invite Code</span><span class="sr-val" id="sCode">NS-4821</span><span class="sr-arrow">›</span></div>
+        </div>
+      </div>
+      <div class="set-sec">
+        <div class="set-sec-title">Notifications</div>
+        <div class="set-group">
+          <div class="set-row"><span class="sr-icon">📍</span><span class="sr-label">Location & Safety Alerts</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="t-thumb"></div></div></div>
+          <div class="set-row"><span class="sr-icon">📅</span><span class="sr-label">Schedule Alerts</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="t-thumb"></div></div></div>
+          <div class="set-row"><span class="sr-icon">🧹</span><span class="sr-label">Chore Reminders</span><div class="toggle" onclick="this.classList.toggle('on')"><div class="t-thumb"></div></div></div>
+          <div class="set-row"><span class="sr-icon">🌙</span><span class="sr-label">Quiet Hours (10pm–7am)</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="t-thumb"></div></div></div>
+        </div>
+      </div>
+      <div class="set-sec">
+        <div class="set-sec-title">Privacy & Safety</div>
+        <div class="set-group">
+          <div class="set-row"><span class="sr-icon">📍</span><span class="sr-label">Share My Location</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="t-thumb"></div></div></div>
+          <div class="set-row"><span class="sr-icon">👁</span><span class="sr-label">Location Precision</span><span class="sr-val">Exact</span><span class="sr-arrow">›</span></div>
+          <div class="set-row"><span class="sr-icon">📤</span><span class="sr-label">Export My Data</span><span class="sr-arrow">›</span></div>
+        </div>
+      </div>
+      <div class="set-sec">
+        <div class="set-sec-title">App Preferences</div>
+        <div class="set-group">
+          <div class="set-row"><span class="sr-icon">🌙</span><span class="sr-label">Dark Mode</span><div class="toggle" id="darkTog" onclick="toggleDark()"><div class="t-thumb"></div></div></div>
+          <div class="set-row"><span class="sr-icon">📅</span><span class="sr-label">Week Starts On</span><span class="sr-val">Sunday</span><span class="sr-arrow">›</span></div>
+          <div class="set-row"><span class="sr-icon">📏</span><span class="sr-label">Distance Units</span><span class="sr-val">Miles</span><span class="sr-arrow">›</span></div>
+        </div>
+      </div>
+      <div class="set-sec">
+        <div class="set-sec-title">Subscription</div>
+        <div class="set-group">
+          <div class="set-row"><span class="sr-icon">⭐</span><span class="sr-label">Current Plan</span><span class="sr-val">Free</span><span class="sr-arrow">›</span></div>
+          <div class="set-row"><span class="sr-icon">💳</span><span class="sr-label">Billing & Payment</span><span class="sr-arrow">›</span></div>
+          <div class="set-row"><span class="sr-icon">🗑</span><span class="sr-label sr-danger">Delete Account</span><span class="sr-arrow sr-danger">›</span></div>
+        </div>
+      </div>
+      <div style="text-align:center;padding:1rem 0 0.5rem;font-size:0.72rem;color:var(--text2)">NestSync v1.0 · Made with love for families</div>
+    </div>
+
+  </div><!-- screen-wrap -->
+
+  <!-- BOTTOM NAV -->
+  <div class="bot-nav">
+    <div class="nav-btn active" onclick="goTab('dash')"><div class="ni">🏠</div><div class="nl">Dashboard</div></div>
+    <div class="nav-btn" onclick="goTab('family-time')"><div class="ni">📅</div><div class="nl">Family Time</div></div>
+    <div class="nav-btn" onclick="goTab('tasks')"><div class="ni">🧹</div><div class="nl">Tasks</div></div>
+    <div class="nav-btn" onclick="goTab('shopping')"><div class="ni">🛒</div><div class="nl">Shopping</div></div>
+    <div class="nav-btn" onclick="goTab('members')"><div class="ni">👥</div><div class="nl">Members</div></div>
+  </div>
+</div><!-- mainApp -->
+
+</div><!-- app -->
+
+<!-- OVERLAYS -->
+<!-- Grocery Sheet -->
+<div class="overlay" id="srchOv" onclick="closeSearch()"></div>
+<div class="sheet" id="srchSheet">
+  <div class="sh-handle"></div>
+  <div class="sh-title">Add Grocery Item</div>
+  <div class="ss-wrap">
+    <div class="ac-wrap">
+      <input class="ss-input" id="srchIn" placeholder="Search products..." autocomplete="off" oninput="acInput(this.value)" onkeydown="acKey(event)">
+      <div class="ac-drop" id="acDrop"></div>
+    </div>
+    <button class="ss-btn" onclick="doSearch()">Search</button>
+  </div>
+  <div class="chips" id="srchChips">
+    <button class="chip" onclick="qSearch('milk')">🥛 Milk</button>
+    <button class="chip" onclick="qSearch('eggs')">🥚 Eggs</button>
+    <button class="chip" onclick="qSearch('bread')">🍞 Bread</button>
+    <button class="chip" onclick="qSearch('banana')">🍌 Bananas</button>
+    <button class="chip" onclick="qSearch('chicken')">🍗 Chicken</button>
+    <button class="chip" onclick="qSearch('pasta')">🍝 Pasta</button>
+    <button class="chip" onclick="qSearch('butter')">🧈 Butter</button>
+    <button class="chip" onclick="qSearch('cheese')">🧀 Cheese</button>
+  </div>
+  <div class="results-grid" id="srchResults"><div class="sh-empty">Search or tap a suggestion to find products</div></div>
+  <button class="sh-confirm" id="srchConfirm" disabled onclick="confirmAdd()">Add to List</button>
+</div>
+
+<!-- Member Sheet -->
+<div class="overlay" id="memOv" onclick="closeMem()"></div>
+<div class="sheet" id="memSheet">
+  <div class="sh-handle"></div>
+  <div class="ms-hdr">
+    <div class="ms-av" id="msAv" style="background:var(--clay)">S</div>
+    <div>
+      <div class="ms-nm" id="msNm">Sarah</div>
+      <div class="ms-role" id="msRole">Parent</div>
+      <div class="ms-email" id="msEmail">sarah@email.com</div>
+    </div>
+    <button class="ms-x" onclick="closeMem()">✕</button>
+  </div>
+  <div class="m-stat-row">
+    <div class="m-stat"><div class="m-stat-n">12</div><div class="m-stat-l">Tasks Done</div></div>
+    <div class="m-stat"><div class="m-stat-n">4</div><div class="m-stat-l">Events</div></div>
+    <div class="m-stat"><div class="m-stat-n">92%</div><div class="m-stat-l">On Time</div></div>
+  </div>
+  <div style="font-size:0.68rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem">Notification Override</div>
+  <div class="set-group" style="margin-bottom:1rem">
+    <div class="set-row"><span class="sr-icon">📍</span><span class="sr-label">Location Alerts</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="t-thumb"></div></div></div>
+    <div class="set-row"><span class="sr-icon">🧹</span><span class="sr-label">Chore Reminders</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="t-thumb"></div></div></div>
+  </div>
+  <button class="sh-confirm" style="background:var(--alert)" onclick="closeMem();toast('Member removed')">Remove from Family</button>
+</div>
+
+<!-- Install Sheet -->
+<div class="overlay" id="instOv" onclick="closeInstall()"></div>
+<div class="sheet" id="instSheet">
+  <div class="sh-handle"></div>
+  <div class="sh-title">Add NestSync to Home Screen</div>
+  <div style="padding:0.25rem 0 0.5rem">
+    <div class="install-step"><div class="i-num">1</div><div><div class="i-head">On iPhone (Safari)</div><div class="i-body">Tap the Share button (□↑) at the bottom, then tap "Add to Home Screen"</div></div></div>
+    <div class="install-step"><div class="i-num">2</div><div><div class="i-head">On Android (Chrome)</div><div class="i-body">Tap the 3-dot menu in Chrome, then tap "Add to Home Screen"</div></div></div>
+    <div class="install-step"><div class="i-num" style="background:var(--sage)">✓</div><div><div class="i-head">What you get</div><div class="i-body">NestSync gets its own icon, launches fullscreen with no browser bar — feels just like a native app.</div></div></div>
+  </div>
+  <button class="sh-confirm" onclick="closeInstall()">Got it!</button>
+</div>
+
+<div class="toast" id="toastEl"></div>
+
+<script>
+// ── DATA ──
+const COLORS = [
+  {id:'clay',hex:'#C97B52'},{id:'sage',hex:'#7A9E87'},{id:'dusk',hex:'#8B7EA8'},
+  {id:'ocean',hex:'#5A8BAA'},{id:'blush',hex:'#D4829A'},{id:'moss',hex:'#4A7C59'},
+  {id:'honey',hex:'#C9A84C'},{id:'terra',hex:'#B85C3A'},{id:'sky',hex:'#6BAED6'},
+  {id:'bark',hex:'#5C4033'}
+];
+
+const PRODUCTS = [
+  {product_name:'Whole Milk',brands:'Organic Valley',category:'dairy',emoji:'🥛',img:'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=200&q=80'},
+  {product_name:'2% Reduced Fat Milk',brands:'Horizon Organic',category:'dairy',emoji:'🥛',img:'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=200&q=80'},
+  {product_name:'Greek Yogurt',brands:'Chobani',category:'dairy',emoji:'🫙',img:'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=200&q=80'},
+  {product_name:'Cheddar Cheese',brands:'Tillamook',category:'dairy',emoji:'🧀',img:'https://images.unsplash.com/photo-1618164436241-4473940d1f5c?w=200&q=80'},
+  {product_name:'Shredded Mozzarella',brands:'Kraft',category:'dairy',emoji:'🧀',img:'https://images.unsplash.com/photo-1618164436241-4473940d1f5c?w=200&q=80'},
+  {product_name:'Salted Butter',brands:'Land O Lakes',category:'dairy',emoji:'🧈',img:'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=200&q=80'},
+  {product_name:'Unsalted Butter',brands:'Kerrygold',category:'dairy',emoji:'🧈',img:'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=200&q=80'},
+  {product_name:'Almond Milk',brands:'Califia Farms',category:'dairy',emoji:'🥛',img:'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=200&q=80'},
+  {product_name:'Cream Cheese',brands:'Philadelphia',category:'dairy',emoji:'🧀',img:'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=200&q=80'},
+  {product_name:'Large White Eggs',brands:'Happy Egg Co',category:'eggs',emoji:'🥚',img:'https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=200&q=80'},
+  {product_name:'Free Range Brown Eggs',brands:"Pete & Gerry's",category:'eggs',emoji:'🥚',img:'https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=200&q=80'},
+  {product_name:'Bananas',brands:'Chiquita',category:'produce',emoji:'🍌',img:'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=200&q=80'},
+  {product_name:'Baby Spinach',brands:'Earthbound Farm',category:'produce',emoji:'🥬',img:'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=200&q=80'},
+  {product_name:'Roma Tomatoes',brands:'Local Farm',category:'produce',emoji:'🍅',img:'https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=200&q=80'},
+  {product_name:'Honeycrisp Apples',brands:'Stemilt',category:'produce',emoji:'🍎',img:'https://images.unsplash.com/photo-1570913149827-d2ac84ab3f9a?w=200&q=80'},
+  {product_name:'Strawberries',brands:"Driscoll's",category:'produce',emoji:'🍓',img:'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=200&q=80'},
+  {product_name:'Blueberries',brands:"Driscoll's",category:'produce',emoji:'🫐',img:'https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=200&q=80'},
+  {product_name:'Broccoli Crown',brands:'Local Farm',category:'produce',emoji:'🥦',img:'https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?w=200&q=80'},
+  {product_name:'Baby Carrots',brands:'Bolthouse Farms',category:'produce',emoji:'🥕',img:'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=200&q=80'},
+  {product_name:'Avocados',brands:'Hass',category:'produce',emoji:'🥑',img:'https://images.unsplash.com/photo-1519162808019-7de1683fa2ad?w=200&q=80'},
+  {product_name:'Oranges',brands:'Sunkist',category:'produce',emoji:'🍊',img:'https://images.unsplash.com/photo-1547514701-42782101795e?w=200&q=80'},
+  {product_name:'Sourdough Bread',brands:"Dave's Killer Bread",category:'bread',emoji:'🍞',img:'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200&q=80'},
+  {product_name:'Whole Wheat Bread',brands:'Arnold',category:'bread',emoji:'🍞',img:'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200&q=80'},
+  {product_name:'Everything Bagels',brands:"Thomas'",category:'bread',emoji:'🥯',img:'https://images.unsplash.com/photo-1585378606295-da76a64a4a6a?w=200&q=80'},
+  {product_name:'Flour Tortillas',brands:'Mission',category:'bread',emoji:'🫓',img:'https://images.unsplash.com/photo-1584278860047-22db9ff82bed?w=200&q=80'},
+  {product_name:'Butter Croissants',brands:"Trader Joe's",category:'bread',emoji:'🥐',img:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=200&q=80'},
+  {product_name:'Boneless Chicken Breast',brands:'Perdue',category:'chicken',emoji:'🍗',img:'https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=200&q=80'},
+  {product_name:'Ground Beef 80/20',brands:'Local Butcher',category:'meat',emoji:'🥩',img:'https://images.unsplash.com/photo-1602470520998-f4a52199a3d6?w=200&q=80'},
+  {product_name:'Salmon Fillet',brands:'Wild Planet',category:'meat',emoji:'🐟',img:'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=200&q=80'},
+  {product_name:'Bacon',brands:'Applegate',category:'meat',emoji:'🥓',img:'https://images.unsplash.com/photo-1528607929212-2636ec44253e?w=200&q=80'},
+  {product_name:'Extra Virgin Olive Oil',brands:'California Olive Ranch',category:'pantry',emoji:'🫙',img:'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=200&q=80'},
+  {product_name:'Penne Pasta',brands:'Barilla',category:'pantry',emoji:'🍝',img:'https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=200&q=80'},
+  {product_name:'Spaghetti',brands:'Barilla',category:'pantry',emoji:'🍝',img:'https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=200&q=80'},
+  {product_name:'Jasmine Rice',brands:'Lundberg',category:'pantry',emoji:'🍚',img:'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=200&q=80'},
+  {product_name:'Rolled Oats',brands:"Bob's Red Mill",category:'pantry',emoji:'🥣',img:'https://images.unsplash.com/photo-1614961233913-a5113a4a34ed?w=200&q=80'},
+  {product_name:'Peanut Butter',brands:'Jif',category:'pantry',emoji:'🥜',img:'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=200&q=80'},
+  {product_name:'Honey',brands:"Nature Nate's",category:'pantry',emoji:'🍯',img:'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=200&q=80'},
+  {product_name:'Orange Juice',brands:'Tropicana',category:'beverages',emoji:'🍊',img:'https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=200&q=80'},
+  {product_name:'Sparkling Water',brands:'LaCroix',category:'beverages',emoji:'💧',img:'https://images.unsplash.com/photo-1622543925917-763c34d1a86e?w=200&q=80'},
+  {product_name:'Ground Coffee',brands:"Peet's",category:'beverages',emoji:'☕',img:'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=200&q=80'},
+  {product_name:'Tortilla Chips',brands:'Tostitos',category:'snacks',emoji:'🌮',img:'https://images.unsplash.com/photo-1600952841320-db92ec4047ca?w=200&q=80'},
+  {product_name:'Mixed Nuts',brands:'Planters',category:'snacks',emoji:'🥜',img:'https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=200&q=80'},
+  {product_name:'Dark Chocolate Bar',brands:'Lindt',category:'snacks',emoji:'🍫',img:'https://images.unsplash.com/photo-1481391319762-47dff72954d9?w=200&q=80'},
+  {product_name:'Vanilla Ice Cream',brands:'Haagen-Dazs',category:'frozen',emoji:'🍦',img:'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=200&q=80'},
+  {product_name:'Frozen Pizza',brands:"Amy's",category:'frozen',emoji:'🍕',img:'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200&q=80'},
+];
+
+// ── STATE ──
+let obStep = 0;
+let pickedColor = null;
+let takenColors = {};
+let addedMembers = [];
+let curTab = 'dash';
+let selProduct = null;
+let acIdx = -1;
+let calDate = new Date();
+const TABS = ['dash','family-time','tasks','shopping','members'];
+
+const OB_STEPS = [
+  {title:'Welcome to NestSync', sub:"Let's set up your family in a few steps."},
+  {title:'Pick Your Color', sub:'This color is yours everywhere in the app.'},
+  {title:'Add Your Family', sub:"They'll get an invite to download and join."},
+  {title:"You're all set!", sub:'Your family hub is ready to go.'},
+];
+
+// ── INIT ──
+window.addEventListener('load', () => {
+  // Date header
+  const now = new Date();
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const mons = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('hdrDate').textContent = `${days[now.getDay()]} · ${mons[now.getMonth()]} ${now.getDate()}`;
+  document.getElementById('gTime').textContent = now.getHours() < 12 ? 'morning' : now.getHours() < 17 ? 'afternoon' : 'evening';
+
+  // Dark mode from system
+  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.body.classList.add('dark');
+    document.getElementById('darkTog').classList.add('on');
+  }
+
+  buildColorGrid();
+  buildCal();
+  setObStep(0);
+
+  // Splash → onboarding
+  setTimeout(() => {
+    const sp = document.getElementById('splash');
+    sp.style.opacity = '0';
+    setTimeout(() => {
+      sp.style.display = 'none';
+      document.getElementById('onboarding').style.display = 'flex';
+    }, 500);
+  }, 2500);
+});
+
+// ── COLOR GRID ──
+function buildColorGrid() {
+  const g = document.getElementById('colorGrid');
+  g.innerHTML = '';
+  COLORS.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'c-swatch';
+    el.style.background = c.hex;
+    el.dataset.id = c.id;
+    if (takenColors[c.id]) {
+      el.classList.add('taken');
+      el.dataset.init = takenColors[c.id];
+    }
+    el.onclick = () => {
+      if (el.classList.contains('taken')) return;
+      document.querySelectorAll('.c-swatch').forEach(s => s.classList.remove('picked'));
+      el.classList.add('picked');
+      pickedColor = c;
+    };
+    g.appendChild(el);
+  });
+}
+
+// ── ONBOARDING ──
+function setObStep(n) {
+  document.querySelectorAll('.ob-step').forEach((s,i) => s.classList.toggle('on', i === n));
+  document.querySelectorAll('.ob-dot').forEach((d,i) => {
+    d.classList.toggle('active', i === n);
+    d.classList.toggle('done', i < n);
+  });
+  document.getElementById('obTitle').textContent = OB_STEPS[n].title;
+  document.getElementById('obSub').textContent = OB_STEPS[n].sub;
+  document.getElementById('obBack').style.display = n > 0 ? 'block' : 'none';
+  document.getElementById('obNext').textContent = n === OB_STEPS.length - 1 ? 'Enter NestSync' : 'Continue';
+}
+
+function obNext() {
+  if (obStep === 0) {
+    if (!document.getElementById('fName').value.trim() || !document.getElementById('fCreator').value.trim()) {
+      toast('Please enter your family name and your name'); return;
+    }
+  }
+  if (obStep === 1 && !pickedColor) { toast('Please pick your color!'); return; }
+  if (obStep === 2) buildSummary();
+  if (obStep < OB_STEPS.length - 1) { obStep++; setObStep(obStep); }
+  else finishOb();
+}
+
+function obPrev() {
+  if (obStep > 0) { obStep--; setObStep(obStep); }
+}
+
+function showAddForm() { document.getElementById('addForm').classList.add('on'); document.getElementById('newName').focus(); }
+
+function addMember() {
+  const nm = document.getElementById('newName').value.trim();
+  const role = document.getElementById('newRole').value;
+  if (!nm) return;
+  addedMembers.push({name: nm, role});
+  document.getElementById('newName').value = '';
+  document.getElementById('addForm').classList.remove('on');
+  renderObMembers();
+}
+
+function renderObMembers() {
+  const list = document.getElementById('obMemberList');
+  list.innerHTML = '';
+  addedMembers.forEach((m, i) => {
+    const col = COLORS[(i+1) % COLORS.length].hex;
+    const d = document.createElement('div');
+    d.className = 'ob-member';
+    d.innerHTML = `<div class="ob-av" style="background:${col}">${m.name[0]}</div><div><div class="ob-mname">${m.name}</div><div class="ob-mrole">${m.role}</div></div><button class="ob-mremove" onclick="addedMembers.splice(${i},1);renderObMembers()">✕</button>`;
+    list.appendChild(d);
+  });
+}
+
+function buildSummary() {
+  const fn = document.getElementById('fName').value.trim();
+  const cr = document.getElementById('fCreator').value.trim();
+  const em = document.getElementById('fEmail').value.trim();
+  const code = 'NS-' + Math.floor(1000 + Math.random() * 9000);
+  document.getElementById('codeVal').textContent = code;
+  document.getElementById('fcCode').textContent = code;
+  document.getElementById('sCode').textContent = code;
+  document.getElementById('gName').textContent = fn + '.';
+  document.getElementById('sFamName').textContent = fn;
+  document.getElementById('pNm').textContent = `${cr} ${fn.split(' ').slice(-1)[0]}`.trim();
+  document.getElementById('pEm').textContent = em || 'user@nestsync.app';
+  document.getElementById('pAv').textContent = cr[0];
+  if (pickedColor) document.getElementById('pAv').style.background = pickedColor.hex;
+  document.getElementById('sumText').textContent = `${fn} is set up with ${1 + addedMembers.length} member${addedMembers.length !== 0 ? 's' : ''}. Share the invite code with your family.`;
+}
+
+function finishOb() {
+  const ob = document.getElementById('onboarding');
+  ob.style.opacity = '0';
+  ob.style.transition = 'opacity 0.4s ease';
+  setTimeout(() => {
+    ob.style.display = 'none';
+    launchApp();
+  }, 400);
+}
+
+function skipOb() {
+  document.getElementById('onboarding').style.display = 'none';
+  launchApp();
+}
+
+function launchApp() {
+  const app = document.getElementById('mainApp');
+  app.style.display = 'flex';
+  app.style.opacity = '0';
+  requestAnimationFrame(() => {
+    app.style.transition = 'opacity 0.4s ease';
+    app.style.opacity = '1';
+  });
+}
+
+// ── TAB NAVIGATION ──
+function goTab(id) {
+  if (id === curTab) return;
+  const ci = TABS.indexOf(curTab);
+  const ni = TABS.indexOf(id);
+  const right = ni > ci;
+
+  const cur = document.getElementById(`t-${curTab}`);
+  const nxt = document.getElementById(`t-${id}`);
+
+  cur.classList.remove('active');
+  cur.classList.add('slide-left');
+
+  nxt.style.transform = right ? 'translateX(100%)' : 'translateX(-22%)';
+  nxt.style.opacity = right ? '0' : '0.3';
+  nxt.style.transition = 'none';
+  nxt.classList.remove('slide-left','active');
+
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    nxt.style.transition = '';
+    nxt.classList.add('active');
+  }));
+
+  setTimeout(() => { cur.classList.remove('slide-left'); cur.classList.add(''); }, 380);
+
+  document.querySelectorAll('.nav-btn').forEach((b,i) => b.classList.toggle('active', TABS[i] === id));
+  curTab = id;
+}
+
+// ── CALENDAR ──
+function buildCal() {
+  const grid = document.getElementById('calGrid');
+  if (!grid) return;
+  const m = calDate.getMonth(), y = calDate.getFullYear();
+  const mns = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('calMon').textContent = `${mns[m]} ${y}`;
+  const fd = new Date(y,m,1).getDay();
+  const dim = new Date(y,m+1,0).getDate();
+  const pd = new Date(y,m,0).getDate();
+  const today = new Date();
+  const evDays = [5,8,12,15,19,23,27];
+  grid.innerHTML = '';
+  for (let i=fd-1;i>=0;i--) { const d=document.createElement('div');d.className='cal-d other';d.textContent=pd-i;grid.appendChild(d); }
+  for (let d=1;d<=dim;d++) {
+    const el=document.createElement('div');el.className='cal-d';el.textContent=d;
+    if (d===today.getDate()&&m===today.getMonth()&&y===today.getFullYear()) el.classList.add('today');
+    if (evDays.includes(d)) el.classList.add('hasevent');
+    el.onclick=()=>toast(`${mns[m]} ${d}`);
+    grid.appendChild(el);
+  }
+  let rem=42-fd-dim+1;
+  for (let d=1;d<=rem&&grid.children.length<42;d++) { const el=document.createElement('div');el.className='cal-d other';el.textContent=d;grid.appendChild(el); }
+}
+
+function chMon(dir) { calDate.setMonth(calDate.getMonth()+dir); buildCal(); }
+
+// ── TASK FILTER ──
+function filterTask(btn, m) {
+  document.querySelectorAll('.f-chip').forEach(c=>c.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.task-card').forEach(c=>{ c.style.display=(m==='all'||c.dataset.m===m)?'flex':'none'; });
+}
+
+// ── TOGGLES ──
+function toggleChore(el) { el.classList.toggle('done'); const c=el.querySelector('.chore-ck'); if(c) c.textContent=el.classList.contains('done')?'✓':''; }
+function toggleTask(el) { el.classList.toggle('done'); const c=el.querySelector('.t-ck'); if(c) c.textContent=el.classList.contains('done')?'✓':''; }
+function toggleShop(el) { el.classList.toggle('checked'); const c=el.querySelector('.sh-ck'); if(c) c.textContent=el.classList.contains('checked')?'✓':''; }
+
+// ── DARK MODE ──
+function toggleDark() { document.body.classList.toggle('dark'); document.getElementById('darkTog').classList.toggle('on'); }
+
+// ── MEMBERS ──
+function openMember(nm,role,email,color) {
+  document.getElementById('msAv').textContent=nm[0];
+  document.getElementById('msAv').style.background=color;
+  document.getElementById('msNm').textContent=nm;
+  document.getElementById('msRole').textContent=role;
+  document.getElementById('msEmail').textContent=email||'No email set';
+  document.getElementById('memOv').classList.add('on');
+  document.getElementById('memSheet').classList.add('on');
+}
+function closeMem() { document.getElementById('memOv').classList.remove('on'); document.getElementById('memSheet').classList.remove('on'); }
+
+function copyCode() { const c=document.getElementById('fcCode').textContent; if(navigator.clipboard) navigator.clipboard.writeText(c); toast('Code copied: '+c); }
+
+// ── GROCERY SEARCH ──
+function openSearch() { document.getElementById('srchOv').classList.add('on'); document.getElementById('srchSheet').classList.add('on'); setTimeout(()=>document.getElementById('srchIn').focus(),350); }
+
+function closeSearch() {
+  document.getElementById('srchOv').classList.remove('on');
+  document.getElementById('srchSheet').classList.remove('on');
+  selProduct=null;
+  document.getElementById('srchIn').value='';
+  document.getElementById('acDrop').classList.remove('on');
+  document.getElementById('srchResults').innerHTML='<div class="sh-empty">Search or tap a suggestion to find products</div>';
+  document.getElementById('srchConfirm').disabled=true;
+  document.getElementById('srchConfirm').textContent='Add to List';
+  document.getElementById('srchChips').style.display='flex';
+}
+
+function qSearch(t) { document.getElementById('srchIn').value=t; document.getElementById('acDrop').classList.remove('on'); doSearch(); }
+
+function localSearch(q) {
+  const lq=q.toLowerCase();
+  return PRODUCTS.filter(p=>p.product_name.toLowerCase().includes(lq)||p.brands.toLowerCase().includes(lq)||p.category.includes(lq));
+}
+
+async function doSearch() {
+  const q=document.getElementById('srchIn').value.trim();
+  if (!q) return;
+  document.getElementById('srchChips').style.display='none';
+  document.getElementById('acDrop').classList.remove('on');
+  const res=document.getElementById('srchResults');
+  res.innerHTML='<div class="sh-loading"><div class="spinner"></div>Finding products...</div>';
+  selProduct=null;
+  document.getElementById('srchConfirm').disabled=true;
+  document.getElementById('srchConfirm').textContent='Add to List';
+
+  try {
+    const url=`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(q)}&search_simple=1&action=process&json=1&page_size=12&fields=id,product_name,brands,image_front_small_url`;
+    const r=await fetch(url);
+    const data=await r.json();
+    const api=(data.products||[]).filter(p=>p.product_name&&p.image_front_small_url);
+    if (api.length) { renderResults(api.slice(0,8).map(p=>({product_name:p.product_name,brands:p.brands||'',img:p.image_front_small_url,emoji:getEmoji(q)})),'api'); return; }
+  } catch(e) {}
+
+  await new Promise(r=>setTimeout(r,280));
+  const found=localSearch(q);
+  if (!found.length) { res.innerHTML=`<div class="sh-empty">No products found for "<strong>${q}</strong>".<br>Try milk, eggs, bread, chicken...</div>`; return; }
+  renderResults(found.slice(0,8),'local');
+}
+
+function renderResults(prods) {
+  const res=document.getElementById('srchResults');
+  res.innerHTML='';
+  prods.forEach(p=>{
+    const c=document.createElement('div');
+    c.className='r-card';
+    c.innerHTML=`<img class="r-img" src="${p.img}" alt="${p.product_name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="r-ph" style="display:none">${p.emoji||'🛒'}</div><div class="r-nm">${p.product_name}</div>${p.brands?`<div class="r-br">${p.brands.split(',')[0]}</div>`:''}<div class="r-badge">Selected</div>`;
+    c.onclick=()=>pickResult(c,p);
+    res.appendChild(c);
+  });
+}
+
+function pickResult(card,p) {
+  document.querySelectorAll('.r-card').forEach(c=>c.classList.remove('sel'));
+  card.classList.add('sel');
+  selProduct=p;
+  const short=p.product_name.split(' ').slice(0,4).join(' ');
+  document.getElementById('srchConfirm').disabled=false;
+  document.getElementById('srchConfirm').textContent=`Add "${short}"`;
+}
+
+function confirmAdd() {
+  if (!selProduct) return;
+  const p=selProduct;
+  const sec=document.getElementById('shopAdded');
+  const item=document.createElement('div');
+  item.className='shop-item';
+  item.onclick=function(){toggleShop(this);};
+  item.innerHTML=`<div class="sh-ck"></div><img class="sh-img" src="${p.img}" onerror="this.style.display='none'"><div><div class="sh-nm">${p.product_name}</div><div class="sh-by">Added by you</div></div>`;
+  sec.appendChild(item);
+  closeSearch();
+  toast(`Added: ${p.product_name.split(' ').slice(0,3).join(' ')}`);
+}
+
+// AUTOCOMPLETE
+function acInput(val) {
+  acIdx=-1;
+  const drop=document.getElementById('acDrop');
+  const q=val.trim().toLowerCase();
+  if (q.length<1) { drop.classList.remove('on'); return; }
+  const matches=PRODUCTS.map(p=>{
+    const n=p.product_name.toLowerCase();
+    let s=0;
+    if(n.startsWith(q))s=3;
+    else if(n.includes(q))s=2;
+    else if(p.brands.toLowerCase().includes(q)||p.category.includes(q))s=1;
+    return {p,s};
+  }).filter(x=>x.s>0).sort((a,b)=>b.s-a.s).slice(0,6).map(x=>x.p);
+  if (!matches.length) { drop.classList.remove('on'); return; }
+  const rx=new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+  drop.innerHTML=matches.map(p=>`<div class="ac-item" onmousedown="qSearch('${p.product_name.replace(/'/g,"\\'")}')"><span class="ac-em">${p.emoji}</span><div><div class="ac-nm">${p.product_name.replace(rx,'<span class="ac-hi">$1</span>')}</div><div class="ac-br">${p.brands}</div></div></div>`).join('');
+  drop.classList.add('on');
+}
+
+function acKey(e) {
+  const drop=document.getElementById('acDrop');
+  const items=drop.querySelectorAll('.ac-item');
+  if(e.key==='ArrowDown'){e.preventDefault();acIdx=Math.min(acIdx+1,items.length-1);items.forEach((el,i)=>el.style.background=i===acIdx?'var(--bg)':'');}
+  else if(e.key==='ArrowUp'){e.preventDefault();acIdx=Math.max(acIdx-1,-1);items.forEach((el,i)=>el.style.background=i===acIdx?'var(--bg)':'');}
+  else if(e.key==='Enter'){if(acIdx>=0&&items[acIdx]){e.preventDefault();qSearch(items[acIdx].querySelector('.ac-nm').textContent);}else{drop.classList.remove('on');doSearch();}}
+  else if(e.key==='Escape')drop.classList.remove('on');
+}
+
+document.addEventListener('click',e=>{if(!e.target.closest('.ac-wrap'))document.getElementById('acDrop')?.classList.remove('on');});
+
+function getEmoji(t){
+  const q=t.toLowerCase();
+  if(q.includes('milk'))return'🥛';if(q.includes('egg'))return'🥚';
+  if(q.includes('bread'))return'🍞';if(q.includes('banana'))return'🍌';
+  if(q.includes('chicken'))return'🍗';if(q.includes('pasta'))return'🍝';
+  if(q.includes('butter'))return'🧈';if(q.includes('cheese'))return'🧀';
+  if(q.includes('apple'))return'🍎';if(q.includes('tomato'))return'🍅';
+  if(q.includes('coffee'))return'☕';if(q.includes('juice'))return'🍊';
+  return'🛒';
+}
+
+// ── INSTALL ──
+function openInstall() { document.getElementById('instOv').classList.add('on'); document.getElementById('instSheet').classList.add('on'); }
+function closeInstall() { document.getElementById('instOv').classList.remove('on'); document.getElementById('instSheet').classList.remove('on'); }
+
+// ── TOAST ──
+function toast(msg) {
+  const t=document.getElementById('toastEl');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2400);
+}
+</script>
 </body>
 </html>
