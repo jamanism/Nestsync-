@@ -2517,35 +2517,35 @@ function searchLocal(query) {
   );
 }
 
-async function searchItems() {
-  const query = document.getElementById('sheetSearch').value.trim();
-  if (!query) return;
-  document.getElementById('sheetSuggestions').style.display = 'none';
-  document.getElementById('autocompleteDropdown').classList.remove('open');
-  const results = document.getElementById('sheetResults');
-  results.innerHTML = '<div class="sheet-loading"><div class="spinner"></div>Finding products...</div>';
-  selectedProduct2 = null;
-  document.getElementById('sheetConfirm').disabled = true;
-  document.getElementById('sheetConfirm').textContent = 'Add to List';
+function escapeHtml(str = '') {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 
-  try {
-    const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=12&fields=id,product_name,brands,image_front_small_url`;
-    const res = await fetch(url);
-    const data = await res.json();
-    const apiProds = (data.products || []).filter(p => p.product_name && p.product_name.trim() && p.image_front_small_url);
-    if (apiProds.length) {
-      renderResults(apiProds.slice(0, 8).map(p => ({ product_name: p.product_name, brands: p.brands || '', img: p.image_front_small_url, emoji: getEmoji(query) })));
-      return;
-    }
-  } catch(e) {}
+function parseOffProducts(data, query) {
+  const products = (data.products || []).map(p => {
+    const name = p.product_name?.trim() || p.product_name_en?.trim() || p.generic_name?.trim() || '';
+    const brand = (p.brands || '').split(',')[0].trim();
+    const img = p.image_front_url || p.image_url || p.image_front_small_url || '';
+    if (!name || !img) return null;
+    const imageIsRemote = /^https?:\/\//.test(img);
+    if (!imageIsRemote) return null;
+    return {
+      product_name: name,
+      brands: brand,
+      img,
+      emoji: getEmoji(query),
+      _score: Number(Boolean(p.image_front_url)) * 3 + Number(Boolean(brand)) * 2 + Number(Boolean(p.nutriments))
+    };
+  }).filter(Boolean);
 
-  await new Promise(r => setTimeout(r, 300));
-  const found = searchLocal(query);
-  if (!found.length) {
-    results.innerHTML = `<div class="sheet-empty">No products found for "<strong>${query}</strong>".<br>Try milk, eggs, bread, chicken...</div>`;
-    return;
-  }
-  renderResults(found.slice(0, 8));
+  return products.sort((a, b) => b._score - a._score).slice(0, 10).map(({ _score, ...rest }) => rest);
+}
+
 }
 
 function renderResults(products) {
