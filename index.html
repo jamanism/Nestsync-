@@ -1471,9 +1471,6 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
     <button class="btn-secondary" id="onboardBack" onclick="onboardPrev()" style="display:none">Back</button>
     <button class="btn-primary" id="onboardNext" onclick="onboardNext()">Continue →</button>
   </div>
-  <div style="text-align:center;padding:0 0 1rem">
-    <button onclick="skipOnboarding()" style="background:none;border:none;font-size:0.78rem;color:var(--text-light);cursor:pointer;font-family:var(--font);text-decoration:underline">Skip setup for now</button>
-  </div>
 </div>
 
 <!-- ============ MAIN APP ============ -->
@@ -2132,6 +2129,7 @@ let calDate = new Date();
 
 // ============ SPLASH ============
 window.addEventListener('load', () => {
+  const seen = localStorage.getItem ? localStorage.getItem('ns_onboarded') : null;
   setTimeout(() => {
     const splash = document.getElementById('splash');
     splash.style.opacity = '0';
@@ -2139,8 +2137,12 @@ window.addEventListener('load', () => {
     setTimeout(() => {
       splash.style.display = 'none';
       splash.classList.remove('active');
-      document.getElementById('onboarding').classList.remove('hidden');
-      document.getElementById('onboarding').classList.add('active');
+      if (seen) {
+        launchMainApp();
+      } else {
+        document.getElementById('onboarding').classList.remove('hidden');
+        document.getElementById('onboarding').classList.add('active');
+      }
     }, 500);
   }, 2400);
 
@@ -2165,14 +2167,8 @@ window.addEventListener('load', () => {
 });
 
 function launchMainApp() {
-  const app = document.getElementById('mainApp');
-  app.classList.remove('hidden');
-  app.style.opacity = '0';
-  app.classList.add('active');
-  requestAnimationFrame(() => {
-    app.style.transition = 'opacity 0.4s ease';
-    app.style.opacity = '1';
-  });
+  document.getElementById('mainApp').classList.remove('hidden');
+  document.getElementById('mainApp').classList.add('active');
 }
 
 // ============ COLOR GRID ============
@@ -2315,21 +2311,11 @@ function buildHeaderAvatars(creatorName) {
   });
 }
 
-function skipOnboarding() {
-  // Set demo defaults
-  document.getElementById('familyGreeting').textContent = 'your family.';
-  finishOnboarding();
-}
-
 function finishOnboarding() {
-  const ob = document.getElementById('onboarding');
-  ob.style.opacity = '0';
-  ob.style.transition = 'opacity 0.4s ease';
-  setTimeout(() => {
-    ob.style.display = 'none';
-    ob.classList.remove('active');
-    launchMainApp();
-  }, 400);
+  try { localStorage.setItem('ns_onboarded', '1'); } catch(e) {}
+  document.getElementById('onboarding').classList.add('slide-left');
+  document.getElementById('onboarding').classList.remove('active');
+  launchMainApp();
 }
 
 // ============ TAB NAVIGATION ============
