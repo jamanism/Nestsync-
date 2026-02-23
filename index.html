@@ -2071,278 +2071,52 @@ const COLORS = [
 ];
 
 const PRODUCTS = [
-
-  // ── DAIRY ──
-  { product_name: "Whole Milk (1 Gallon)", brands: "Great Value", category: "dairy", emoji: "🥛",
-    img: "https://i5.walmartimages.com/asr/5ef10d04-dc3c-489a-9add-c5fa1c69f506.f7cd0cc2e55e4e1e9e9b4f4d7d9c3b2e.jpeg?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
-  { product_name: "2% Reduced Fat Milk", brands: "Horizon Organic", category: "dairy", emoji: "🥛",
-    img: "https://i5.walmartimages.com/asr/3d2e1f0a-8b4c-4e6a-9c2d-1f5e8a7b3c9d.jpeg?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
-  { product_name: "Oat Milk", brands: "Oatly", category: "dairy", emoji: "🥛",
-    img: "https://images.freshop.com/00195988016498/08eca5fd8a0b01e7bef94b9f93c8c9e8_large.png" },
-  { product_name: "Almond Milk Unsweetened", brands: "Silk", category: "dairy", emoji: "🥛",
-    img: "https://images.freshop.com/00025293002883/fd5f9f01d2a42e7e3ba4e5c2e9b5a1c3_large.png" },
-  { product_name: "Greek Yogurt Plain", brands: "Chobani", category: "dairy", emoji: "🫙",
-    img: "https://images.freshop.com/00818290011601/1e9a2b3c4d5e6f7a8b9c0d1e2f3a4b5c_large.png" },
-  { product_name: "Strawberry Yogurt", brands: "Chobani", category: "dairy", emoji: "🫙",
-    img: "https://images.freshop.com/00818290016378/a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6_large.png" },
-  { product_name: "Salted Butter", brands: "Land O'Lakes", category: "dairy", emoji: "🧈",
-    img: "https://images.freshop.com/00021000000003/c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8_large.png" },
-  { product_name: "Unsalted Butter", brands: "Kerrygold", category: "dairy", emoji: "🧈",
-    img: "https://images.freshop.com/00767707090008/d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9_large.png" },
-  { product_name: "Shredded Mozzarella", brands: "Kraft", category: "dairy", emoji: "🧀",
-    img: "https://images.freshop.com/00021000025954/e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0_large.png" },
-  { product_name: "Sharp Cheddar Cheese", brands: "Tillamook", category: "dairy", emoji: "🧀",
-    img: "https://images.freshop.com/00072830000258/f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1_large.png" },
-  { product_name: "Cream Cheese", brands: "Philadelphia", category: "dairy", emoji: "🧀",
-    img: "https://images.freshop.com/00021000000812/a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2_large.png" },
-  { product_name: "Sour Cream", brands: "Daisy", category: "dairy", emoji: "🫙",
-    img: "https://images.freshop.com/00026400001015/b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3_large.png" },
-  { product_name: "Heavy Whipping Cream", brands: "Organic Valley", category: "dairy", emoji: "🥛",
-    img: "https://images.freshop.com/00093966000029/c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4_large.png" },
-  { product_name: "Cottage Cheese", brands: "Good Culture", category: "dairy", emoji: "🫙",
-    img: "https://images.freshop.com/00850590004127/d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5_large.png" },
-
-  // ── EGGS ──
-  { product_name: "Large White Eggs (12ct)", brands: "Happy Egg", category: "eggs", emoji: "🥚",
-    img: "https://images.freshop.com/00085592201006/e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6_large.png" },
-  { product_name: "Free Range Brown Eggs (12ct)", brands: "Vital Farms", category: "eggs", emoji: "🥚",
-    img: "https://images.freshop.com/00721902003015/f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7_large.png" },
-  { product_name: "Cage Free Eggs (18ct)", brands: "Pete & Gerry's", category: "eggs", emoji: "🥚",
-    img: "https://images.freshop.com/00036800388970/a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8_large.png" },
-
-  // ── PRODUCE ──
-  { product_name: "Bananas (Bunch)", brands: "Fresh", category: "produce", emoji: "🍌",
-    img: "https://i5.walmartimages.com/asr/91b1a54d-2de4-4d77-8029-7a4272b4c6fd.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
-  { product_name: "Strawberries (1lb)", brands: "Driscoll's", category: "produce", emoji: "🍓",
-    img: "https://i5.walmartimages.com/asr/e3994f65-6f8c-4a3d-8e72-7b9d5a1c2f3e.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
-  { product_name: "Blueberries (18oz)", brands: "Driscoll's", category: "produce", emoji: "🫐",
-    img: "https://i5.walmartimages.com/asr/4b5c6d7e-8f9a-0b1c-2d3e-4f5a6b7c8d9e.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
-  { product_name: "Honeycrisp Apples (3lb)", brands: "Fresh", category: "produce", emoji: "🍎",
-    img: "https://i5.walmartimages.com/asr/5c6d7e8f-9a0b-1c2d-3e4f-5a6b7c8d9e0f.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
-  { product_name: "Avocados (4ct)", brands: "Fresh", category: "produce", emoji: "🥑",
-    img: "https://i5.walmartimages.com/asr/6d7e8f9a-0b1c-2d3e-4f5a-6b7c8d9e0f1a.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
-  { product_name: "Baby Spinach (5oz)", brands: "Earthbound Farm", category: "produce", emoji: "🥬",
-    img: "https://images.freshop.com/00032601008226/b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9_large.png" },
-  { product_name: "Roma Tomatoes", brands: "Fresh", category: "produce", emoji: "🍅",
-    img: "https://i5.walmartimages.com/asr/8f9a0b1c-2d3e-4f5a-6b7c-8d9e0f1a2b3c.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
-  { product_name: "Broccoli Crown", brands: "Fresh", category: "produce", emoji: "🥦",
-    img: "https://i5.walmartimages.com/asr/9a0b1c2d-3e4f-5a6b-7c8d-9e0f1a2b3c4d.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
-  { product_name: "Baby Carrots (2lb)", brands: "Bolthouse Farms", category: "produce", emoji: "🥕",
-    img: "https://images.freshop.com/00071464009025/c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0_large.png" },
-  { product_name: "Russet Potatoes (5lb)", brands: "Fresh", category: "produce", emoji: "🥔",
-    img: "https://i5.walmartimages.com/asr/0b1c2d3e-4f5a-6b7c-8d9e-0f1a2b3c4d5e.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
-  { product_name: "Yellow Onions (3lb)", brands: "Fresh", category: "produce", emoji: "🧅",
-    img: "https://i5.walmartimages.com/asr/1c2d3e4f-5a6b-7c8d-9e0f-1a2b3c4d5e6f.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
-  { product_name: "Garlic (3 heads)", brands: "Fresh", category: "produce", emoji: "🧄",
-    img: "https://i5.walmartimages.com/asr/2d3e4f5a-6b7c-8d9e-0f1a-2b3c4d5e6f7a.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
-  { product_name: "Lemons (2lb bag)", brands: "Fresh", category: "produce", emoji: "🍋",
-    img: "https://i5.walmartimages.com/asr/3e4f5a6b-7c8d-9e0f-1a2b-3c4d5e6f7a8b.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
-  { product_name: "Navel Oranges (4lb)", brands: "Fresh", category: "produce", emoji: "🍊",
-    img: "https://i5.walmartimages.com/asr/4f5a6b7c-8d9e-0f1a-2b3c-4d5e6f7a8b9c.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
-  { product_name: "Celery Stalks", brands: "Fresh", category: "produce", emoji: "🥬",
-    img: "https://i5.walmartimages.com/asr/5a6b7c8d-9e0f-1a2b-3c4d-5e6f7a8b9c0d.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
-  { product_name: "Green Bell Peppers (3ct)", brands: "Fresh", category: "produce", emoji: "🫑",
-    img: "https://i5.walmartimages.com/asr/6b7c8d9e-0f1a-2b3c-4d5e-6f7a8b9c0d1e.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
-  { product_name: "Cucumber", brands: "Fresh", category: "produce", emoji: "🥒",
-    img: "https://i5.walmartimages.com/asr/7c8d9e0f-1a2b-3c4d-5e6f-7a8b9c0d1e2f.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
-
-  // ── BREAD & BAKERY ──
-  { product_name: "Sourdough Bread Loaf", brands: "Dave's Killer Bread", category: "bread", emoji: "🍞",
-    img: "https://images.freshop.com/00013000009398/d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1_large.png" },
-  { product_name: "Whole Wheat Bread", brands: "Nature's Own", category: "bread", emoji: "🍞",
-    img: "https://images.freshop.com/00073130000003/e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2_large.png" },
-  { product_name: "White Sandwich Bread", brands: "Wonder", category: "bread", emoji: "🍞",
-    img: "https://images.freshop.com/00028000420796/f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3_large.png" },
-  { product_name: "Everything Bagels (6ct)", brands: "Thomas'", category: "bread", emoji: "🥯",
-    img: "https://images.freshop.com/00073130003042/a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4_large.png" },
-  { product_name: "Flour Tortillas (10ct)", brands: "Mission", category: "bread", emoji: "🫓",
-    img: "https://images.freshop.com/00073731007323/b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5_large.png" },
-  { product_name: "Corn Tortillas (30ct)", brands: "Mission", category: "bread", emoji: "🫓",
-    img: "https://images.freshop.com/00073731007316/c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6_large.png" },
-  { product_name: "Butter Croissants (4ct)", brands: "Pillsbury", category: "bread", emoji: "🥐",
-    img: "https://images.freshop.com/00018000138792/d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7_large.png" },
-  { product_name: "English Muffins (6ct)", brands: "Thomas'", category: "bread", emoji: "🧁",
-    img: "https://images.freshop.com/00073130000218/e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8_large.png" },
-  { product_name: "Brioche Buns (8ct)", brands: "Pepperidge Farm", category: "bread", emoji: "🍞",
-    img: "https://images.freshop.com/00014100097032/f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9_large.png" },
-
-  // ── MEAT & SEAFOOD ──
-  { product_name: "Boneless Chicken Breast", brands: "Perdue", category: "meat", emoji: "🍗",
-    img: "https://images.freshop.com/00010000050060/a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0_large.png" },
-  { product_name: "Chicken Thighs Bone-In", brands: "Perdue", category: "meat", emoji: "🍗",
-    img: "https://images.freshop.com/00010000050770/b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1_large.png" },
-  { product_name: "Ground Beef 80/20 (1lb)", brands: "Laura's Lean", category: "meat", emoji: "🥩",
-    img: "https://images.freshop.com/00076870001028/c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2_large.png" },
-  { product_name: "Salmon Fillet (1lb)", brands: "Fresh", category: "meat", emoji: "🐟",
-    img: "https://i5.walmartimages.com/asr/a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
-  { product_name: "Bacon (16oz)", brands: "Oscar Mayer", category: "meat", emoji: "🥓",
-    img: "https://images.freshop.com/00044700032831/d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3_large.png" },
-  { product_name: "Italian Sausage Links", brands: "Johnsonville", category: "meat", emoji: "🌭",
-    img: "https://images.freshop.com/00070100085943/e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4_large.png" },
-  { product_name: "Shrimp Large (2lb)", brands: "SeaPak", category: "meat", emoji: "🍤",
-    img: "https://images.freshop.com/00047600020063/f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5_large.png" },
-  { product_name: "Ground Turkey (1lb)", brands: "Butterball", category: "meat", emoji: "🦃",
-    img: "https://images.freshop.com/00022655705015/a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6_large.png" },
-  { product_name: "Pork Chops Bone-In", brands: "Fresh", category: "meat", emoji: "🥩",
-    img: "https://i5.walmartimages.com/asr/b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
-
-  // ── PANTRY ──
-  { product_name: "Extra Virgin Olive Oil (16oz)", brands: "California Olive Ranch", category: "pantry", emoji: "🫙",
-    img: "https://images.freshop.com/00854952003697/b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7_large.png" },
-  { product_name: "Vegetable Oil (48oz)", brands: "Crisco", category: "pantry", emoji: "🫙",
-    img: "https://images.freshop.com/00051500753216/c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8_large.png" },
-  { product_name: "Penne Pasta (1lb)", brands: "Barilla", category: "pantry", emoji: "🍝",
-    img: "https://images.freshop.com/00076808001230/d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9_large.png" },
-  { product_name: "Spaghetti (1lb)", brands: "Barilla", category: "pantry", emoji: "🍝",
-    img: "https://images.freshop.com/00076808000004/e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0_large.png" },
-  { product_name: "Rotini Pasta (1lb)", brands: "Barilla", category: "pantry", emoji: "🍝",
-    img: "https://images.freshop.com/00076808001254/f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1_large.png" },
-  { product_name: "Jasmine Rice (5lb)", brands: "Mahatma", category: "pantry", emoji: "🍚",
-    img: "https://images.freshop.com/00075040903097/a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2_large.png" },
-  { product_name: "Rolled Oats (42oz)", brands: "Quaker", category: "pantry", emoji: "🥣",
-    img: "https://images.freshop.com/00030000014336/b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3_large.png" },
-  { product_name: "Peanut Butter Creamy", brands: "Jif", category: "pantry", emoji: "🥜",
-    img: "https://images.freshop.com/00051500750093/c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4_large.png" },
-  { product_name: "Almond Butter", brands: "Justin's", category: "pantry", emoji: "🥜",
-    img: "https://images.freshop.com/00894455000902/d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5_large.png" },
-  { product_name: "Honey (12oz)", brands: "Nature Nate's", category: "pantry", emoji: "🍯",
-    img: "https://images.freshop.com/00853926003002/e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6_large.png" },
-  { product_name: "Maple Syrup (12oz)", brands: "Coombs Family Farms", category: "pantry", emoji: "🍯",
-    img: "https://images.freshop.com/00041155088043/f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7_large.png" },
-  { product_name: "Tomato Sauce (24oz)", brands: "Rao's Homemade", category: "pantry", emoji: "🍅",
-    img: "https://images.freshop.com/00747479112101/a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8_large.png" },
-  { product_name: "Chicken Broth (32oz)", brands: "Swanson", category: "pantry", emoji: "🍲",
-    img: "https://images.freshop.com/00051000021755/b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9_large.png" },
-  { product_name: "Canned Diced Tomatoes", brands: "Hunt's", category: "pantry", emoji: "🍅",
-    img: "https://images.freshop.com/00026600010152/c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0_large.png" },
-  { product_name: "Black Beans (15oz)", brands: "Bush's Best", category: "pantry", emoji: "🫘",
-    img: "https://images.freshop.com/00039400016786/d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1_large.png" },
-  { product_name: "Garbanzo Beans (15oz)", brands: "Goya", category: "pantry", emoji: "🫘",
-    img: "https://images.freshop.com/00041331022253/e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2_large.png" },
-  { product_name: "Tuna in Water (5oz)", brands: "Bumble Bee", category: "pantry", emoji: "🐟",
-    img: "https://images.freshop.com/00086600000206/f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3_large.png" },
-  { product_name: "All-Purpose Flour (5lb)", brands: "King Arthur", category: "pantry", emoji: "🌾",
-    img: "https://images.freshop.com/00071012001000/a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4_large.png" },
-  { product_name: "Granulated Sugar (4lb)", brands: "Domino", category: "pantry", emoji: "🍬",
-    img: "https://images.freshop.com/00049200002688/b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5_large.png" },
-  { product_name: "Brown Sugar (2lb)", brands: "Domino", category: "pantry", emoji: "🍬",
-    img: "https://images.freshop.com/00049200002695/c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6_large.png" },
-  { product_name: "Sea Salt", brands: "Morton", category: "pantry", emoji: "🧂",
-    img: "https://images.freshop.com/00024600012619/d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7_large.png" },
-  { product_name: "Black Pepper Ground", brands: "McCormick", category: "pantry", emoji: "🧂",
-    img: "https://images.freshop.com/00052100004744/e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8_large.png" },
-  { product_name: "Soy Sauce (10oz)", brands: "Kikkoman", category: "pantry", emoji: "🫙",
-    img: "https://images.freshop.com/00041390000109/f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9_large.png" },
-  { product_name: "Hot Sauce (5oz)", brands: "Frank's RedHot", category: "pantry", emoji: "🌶️",
-    img: "https://images.freshop.com/00041500285121/a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0_large.png" },
-
-  // ── BEVERAGES ──
-  { product_name: "Orange Juice (52oz)", brands: "Tropicana", category: "beverages", emoji: "🍊",
-    img: "https://images.freshop.com/00048500000284/b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1_large.png" },
-  { product_name: "Apple Juice (64oz)", brands: "Mott's", category: "beverages", emoji: "🍎",
-    img: "https://images.freshop.com/00014800001008/c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2_large.png" },
-  { product_name: "Sparkling Water (12pk)", brands: "LaCroix", category: "beverages", emoji: "💧",
-    img: "https://images.freshop.com/00811576000214/d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3_large.png" },
-  { product_name: "Ground Coffee (12oz)", brands: "Peet's Coffee", category: "beverages", emoji: "☕",
-    img: "https://images.freshop.com/00006802000132/e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4_large.png" },
-  { product_name: "Cold Brew Coffee (48oz)", brands: "Chameleon", category: "beverages", emoji: "☕",
-    img: "https://images.freshop.com/00852882006025/f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5_large.png" },
-  { product_name: "Green Tea (20ct)", brands: "Bigelow", category: "beverages", emoji: "🍵",
-    img: "https://images.freshop.com/00072310000045/a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6_large.png" },
-  { product_name: "Coconut Water (33oz)", brands: "Vita Coco", category: "beverages", emoji: "🥥",
-    img: "https://images.freshop.com/00898999001001/b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7_large.png" },
-  { product_name: "Gatorade Fruit Punch (32oz)", brands: "Gatorade", category: "beverages", emoji: "🥤",
-    img: "https://images.freshop.com/00052000337977/c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8_large.png" },
-  { product_name: "Vitamin D Whole Milk (1gal)", brands: "Fairlife", category: "beverages", emoji: "🥛",
-    img: "https://images.freshop.com/00041383380919/d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9_large.png" },
-
-  // ── SNACKS ──
-  { product_name: "Tortilla Chips (13oz)", brands: "Tostitos", category: "snacks", emoji: "🌮",
-    img: "https://images.freshop.com/00028400090507/e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0_large.png" },
-  { product_name: "Original Potato Chips", brands: "Lay's", category: "snacks", emoji: "🥔",
-    img: "https://images.freshop.com/00028400090606/f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1_large.png" },
-  { product_name: "Mixed Nuts (10oz)", brands: "Planters", category: "snacks", emoji: "🥜",
-    img: "https://images.freshop.com/00029000011490/a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2_large.png" },
-  { product_name: "Dark Chocolate Bar (3.5oz)", brands: "Lindt 70%", category: "snacks", emoji: "🍫",
-    img: "https://images.freshop.com/00037466019578/b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3_large.png" },
-  { product_name: "Granola Bars (6ct)", brands: "Kind", category: "snacks", emoji: "🍫",
-    img: "https://images.freshop.com/00602652249087/c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4_large.png" },
-  { product_name: "Rice Cakes (4.5oz)", brands: "Quaker", category: "snacks", emoji: "🍘",
-    img: "https://images.freshop.com/00030000060665/d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5_large.png" },
-  { product_name: "Crackers (13.8oz)", brands: "Ritz", category: "snacks", emoji: "🫙",
-    img: "https://images.freshop.com/00044000032281/e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6_large.png" },
-  { product_name: "Goldfish Crackers (30oz)", brands: "Pepperidge Farm", category: "snacks", emoji: "🐟",
-    img: "https://images.freshop.com/00014100096325/f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7_large.png" },
-  { product_name: "Popcorn (3pk)", brands: "Boom Chicka Pop", category: "snacks", emoji: "🍿",
-    img: "https://images.freshop.com/00818780010335/a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8_large.png" },
-  { product_name: "Trail Mix (30oz)", brands: "Kirkland", category: "snacks", emoji: "🥜",
-    img: "https://images.freshop.com/00096619271314/b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9_large.png" },
-
-  // ── FROZEN ──
-  { product_name: "Vanilla Ice Cream (48oz)", brands: "Häagen-Dazs", category: "frozen", emoji: "🍦",
-    img: "https://images.freshop.com/00074570000028/c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0_large.png" },
-  { product_name: "Frozen Blueberries (32oz)", brands: "Wyman's", category: "frozen", emoji: "🫐",
-    img: "https://images.freshop.com/00072310901033/d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1_large.png" },
-  { product_name: "Frozen Broccoli (12oz)", brands: "Birds Eye", category: "frozen", emoji: "🥦",
-    img: "https://images.freshop.com/00014500041025/e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2_large.png" },
-  { product_name: "Frozen Pizza", brands: "DiGiorno", category: "frozen", emoji: "🍕",
-    img: "https://images.freshop.com/00071921500018/f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3_large.png" },
-  { product_name: "Frozen Waffles (10ct)", brands: "Eggo", category: "frozen", emoji: "🧇",
-    img: "https://images.freshop.com/00038000291401/a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4_large.png" },
-  { product_name: "Chicken Nuggets (32oz)", brands: "Tyson", category: "frozen", emoji: "🍗",
-    img: "https://images.freshop.com/00023700023830/b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5_large.png" },
-  { product_name: "Edamame (16oz)", brands: "Seapoint Farms", category: "frozen", emoji: "🫛",
-    img: "https://images.freshop.com/00041321000038/c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6_large.png" },
-  { product_name: "Frozen Corn (12oz)", brands: "Birds Eye", category: "frozen", emoji: "🌽",
-    img: "https://images.freshop.com/00014500040660/d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7_large.png" },
-  { product_name: "Frozen Mango Chunks (16oz)", brands: "Dole", category: "frozen", emoji: "🥭",
-    img: "https://images.freshop.com/00071326017308/e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8_large.png" },
-
-  // ── BREAKFAST ──
-  { product_name: "Cheerios (18oz)", brands: "General Mills", category: "breakfast", emoji: "🥣",
-    img: "https://images.freshop.com/00016000275607/f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9_large.png" },
-  { product_name: "Honey Nut Cheerios (19.5oz)", brands: "General Mills", category: "breakfast", emoji: "🥣",
-    img: "https://images.freshop.com/00016000244238/a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0_large.png" },
-  { product_name: "Frosted Flakes (24oz)", brands: "Kellogg's", category: "breakfast", emoji: "🥣",
-    img: "https://images.freshop.com/00038000003479/b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1_large.png" },
-  { product_name: "Instant Oatmeal (8pk)", brands: "Quaker", category: "breakfast", emoji: "🥣",
-    img: "https://images.freshop.com/00030000010437/c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2_large.png" },
-  { product_name: "Pancake Mix (32oz)", brands: "Bisquick", category: "breakfast", emoji: "🥞",
-    img: "https://images.freshop.com/00016000437109/d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3_large.png" },
-
-  // ── HOUSEHOLD & PERSONAL ──
-  { product_name: "Dish Soap (21.6oz)", brands: "Dawn Platinum", category: "household", emoji: "🧴",
-    img: "https://images.freshop.com/00037000759270/e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4_large.png" },
-  { product_name: "Laundry Detergent (92oz)", brands: "Tide Free & Gentle", category: "household", emoji: "🧺",
-    img: "https://images.freshop.com/00037000263388/f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5_large.png" },
-  { product_name: "Paper Towels (8 rolls)", brands: "Bounty Select-A-Size", category: "household", emoji: "🧻",
-    img: "https://images.freshop.com/00037000761419/a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6_large.png" },
-  { product_name: "Toilet Paper (12 rolls)", brands: "Charmin Ultra Soft", category: "household", emoji: "🧻",
-    img: "https://images.freshop.com/00037000863359/b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7_large.png" },
-  { product_name: "Garbage Bags (20ct)", brands: "Glad Tall Kitchen", category: "household", emoji: "🛍️",
-    img: "https://images.freshop.com/00012587001099/c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8_large.png" },
-  { product_name: "Hand Soap (11.25oz)", brands: "Softsoap", category: "household", emoji: "🧴",
-    img: "https://images.freshop.com/00037000882900/d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9_large.png" },
-  { product_name: "Toothpaste (4.8oz)", brands: "Colgate Total", category: "household", emoji: "🪥",
-    img: "https://images.freshop.com/00035000040865/e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0_large.png" },
-  { product_name: "Shampoo (12.6oz)", brands: "Pantene Pro-V", category: "household", emoji: "🧴",
-    img: "https://images.freshop.com/00037000865780/f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1_large.png" },
-  { product_name: "Body Wash (22oz)", brands: "Dove Sensitive", category: "household", emoji: "🧴",
-    img: "https://images.freshop.com/00011111059872/a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2_large.png" },
-  { product_name: "Deodorant", brands: "Dove Men+Care", category: "household", emoji: "🧴",
-    img: "https://images.freshop.com/00011111031090/b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3_large.png" },
-
-  // ── BABY & KIDS ──
-  { product_name: "Baby Wipes (216ct)", brands: "Pampers Sensitive", category: "baby", emoji: "👶",
-    img: "https://images.freshop.com/00037000833131/c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4_large.png" },
-  { product_name: "Diapers Size 3 (144ct)", brands: "Pampers Swaddlers", category: "baby", emoji: "👶",
-    img: "https://images.freshop.com/00037000869948/d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5_large.png" },
-  { product_name: "Baby Formula (12.5oz)", brands: "Similac Pro-Advance", category: "baby", emoji: "🍼",
-    img: "https://images.freshop.com/00070074505596/e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6_large.png" },
-  { product_name: "Applesauce Pouches (12ct)", brands: "GoGo squeeZ", category: "baby", emoji: "🍎",
-    img: "https://images.freshop.com/00893220000283/f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7_large.png" },
-  { product_name: "Mac & Cheese", brands: "Kraft", category: "baby", emoji: "🧀",
-    img: "https://images.freshop.com/00021000016708/a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8_large.png" },
+  { product_name: "Whole Milk", brands: "Organic Valley", category: "dairy", emoji: "🥛", img: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=200&q=80" },
+  { product_name: "2% Reduced Fat Milk", brands: "Horizon Organic", category: "dairy", emoji: "🥛", img: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=200&q=80" },
+  { product_name: "Greek Yogurt", brands: "Chobani", category: "dairy", emoji: "🫙", img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=200&q=80" },
+  { product_name: "Cheddar Cheese Block", brands: "Tillamook", category: "dairy", emoji: "🧀", img: "https://images.unsplash.com/photo-1618164436241-4473940d1f5c?w=200&q=80" },
+  { product_name: "Shredded Mozzarella", brands: "Kraft", category: "dairy", emoji: "🧀", img: "https://images.unsplash.com/photo-1618164436241-4473940d1f5c?w=200&q=80" },
+  { product_name: "Salted Butter", brands: "Land O Lakes", category: "dairy", emoji: "🧈", img: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=200&q=80" },
+  { product_name: "Unsalted Butter", brands: "Kerrygold", category: "dairy", emoji: "🧈", img: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=200&q=80" },
+  { product_name: "Almond Milk", brands: "Califia Farms", category: "dairy", emoji: "🥛", img: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=200&q=80" },
+  { product_name: "Cream Cheese", brands: "Philadelphia", category: "dairy", emoji: "🧀", img: "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=200&q=80" },
+  { product_name: "Large White Eggs (12ct)", brands: "Happy Egg Co", category: "eggs", emoji: "🥚", img: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=200&q=80" },
+  { product_name: "Free Range Brown Eggs", brands: "Pete & Gerry's", category: "eggs", emoji: "🥚", img: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=200&q=80" },
+  { product_name: "Bananas", brands: "Chiquita", category: "produce", emoji: "🍌", img: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=200&q=80" },
+  { product_name: "Baby Spinach", brands: "Earthbound Farm", category: "produce", emoji: "🥬", img: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=200&q=80" },
+  { product_name: "Roma Tomatoes", brands: "Local Farm", category: "produce", emoji: "🍅", img: "https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=200&q=80" },
+  { product_name: "Honeycrisp Apples", brands: "Stemilt", category: "produce", emoji: "🍎", img: "https://images.unsplash.com/photo-1570913149827-d2ac84ab3f9a?w=200&q=80" },
+  { product_name: "Strawberries (1lb)", brands: "Driscoll's", category: "produce", emoji: "🍓", img: "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=200&q=80" },
+  { product_name: "Blueberries", brands: "Driscoll's", category: "produce", emoji: "🫐", img: "https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=200&q=80" },
+  { product_name: "Broccoli Crown", brands: "Local Farm", category: "produce", emoji: "🥦", img: "https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?w=200&q=80" },
+  { product_name: "Baby Carrots", brands: "Bolthouse Farms", category: "produce", emoji: "🥕", img: "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=200&q=80" },
+  { product_name: "Avocados (4ct)", brands: "Hass", category: "produce", emoji: "🥑", img: "https://images.unsplash.com/photo-1519162808019-7de1683fa2ad?w=200&q=80" },
+  { product_name: "Oranges (4lb bag)", brands: "Sunkist", category: "produce", emoji: "🍊", img: "https://images.unsplash.com/photo-1547514701-42782101795e?w=200&q=80" },
+  { product_name: "Sourdough Bread Loaf", brands: "Dave's Killer Bread", category: "bread", emoji: "🍞", img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200&q=80" },
+  { product_name: "Whole Wheat Bread", brands: "Arnold", category: "bread", emoji: "🍞", img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200&q=80" },
+  { product_name: "Everything Bagels (6ct)", brands: "Thomas'", category: "bread", emoji: "🥯", img: "https://images.unsplash.com/photo-1585378606295-da76a64a4a6a?w=200&q=80" },
+  { product_name: "Flour Tortillas (10ct)", brands: "Mission", category: "bread", emoji: "🫓", img: "https://images.unsplash.com/photo-1584278860047-22db9ff82bed?w=200&q=80" },
+  { product_name: "Boneless Chicken Breast", brands: "Perdue", category: "meat", emoji: "🍗", img: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=200&q=80" },
+  { product_name: "Ground Beef 80/20", brands: "Local Butcher", category: "meat", emoji: "🥩", img: "https://images.unsplash.com/photo-1602470520998-f4a52199a3d6?w=200&q=80" },
+  { product_name: "Salmon Fillet", brands: "Wild Planet", category: "meat", emoji: "🐟", img: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=200&q=80" },
+  { product_name: "Bacon (12oz)", brands: "Applegate", category: "meat", emoji: "🥓", img: "https://images.unsplash.com/photo-1528607929212-2636ec44253e?w=200&q=80" },
+  { product_name: "Extra Virgin Olive Oil", brands: "California Olive Ranch", category: "pantry", emoji: "🫙", img: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=200&q=80" },
+  { product_name: "Penne Pasta (1lb)", brands: "Barilla", category: "pantry", emoji: "🍝", img: "https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=200&q=80" },
+  { product_name: "Spaghetti (1lb)", brands: "Barilla", category: "pantry", emoji: "🍝", img: "https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=200&q=80" },
+  { product_name: "Jasmine Rice (5lb)", brands: "Lundberg", category: "pantry", emoji: "🍚", img: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=200&q=80" },
+  { product_name: "Rolled Oats", brands: "Bob's Red Mill", category: "pantry", emoji: "🥣", img: "https://images.unsplash.com/photo-1614961233913-a5113a4a34ed?w=200&q=80" },
+  { product_name: "Peanut Butter", brands: "Jif", category: "pantry", emoji: "🥜", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=200&q=80" },
+  { product_name: "Honey (12oz)", brands: "Nature Nate's", category: "pantry", emoji: "🍯", img: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=200&q=80" },
+  { product_name: "Orange Juice (52oz)", brands: "Tropicana", category: "beverages", emoji: "🍊", img: "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=200&q=80" },
+  { product_name: "Sparkling Water (12pk)", brands: "LaCroix", category: "beverages", emoji: "💧", img: "https://images.unsplash.com/photo-1622543925917-763c34d1a86e?w=200&q=80" },
+  { product_name: "Ground Coffee (12oz)", brands: "Peet's", category: "beverages", emoji: "☕", img: "https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=200&q=80" },
+  { product_name: "Tortilla Chips", brands: "Tostitos", category: "snacks", emoji: "🌮", img: "https://images.unsplash.com/photo-1600952841320-db92ec4047ca?w=200&q=80" },
+  { product_name: "Mixed Nuts (10oz)", brands: "Planters", category: "snacks", emoji: "🥜", img: "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=200&q=80" },
+  { product_name: "Dark Chocolate Bar", brands: "Lindt", category: "snacks", emoji: "🍫", img: "https://images.unsplash.com/photo-1481391319762-47dff72954d9?w=200&q=80" },
+  { product_name: "Vanilla Ice Cream", brands: "Häagen-Dazs", category: "frozen", emoji: "🍦", img: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=200&q=80" },
+  { product_name: "Frozen Pizza", brands: "Amy's", category: "frozen", emoji: "🍕", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200&q=80" },
+  { product_name: "Chicken Breast", brands: "Perdue", category: "chicken", emoji: "🍗", img: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=200&q=80" },
+  { product_name: "Butter Croissants", brands: "Trader Joe's", category: "bread", emoji: "🥐", img: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=200&q=80" },
 ];
 
 // ============ STATE ============
@@ -2358,11 +2132,6 @@ let calDate = new Date();
 
 // ============ SPLASH ============
 window.addEventListener('load', () => {
-  // Skip splash and onboarding — go straight to app
-  document.getElementById('splash').style.display = 'none';
-  document.getElementById('onboarding').style.display = 'none';
-  document.getElementById('mainApp').classList.remove('hidden');
-  document.getElementById('mainApp').classList.add('active');
   setTimeout(() => {
     const splash = document.getElementById('splash');
     splash.style.opacity = '0';
@@ -2748,22 +2517,35 @@ function searchLocal(query) {
   );
 }
 
-function searchItems() {
+async function searchItems() {
   const query = document.getElementById('sheetSearch').value.trim();
   if (!query) return;
   document.getElementById('sheetSuggestions').style.display = 'none';
   document.getElementById('autocompleteDropdown').classList.remove('open');
   const results = document.getElementById('sheetResults');
+  results.innerHTML = '<div class="sheet-loading"><div class="spinner"></div>Finding products...</div>';
   selectedProduct2 = null;
   document.getElementById('sheetConfirm').disabled = true;
   document.getElementById('sheetConfirm').textContent = 'Add to List';
 
+  try {
+    const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=12&fields=id,product_name,brands,image_front_small_url`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const apiProds = (data.products || []).filter(p => p.product_name && p.product_name.trim() && p.image_front_small_url);
+    if (apiProds.length) {
+      renderResults(apiProds.slice(0, 8).map(p => ({ product_name: p.product_name, brands: p.brands || '', img: p.image_front_small_url, emoji: getEmoji(query) })));
+      return;
+    }
+  } catch(e) {}
+
+  await new Promise(r => setTimeout(r, 300));
   const found = searchLocal(query);
   if (!found.length) {
-    results.innerHTML = `<div class="sheet-empty">No results for "<strong>${query}</strong>".<br>Try: milk, eggs, chicken, pasta, bread...</div>`;
+    results.innerHTML = `<div class="sheet-empty">No products found for "<strong>${query}</strong>".<br>Try milk, eggs, bread, chicken...</div>`;
     return;
   }
-  renderResults(found.slice(0, 12));
+  renderResults(found.slice(0, 8));
 }
 
 function renderResults(products) {
@@ -2773,7 +2555,8 @@ function renderResults(products) {
     const card = document.createElement('div');
     card.className = 'result-card';
     card.innerHTML = `
-      <div class="result-img-placeholder" style="font-size:2.5rem;background:#F7F3EE;width:72px;height:72px;border-radius:10px;display:flex;align-items:center;justify-content:center">${p.emoji || '🛒'}</div>
+      <img class="result-img" src="${p.img}" alt="${p.product_name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="result-img-placeholder" style="display:none">${p.emoji || '🛒'}</div>
       <div class="result-name">${p.product_name}</div>
       ${p.brands ? `<div class="result-brand">${p.brands.split(',')[0]}</div>` : ''}
       <div class="result-add-badge">✓ Selected</div>
