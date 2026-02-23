@@ -5,31 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#3B2214">
+<meta name="theme-color" content="#2C1F14">
 <title>NestSync — Family OS</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  /* Requested palette: Cream + Mocha + Orange + subtle Lavender */
-  --palette-cream: #ECE7DF;
-  --palette-mocha: #3B2214;
-  --palette-orange: #E46F38;
-  --palette-lavender: #9488AA;
-
-  --cream: var(--palette-cream);
-  --warm-white: #E6E0D8;
-  --bark: var(--palette-mocha);
-  --bark-light: #6E5648;
-  --clay: var(--palette-orange);
-  --clay-light: #F1A27F;
-  --sage: #8A8FA0;
-  --sage-light: #C6CBD8;
-  --dusk: var(--palette-lavender);
-  --dusk-light: #D9D0E2;
-  --sand: #DCCBB5;
-  --sand-light: #EEE4D7;
-  --alert: #D85F44;
+  --cream: #F7F3EE;
+  --warm-white: #FDFAF7;
+  --bark: #2C1F14;
+  --bark-light: #5C4033;
+  --clay: #C97B52;
+  --clay-light: #E8A97A;
+  --sage: #7A9E87;
+  --sage-light: #B2CDBA;
+  --dusk: #8B7EA8;
+  --dusk-light: #C4BAD9;
+  --sand: #D4BFA0;
+  --sand-light: #EDE4D6;
+  --alert: #E07B5A;
   --bg: var(--cream);
   --card-bg: var(--warm-white);
   --text: var(--bark);
@@ -39,14 +33,14 @@
 }
 
 body.dark {
- --bg: #1B1411;
-  --card-bg: #2B201A;
-  --text: #F4EADF;
-  --text-light: #C8B0A2;
-  --border: #3A2C25;
-  --warm-white: #2B201A;
-  --cream: #221912;
-  --sand-light: #3A2C25;
+  --bg: #0F0F0F;
+  --card-bg: #1A1A1A;
+  --text: #F0EDE8;
+  --text-light: #9A9087;
+  --border: #2A2A2A;
+  --warm-white: #1A1A1A;
+  --cream: #141414;
+  --sand-light: #222222;
 }
 
 body {
@@ -83,26 +77,19 @@ body {
   justify-content: center;
   gap: 1rem;
   z-index: 999;
-  transition: opacity 0.28s ease, transform 0.28s ease;
-}
-
-#splash.gone {
-  opacity: 0;
-  pointer-events: none;
-  display: none !important;
 }
 
 .splash-logo {
   font-size: 3rem;
   font-weight: 700;
+  color: var(--cream);
   letter-spacing: -0.03em;
   opacity: 0;
   transform: translateY(20px);
   animation: splashIn 0.8s 0.3s cubic-bezier(0.34,1.2,0.64,1) forwards;
 }
 
-.nest-white { color: #FFFFFF; }
-.nest-orange { color: #FF6B2C; }
+.splash-logo span { color: var(--clay-light); }
 
 .splash-tagline {
   font-size: 0.9rem;
@@ -113,30 +100,44 @@ body {
   animation: splashIn 0.6s 0.7s ease forwards;
 }
 
-.splash-icon {
-  font-size: 3.5rem;
-  opacity: 0;
-  animation: splashIn 0.6s 0.1s ease forwards;
-  margin-bottom: 0.5rem;
+
+.splash-bar {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  overflow: hidden;
 }
 
+.splash-bar-fill {
+  height: 100%;
+  background: var(--clay-light);
+  border-radius: 2px;
+  animation: loadBar 2s ease forwards;
+}
 
 @keyframes splashIn {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes loadBar {
+  from { width: 0; }
+  to { width: 100%; }
+}
 
 /* ============ ONBOARDING ============ */
 #onboarding {
   background: var(--cream);
   z-index: 100;
-  overflow: hidden;
 }
 
 .onboard-header {
-  padding: 3.5rem 1.5rem 1.25rem;
+  padding: 3rem 2rem 1rem;
   background: var(--bark);
-  flex-shrink: 0;
 }
 
 .onboard-steps {
@@ -207,11 +208,9 @@ body {
 .field-input:focus { border-color: var(--clay); }
 
 .onboard-footer {
-  padding: 1rem 1.5rem 2.5rem;
+  padding: 1rem 2rem 2.5rem;
   display: flex;
   gap: 0.75rem;
-  flex-shrink: 0;
-  background: var(--cream);
 }
 
 .btn-primary {
@@ -345,7 +344,7 @@ body {
 #mainApp { display: flex; flex-direction: column; }
 
 .app-header {
-  background: linear-gradient(90deg, #3B2214 0%, #4A2B17 100%);
+  background: var(--bark);
   padding: 0 1.5rem;
   display: flex;
   align-items: center;
@@ -359,17 +358,18 @@ body {
 .app-logo {
   font-size: 1.3rem;
   font-weight: 700;
+  color: var(--cream);
   letter-spacing: -0.02em;
-} background: var(--bark);
-  padding: 0.35rem 0.6rem;
-  border-radius: 10px;
+}
+
+.app-logo span { color: var(--clay-light); }
 
 .header-right { display: flex; align-items: center; gap: 0.75rem; }
 
 .date-chip {
   font-size: 0.72rem;
   color: var(--sand);
- color: var(--bark-light);
+  font-weight: 300;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -381,7 +381,7 @@ body {
   height: 30px;
   border-radius: 50%;
   border: 2px solid var(--bark);
- color: var(--bark-light);
+  display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.65rem;
@@ -430,50 +430,32 @@ body {
 .bottom-nav {
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  background: #1A1008;
-   background: var(--cream);
+  background: var(--bark);
+  display: flex;
   justify-content: space-around;
-  align-items: center;
-  padding: 0.5rem 0.25rem 1.5rem;
+  padding: 0.6rem 0.5rem 1.4rem;
   z-index: 50;
   flex-shrink: 0;
-  border-top: 1px solid rgba(255,255,255,0.06);
-border-top: 1px solid var(--sand-light);
+}
 
 .nav-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   cursor: pointer;
   opacity: 0.45;
-  transition: all 0.2s;
-  padding: 0.3rem 0.6rem;
-  border-radius: 14px;
-  min-width: 58px;
+  transition: opacity 0.2s;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  min-width: 56px;
 }
 
-.nav-item.active {
-  opacity: 1;
-  background: rgba(255,107,44,0.15);
-background: rgba(228,111,56,0.16);
-
-.nav-icon {
-  font-size: 1.2rem;
-  line-height: 1;
-}
-
-.nav-label {
-  font-size: 0.55rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-weight: 700;
-  color: white;
-  color: var(--bark-light);
-}
-
-.nav-dot { display: none; }
-.nav-item.active .nav-label { color: #FF6B2C; }
+.nav-item.active { opacity: 1; }
+.nav-icon { font-size: 1.15rem; }
+.nav-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; color: white; }
+.nav-dot { width: 4px; height: 4px; border-radius: 50%; background: transparent; margin-top: 1px; }
+.nav-item.active .nav-dot { background: var(--clay-light); }
 
 /* ============ CARDS ============ */
 .card {
@@ -511,8 +493,8 @@ background: rgba(228,111,56,0.16);
 }
 
 .icon-clay { background: #FCEEE5; }
-.icon-sage { background: #E7E6EF; }
-..icon-sage { background: #E7E6EF; }
+.icon-sage { background: #E8F2EB; }
+.icon-dusk { background: #EDE9F5; }
 .icon-sand { background: #F5EFE6; }
 
 .card-action {
@@ -1245,7 +1227,7 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
 }
 
 .result-card:hover { border-color: var(--clay); transform: translateY(-2px); }
-.result-card.selected { border-color: var(--dusk); background: #EEE9F4; }
+.result-card.selected { border-color: var(--sage); background: #EEF6F1; }
 
 .result-img { width: 72px; height: 72px; object-fit: contain; border-radius: 10px; background: white; padding: 4px; }
 .result-img-placeholder { width: 72px; height: 72px; border-radius: 10px; background: var(--card-bg); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
@@ -1320,7 +1302,7 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
 }
 
 .widget-chores {
-  background: linear-gradient(135deg, #9D97AB 0%, #6D857B 100%);
+  background: linear-gradient(135deg, var(--sage) 0%, #5A8068 100%);
   padding: 1rem;
   display: flex;
   flex-direction: column;
@@ -1370,8 +1352,9 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
 
 <!-- ============ SPLASH ============ -->
 <div class="screen active" id="splash">
-  <div class="splash-logo"><span class="nest-white">Nest</span><span class="nest-orange">Sync</span></div>
+  <div class="splash-logo">Nest<span>Sync</span></div>
   <div class="splash-tagline">The Operating System for Modern Families</div>
+  <div class="splash-bar"><div class="splash-bar-fill"></div></div>
 </div>
 
 <!-- ============ ONBOARDING ============ -->
@@ -1383,7 +1366,7 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
       <div class="step-dot" id="dot2"></div>
       <div class="step-dot" id="dot3"></div>
     </div>
-    <div class="onboard-title" id="onboardTitle">Welcome to NestSync</div>
+    <div class="onboard-title" id="onboardTitle">Welcome to NestSync 👋</div>
     <div class="onboard-sub" id="onboardSub">Let's set up your family in just a few steps.</div>
   </div>
 
@@ -1456,15 +1439,12 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
     <button class="btn-secondary" id="onboardBack" onclick="onboardPrev()" style="display:none">Back</button>
     <button class="btn-primary" id="onboardNext" onclick="onboardNext()">Continue →</button>
   </div>
-  <div style="text-align:center;padding:0 0 1rem">
-    <button onclick="skipOnboarding()" style="background:none;border:none;font-size:0.78rem;color:var(--text-light);cursor:pointer;font-family:var(--font);text-decoration:underline">Skip setup for now</button>
-  </div>
 </div>
 
 <!-- ============ MAIN APP ============ -->
 <div class="screen hidden" id="mainApp">
   <div class="app-header">
-    <div class="app-logo"><span class="nest-white">Nest</span><span class="nest-orange">Sync</span></div>
+    <div class="app-logo">Nest<span>Sync</span></div>
     <div class="header-right">
       <span class="date-chip" id="headerDate"></span>
       <div class="avatar-stack" id="headerAvatars"></div>
@@ -1848,7 +1828,7 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
           <div>
             <div class="member-detail-name" id="detailName">Sarah</div>
             <div class="member-detail-role" id="detailRole">Parent · Admin</div>
-            <div class="member-detail-email" id="detailEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="07746675666f47626a666e6b2964686a">[email&#160;protected]</a></div>
+            <div class="member-detail-email" id="detailEmail">sarah@email.com</div>
           </div>
           <button onclick="document.getElementById('memberDetailCard').style.display='none'" style="margin-left:auto;background:var(--bg);border:none;border-radius:8px;padding:0.3rem 0.6rem;cursor:pointer;color:var(--text-light)">✕</button>
         </div>
@@ -1873,7 +1853,7 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
         <div class="profile-avatar" id="profileAvatar" style="background:var(--clay)">S</div>
         <div>
           <div class="profile-name" id="profileName">Sarah Thompson</div>
-          <div class="profile-email" id="profileEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0f7c6e7d6e674f6a626e6663216c6062">[email&#160;protected]</a></div>
+          <div class="profile-email" id="profileEmail">sarah@email.com</div>
         </div>
         <span class="profile-edit">Edit</span>
       </div>
@@ -1998,7 +1978,7 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
     <div>
       <div id="sheetMemberName" style="font-size:1.1rem;font-weight:700;color:var(--text)">Sarah</div>
       <div id="sheetMemberRole" style="font-size:0.78rem;color:var(--text-light)">Parent · Admin</div>
-      <div id="sheetMemberEmail" style="font-size:0.75rem;color:var(--clay)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="16657764777e56737b777f7a3875797b">[email&#160;protected]</a></div>
+      <div id="sheetMemberEmail" style="font-size:0.75rem;color:var(--clay)">sarah@email.com</div>
     </div>
     <button onclick="closeMemberSheet()" style="margin-left:auto;background:var(--bg);border:none;border-radius:8px;padding:0.3rem 0.6rem;cursor:pointer;color:var(--text-light)">✕</button>
   </div>
@@ -2040,7 +2020,7 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // ============ DATA ============
 const COLORS = [
   { id: 'clay', hex: '#C97B52', name: 'Clay' },
@@ -2114,51 +2094,20 @@ let prevTab = null;
 let selectedProduct = null;
 let autocompleteIndex = -1;
 let calDate = new Date();
-const ONBOARDING_DONE_KEY = 'nestsync.onboardingDone';
-const SPLASH_DISPLAY_MS = 800;
-const SPLASH_FADE_MS = 280;
-
-function hasCompletedOnboarding() {
-  return localStorage.getItem(ONBOARDING_DONE_KEY) === '1';
-}
-
-function markOnboardingComplete() {
-  localStorage.setItem(ONBOARDING_DONE_KEY, '1');
-}
-
-function showPostSplashScreen() {
-  if (hasCompletedOnboarding()) {
-    launchMainApp();
-    return;
-  }
-  const onboarding = document.getElementById('onboarding');
-  if (!onboarding) {
-    launchMainApp();
-    return;
-  }
-  onboarding.classList.remove('hidden');
-  onboarding.classList.add('active');
-}
-
-function hideSplashAndContinue() {
-  const splash = document.getElementById('splash');
-  if (!splash) {
-    showPostSplashScreen();
-    return;
-  }
-
-  splash.style.opacity = '0';
-  splash.style.transition = `opacity ${SPLASH_FADE_MS}ms ease`;
-  setTimeout(() => {
-    splash.style.display = 'none';
-    splash.classList.remove('active');
-    showPostSplashScreen();
-  }, SPLASH_FADE_MS);
-}
 
 // ============ SPLASH ============
 window.addEventListener('load', () => {
-  setTimeout(hideSplashAndContinue, SPLASH_DISPLAY_MS);
+  const seen = localStorage.getItem ? localStorage.getItem('ns_onboarded') : null;
+  setTimeout(() => {
+    document.getElementById('splash').classList.add('slide-left');
+    document.getElementById('splash').classList.remove('active');
+    if (seen) {
+      launchMainApp();
+    } else {
+      document.getElementById('onboarding').classList.remove('hidden');
+      document.getElementById('onboarding').classList.add('active');
+    }
+  }, 2400);
 
   // Set date
   const now = new Date();
@@ -2181,14 +2130,8 @@ window.addEventListener('load', () => {
 });
 
 function launchMainApp() {
-  const app = document.getElementById('mainApp');
-  app.classList.remove('hidden');
-  app.style.opacity = '0';
-  app.classList.add('active');
-  requestAnimationFrame(() => {
-    app.style.transition = 'opacity 0.4s ease';
-    app.style.opacity = '1';
-  });
+  document.getElementById('mainApp').classList.remove('hidden');
+  document.getElementById('mainApp').classList.add('active');
 }
 
 // ============ COLOR GRID ============
@@ -2217,10 +2160,10 @@ function buildColorGrid() {
 
 // ============ ONBOARDING ============
 const steps = [
-  { title: 'Welcome to NestSync', sub: "Let's set up your family in just a few steps." },
-  { title: 'Pick Your Color', sub: 'This color is yours across the whole app.' },
-  { title: 'Add Your Family', sub: "Add members — they'll get an invite to join." },
-  { title: "You're all set!", sub: 'Your family hub is ready.' },
+  { title: 'Welcome to NestSync 👋', sub: "Let's set up your family in just a few steps." },
+  { title: 'Pick Your Color 🎨', sub: 'This color is yours across the whole app.' },
+  { title: 'Add Your Family 👥', sub: "Add members — they'll get an invite to join." },
+  { title: "You're all set! 🎉", sub: 'Your family hub is ready.' },
 ];
 
 function onboardNext() {
@@ -2331,22 +2274,11 @@ function buildHeaderAvatars(creatorName) {
   });
 }
 
-function skipOnboarding() {
-  // Set demo defaults
-  document.getElementById('familyGreeting').textContent = 'your family.';
-  finishOnboarding();
-}
-
 function finishOnboarding() {
-  markOnboardingComplete();
-  const ob = document.getElementById('onboarding');
-  ob.style.opacity = '0';
-  ob.style.transition = 'opacity 0.4s ease';
-  setTimeout(() => {
-    ob.style.display = 'none';
-    ob.classList.remove('active');
-    launchMainApp();
-  }, 400);
+  try { localStorage.setItem('ns_onboarded', '1'); } catch(e) {}
+  document.getElementById('onboarding').classList.add('slide-left');
+  document.getElementById('onboarding').classList.remove('active');
+  launchMainApp();
 }
 
 // ============ TAB NAVIGATION ============
@@ -2534,35 +2466,6 @@ function searchLocal(query) {
   );
 }
 
-function escapeHtml(str = '') {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-function parseOffProducts(data, query) {
-  const products = (data.products || []).map(p => {
-    const name = p.product_name?.trim() || p.product_name_en?.trim() || p.generic_name?.trim() || '';
-    const brand = (p.brands || '').split(',')[0].trim();
-    const img = p.image_front_url || p.image_url || p.image_front_small_url || '';
-    if (!name || !img) return null;
-    const imageIsRemote = /^https?:\/\//.test(img);
-    if (!imageIsRemote) return null;
-    return {
-      product_name: name,
-      brands: brand,
-      img,
-      emoji: getEmoji(query),
-      _score: Number(Boolean(p.image_front_url)) * 3 + Number(Boolean(brand)) * 2 + Number(Boolean(p.nutriments))
-    };
-  }).filter(Boolean);
-
-  return products.sort((a, b) => b._score - a._score).slice(0, 10).map(({ _score, ...rest }) => rest);
-}
-
 async function searchItems() {
   const query = document.getElementById('sheetSearch').value.trim();
   if (!query) return;
@@ -2575,23 +2478,20 @@ async function searchItems() {
   document.getElementById('sheetConfirm').textContent = 'Add to List';
 
   try {
-    const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=20&fields=product_name,product_name_en,generic_name,brands,image_front_url,image_url,image_front_small_url,nutriments`;
+    const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=12&fields=id,product_name,brands,image_front_small_url`;
     const res = await fetch(url);
-    if (!res.ok) throw new Error(`Open Food Facts request failed: ${res.status}`);
     const data = await res.json();
-    const apiProds = parseOffProducts(data, query);
+    const apiProds = (data.products || []).filter(p => p.product_name && p.product_name.trim() && p.image_front_small_url);
     if (apiProds.length) {
-      renderResults(apiProds.slice(0, 8));
+      renderResults(apiProds.slice(0, 8).map(p => ({ product_name: p.product_name, brands: p.brands || '', img: p.image_front_small_url, emoji: getEmoji(query) })));
       return;
     }
-  } catch (e) {
-    console.warn('Open Food Facts search failed, using local catalog fallback.', e);
-  }
+  } catch(e) {}
 
-  await new Promise(r => setTimeout(r, 200));
+  await new Promise(r => setTimeout(r, 300));
   const found = searchLocal(query);
   if (!found.length) {
-    results.innerHTML = `<div class="sheet-empty">No products found for "<strong>${escapeHtml(query)}</strong>".<br>Try milk, eggs, bread, chicken...</div>`;
+    results.innerHTML = `<div class="sheet-empty">No products found for "<strong>${query}</strong>".<br>Try milk, eggs, bread, chicken...</div>`;
     return;
   }
   renderResults(found.slice(0, 8));
@@ -2601,16 +2501,13 @@ function renderResults(products) {
   const results = document.getElementById('sheetResults');
   results.innerHTML = '';
   products.forEach(p => {
-    const safeName = escapeHtml(p.product_name);
-    const safeBrand = p.brands ? escapeHtml(p.brands.split(',')[0]) : '';
-    const safeImg = escapeHtml(p.img);
     const card = document.createElement('div');
     card.className = 'result-card';
     card.innerHTML = `
-      <img class="result-img" src="${safeImg}" alt="${safeName}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <img class="result-img" src="${p.img}" alt="${p.product_name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
       <div class="result-img-placeholder" style="display:none">${p.emoji || '🛒'}</div>
-      <div class="result-name">${safeName}</div>
-      ${safeBrand ? `<div class="result-brand">${safeBrand}</div>` : ''}
+      <div class="result-name">${p.product_name}</div>
+      ${p.brands ? `<div class="result-brand">${p.brands.split(',')[0]}</div>` : ''}
       <div class="result-add-badge">✓ Selected</div>
     `;
     card.onclick = () => selectProduct(card, p);
@@ -2705,27 +2602,23 @@ function getEmoji(term) {
 }
 
 // ============ INSTALL ============
-function setInstallOpen(isOpen) {
-  const overlay = document.getElementById('installOverlay');
-  const sheet = document.getElementById('installSheet');
-  if (!overlay || !sheet) return;
-  overlay.classList.toggle('open', isOpen);
-  sheet.classList.toggle('open', isOpen);
-}
-
 function showInstallInstructions() {
-  setInstallOpen(true);
+  document.getElementById('installOverlay').classList.add('open');
+  document.getElementById('installSheet').classList.add('open');
 }
 
 function closeInstall() {
-  setInstallOpen(false);
+  document.getElementById('installOverlay').classList.remove('open');
+  document.getElementById('installSheet').classList.remove('open');
 }
 
-document.addEventListener('keydown', (e) => {
-  if (e.key !== 'Escape') return;
-  const overlay = document.getElementById('installOverlay');
-  if (overlay?.classList.contains('open')) closeInstall();
-});
+// ============ TOAST ============
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
 </script>
 </body>
 </html>
