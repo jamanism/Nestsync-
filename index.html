@@ -2104,7 +2104,7 @@ const PRODUCTS = [
   { product_name: "Penne Pasta (1lb)", brands: "Barilla", category: "pantry", emoji: "🍝", img: "https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=200&q=80" },
   { product_name: "Spaghetti (1lb)", brands: "Barilla", category: "pantry", emoji: "🍝", img: "https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=200&q=80" },
   { product_name: "Jasmine Rice (5lb)", brands: "Lundberg", category: "pantry", emoji: "🍚", img: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=200&q=80" },
-  { product_name: "Rolled Oats", brands: "Bob's Red Mill", category: "pantry", emoji: "🥣", img: "https://images.unsplash.com/photo-1614961233913-a5113a4a34ed?w=200&q=80" },
+    { product_name: "Rolled Oats", brands: "Bob's Red Mill", category: "pantry", emoji: "🥣", img: "https://images.unsplash.com/photo-1614961233913-a5113a4a34ed?w=200&q=80" },
   { product_name: "Peanut Butter", brands: "Jif", category: "pantry", emoji: "🥜", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=200&q=80" },
   { product_name: "Honey (12oz)", brands: "Nature Nate's", category: "pantry", emoji: "🍯", img: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=200&q=80" },
   { product_name: "Orange Juice (52oz)", brands: "Tropicana", category: "beverages", emoji: "🍊", img: "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=200&q=80" },
@@ -2129,6 +2129,15 @@ let prevTab = null;
 let selectedProduct = null;
 let autocompleteIndex = -1;
 let calDate = new Date();
+const ONBOARDING_DONE_KEY = 'nestsync.onboardingDone';
+
+function hasCompletedOnboarding() {
+  return localStorage.getItem(ONBOARDING_DONE_KEY) === '1';
+}
+
+function markOnboardingComplete() {
+  localStorage.setItem(ONBOARDING_DONE_KEY, '1');
+}
 
 // ============ SPLASH ============
 window.addEventListener('load', () => {
@@ -2141,6 +2150,12 @@ window.addEventListener('load', () => {
       splash.classList.remove('active');
       document.getElementById('onboarding').classList.remove('hidden');
       document.getElementById('onboarding').classList.add('active');
+      if (hasCompletedOnboarding()) {
+        launchMainApp();
+      } else {
+        document.getElementById('onboarding').classList.remove('hidden');
+        document.getElementById('onboarding').classList.add('active');
+      }
     }, 500);
   }, 2400);
 
@@ -2166,137 +2181,7 @@ window.addEventListener('load', () => {
 
 function launchMainApp() {
   const app = document.getElementById('mainApp');
-  app.classList.remove('hidden');
-  app.style.opacity = '0';
-  app.classList.add('active');
-  requestAnimationFrame(() => {
-    app.style.transition = 'opacity 0.4s ease';
-    app.style.opacity = '1';
-  });
-}
-
-// ============ COLOR GRID ============
-function buildColorGrid() {
-  const grid = document.getElementById('colorGrid');
-  grid.innerHTML = '';
-  COLORS.forEach(c => {
-    const sw = document.createElement('div');
-    sw.className = 'color-swatch';
-    sw.style.background = c.hex;
-    sw.dataset.id = c.id;
-    sw.dataset.hex = c.hex;
-    if (takenColors[c.id]) {
-      sw.classList.add('taken');
-      sw.dataset.initial = takenColors[c.id];
-    }
-    sw.onclick = () => {
-      if (sw.classList.contains('taken')) return;
-      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
-      sw.classList.add('selected');
-      selectedColor = c;
-    };
-    grid.appendChild(sw);
-  });
-}
-
-// ============ ONBOARDING ============
-const steps = [
-  { title: 'Welcome to NestSync', sub: "Let's set up your family in just a few steps." },
-  { title: 'Pick Your Color', sub: 'This color is yours across the whole app.' },
-  { title: 'Add Your Family', sub: "Add members — they'll get an invite to join." },
-  { title: "You're all set!", sub: 'Your family hub is ready.' },
-];
-
-function onboardNext() {
-  if (currentStep === 0) {
-    const name = document.getElementById('familyName').value.trim();
-    const creator = document.getElementById('creatorName').value.trim();
-    if (!name || !creator) { showToast('Please fill in your name and family name'); return; }
-  }
-  if (currentStep === 1 && !selectedColor) { showToast('Please pick a color!'); return; }
-
-  if (currentStep === 2) {
-    buildSummary();
-  }
-
-  if (currentStep < steps.length - 1) {
-    document.getElementById(`step${currentStep}`).classList.remove('active');
-    document.getElementById(`dot${currentStep}`).classList.remove('active');
-    document.getElementById(`dot${currentStep}`).classList.add('done');
-    currentStep++;
-    document.getElementById(`step${currentStep}`).classList.add('active');
-    document.getElementById(`dot${currentStep}`).classList.add('active');
-    document.getElementById('onboardTitle').textContent = steps[currentStep].title;
-    document.getElementById('onboardSub').textContent = steps[currentStep].sub;
-    document.getElementById('onboardBack').style.display = 'block';
-    if (currentStep === steps.length - 1) {
-      document.getElementById('onboardNext').textContent = 'Enter NestSync →';
-    }
-  } else {
-    finishOnboarding();
-  }
-}
-
-function onboardPrev() {
-  if (currentStep === 0) return;
-  document.getElementById(`step${currentStep}`).classList.remove('active');
-  document.getElementById(`dot${currentStep}`).classList.remove('active');
-  currentStep--;
-  document.getElementById(`step${currentStep}`).classList.add('active');
-  document.getElementById(`dot${currentStep}`).classList.remove('done');
-  document.getElementById(`dot${currentStep}`).classList.add('active');
-  document.getElementById('onboardTitle').textContent = steps[currentStep].title;
-  document.getElementById('onboardSub').textContent = steps[currentStep].sub;
-  document.getElementById('onboardNext').textContent = 'Continue →';
-  if (currentStep === 0) document.getElementById('onboardBack').style.display = 'none';
-}
-
-function showAddMember() {
-  document.getElementById('addMemberForm').style.display = 'block';
-  document.getElementById('newMemberName').focus();
-}
-
-function addMember() {
-  const name = document.getElementById('newMemberName').value.trim();
-  const role = document.getElementById('newMemberRole').value;
-  if (!name) return;
-  familyMembers.push({ name, role });
-  document.getElementById('newMemberName').value = '';
-  renderMembersList();
-  document.getElementById('addMemberForm').style.display = 'none';
-}
-
-function renderMembersList() {
-  const list = document.getElementById('membersList');
-  list.innerHTML = '';
-  familyMembers.forEach((m, i) => {
-    const col = COLORS[i % COLORS.length].hex;
-    const div = document.createElement('div');
-    div.className = 'member-card-ob';
-    div.innerHTML = `
-      <div class="member-avatar-ob" style="background:${col}">${m.name[0]}</div>
-      <div class="member-info-ob">
-        <div class="member-name-ob">${m.name}</div>
-        <div class="member-role-ob">${m.role}</div>
-      </div>
-      <button onclick="familyMembers.splice(${i},1);renderMembersList()" style="background:none;border:none;color:var(--text-light);cursor:pointer;font-size:1rem">✕</button>
-    `;
-    list.appendChild(div);
-  });
-}
-
-function buildSummary() {
-  const fname = document.getElementById('familyName').value.trim();
-  const creator = document.getElementById('creatorName').value.trim();
-  const code = 'NS-' + Math.floor(1000 + Math.random() * 9000);
-  document.getElementById('inviteCode').textContent = code;
-  document.getElementById('displayInviteCode').textContent = code;
-  document.getElementById('settingsInviteCode').textContent = code;
-  document.getElementById('summaryText').textContent = `${fname} is set up with ${1 + familyMembers.length} member${familyMembers.length ? 's' : ''}. Share the invite code with your family.`;
-  document.getElementById('familyGreeting').textContent = `${fname}.`;
-  document.getElementById('settingsFamilyName').textContent = `The ${fname.replace('The ', '')}`;
-  document.getElementById('profileName').textContent = `${creator} ${document.getElementById('familyName').value.split(' ').pop() || ''}`.trim();
-  document.getElementById('profileEmail').textContent = document.getElementById('creatorEmail').value || 'user@email.com';
+@@ -2300,50 +2313,51 @@ function buildSummary() {
   document.getElementById('profileAvatar').textContent = creator[0];
   if (selectedColor) document.getElementById('profileAvatar').style.background = selectedColor.hex;
   buildHeaderAvatars(creator);
@@ -2322,6 +2207,7 @@ function skipOnboarding() {
 }
 
 function finishOnboarding() {
+  markOnboardingComplete();
   const ob = document.getElementById('onboarding');
   ob.style.opacity = '0';
   ob.style.transition = 'opacity 0.4s ease';
@@ -2347,151 +2233,7 @@ function switchTab(tabId) {
   currentEl.classList.remove('active');
   currentEl.classList.add(goingRight ? 'slide-left' : 'hidden');
 
-  newEl.classList.remove('hidden','slide-left','active');
-  newEl.style.transform = goingRight ? 'translateX(100%)' : 'translateX(-25%)';
-  newEl.style.opacity = goingRight ? '0' : '0.4';
-  newEl.style.pointerEvents = 'none';
-
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      newEl.style.transform = '';
-      newEl.style.opacity = '';
-      newEl.style.pointerEvents = '';
-      newEl.classList.add('active');
-    });
-  });
-
-  setTimeout(() => {
-    currentEl.classList.remove('slide-left');
-    currentEl.classList.add('hidden');
-  }, 380);
-
-  document.querySelectorAll('.nav-item').forEach((n, i) => n.classList.toggle('active', tabs[i] === tabId));
-  prevTab = currentTab;
-  currentTab = tabId;
-}
-
-// Settings accessible from anywhere
-function openSettings() { switchTab('settings'); }
-
-// ============ CALENDAR ============
-function buildCalendar() {
-  const grid = document.getElementById('calendarGrid');
-  if (!grid) return;
-  const month = calDate.getMonth();
-  const year = calDate.getFullYear();
-  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  document.getElementById('calMonth').textContent = `${months[month]} ${year}`;
-
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const prevDays = new Date(year, month, 0).getDate();
-  const today = new Date();
-
-  const eventDays = [5, 8, 12, 15, 19, 23, 27];
-
-  grid.innerHTML = '';
-
-  for (let i = firstDay - 1; i >= 0; i--) {
-    const d = document.createElement('div');
-    d.className = 'cal-day other-month';
-    d.textContent = prevDays - i;
-    grid.appendChild(d);
-  }
-
-  for (let d = 1; d <= daysInMonth; d++) {
-    const el = document.createElement('div');
-    el.className = 'cal-day';
-    el.textContent = d;
-    if (d === today.getDate() && month === today.getMonth() && year === today.getFullYear()) el.classList.add('today');
-    if (eventDays.includes(d)) el.classList.add('has-event');
-    el.onclick = () => showToast(`📅 ${months[month]} ${d}`);
-    grid.appendChild(el);
-  }
-
-  const remaining = 42 - firstDay - daysInMonth + 1;
-  for (let d = 1; d <= remaining && grid.children.length < 42; d++) {
-    const el = document.createElement('div');
-    el.className = 'cal-day other-month';
-    el.textContent = d;
-    grid.appendChild(el);
-  }
-}
-
-function changeMonth(dir) {
-  calDate.setMonth(calDate.getMonth() + dir);
-  buildCalendar();
-}
-
-// ============ TASK FILTER ============
-function filterTasks(btn, member) {
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.task-card').forEach(card => {
-    card.style.display = (member === 'all' || card.dataset.member === member) ? 'flex' : 'none';
-  });
-}
-
-// ============ TOGGLES ============
-function toggleChore(el) {
-  el.classList.toggle('done');
-  const check = el.querySelector('.chore-check');
-  if (check) check.textContent = el.classList.contains('done') ? '✓' : '';
-}
-
-function toggleTask(el) {
-  el.classList.toggle('done');
-  const check = el.querySelector('.task-check');
-  if (check) check.textContent = el.classList.contains('done') ? '✓' : '';
-}
-
-function toggleShopping(el) {
-  el.classList.toggle('checked');
-  const check = el.querySelector('.shopping-check');
-  if (check) check.textContent = el.classList.contains('checked') ? '✓' : '';
-}
-
-// ============ DARK MODE ============
-function toggleDarkMode() {
-  document.body.classList.toggle('dark');
-  document.getElementById('darkToggle').classList.toggle('on');
-}
-
-// ============ MEMBERS ============
-function showMemberDetail(name, role, email, color) {
-  document.getElementById('sheetMemberAvatar').textContent = name[0];
-  document.getElementById('sheetMemberAvatar').style.background = color;
-  document.getElementById('sheetMemberName').textContent = name;
-  document.getElementById('sheetMemberRole').textContent = role + (role === 'Parent' ? ' · Admin' : '');
-  document.getElementById('sheetMemberEmail').textContent = email || 'No email set';
-  document.getElementById('memberOverlay').classList.add('open');
-  document.getElementById('memberSheet').classList.add('open');
-}
-
-function closeMemberSheet() {
-  document.getElementById('memberOverlay').classList.remove('open');
-  document.getElementById('memberSheet').classList.remove('open');
-}
-
-// ============ COPY CODE ============
-function copyCode() {
-  const code = document.getElementById('displayInviteCode').textContent;
-  if (navigator.clipboard) navigator.clipboard.writeText(code);
-  showToast('📋 Code copied: ' + code);
-}
-
-// ============ GROCERY SEARCH ============
-let selectedProduct2 = null;
-
-function openItemSearch() {
-  document.getElementById('sheetOverlay').classList.add('open');
-  document.getElementById('itemSheet').classList.add('open');
-  setTimeout(() => document.getElementById('sheetSearch').focus(), 350);
-}
-
-function closeItemSearch() {
-  document.getElementById('sheetOverlay').classList.remove('open');
-  document.getElementById('itemSheet').classList.remove('open');
+@@ -2495,92 +2509,127 @@ function closeItemSearch() {
   selectedProduct2 = null;
   document.getElementById('sheetSearch').value = '';
   document.getElementById('autocompleteDropdown').classList.remove('open');
@@ -2546,19 +2288,63 @@ function parseOffProducts(data, query) {
   return products.sort((a, b) => b._score - a._score).slice(0, 10).map(({ _score, ...rest }) => rest);
 }
 
+async function searchItems() {
+  const query = document.getElementById('sheetSearch').value.trim();
+  if (!query) return;
+  document.getElementById('sheetSuggestions').style.display = 'none';
+  document.getElementById('autocompleteDropdown').classList.remove('open');
+  const results = document.getElementById('sheetResults');
+  results.innerHTML = '<div class="sheet-loading"><div class="spinner"></div>Finding products...</div>';
+  selectedProduct2 = null;
+  document.getElementById('sheetConfirm').disabled = true;
+  document.getElementById('sheetConfirm').textContent = 'Add to List';
+
+  try {
+    const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=12&fields=id,product_name,brands,image_front_small_url`;
+    const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=20&fields=product_name,product_name_en,generic_name,brands,image_front_url,image_url,image_front_small_url,nutriments`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Open Food Facts request failed: ${res.status}`);
+    const data = await res.json();
+    const apiProds = (data.products || []).filter(p => p.product_name && p.product_name.trim() && p.image_front_small_url);
+    const apiProds = parseOffProducts(data, query);
+    if (apiProds.length) {
+      renderResults(apiProds.slice(0, 8).map(p => ({ product_name: p.product_name, brands: p.brands || '', img: p.image_front_small_url, emoji: getEmoji(query) })));
+      renderResults(apiProds.slice(0, 8));
+      return;
+    }
+  } catch(e) {}
+  } catch (e) {
+    console.warn('Open Food Facts search failed, using local catalog fallback.', e);
+  }
+
+  await new Promise(r => setTimeout(r, 300));
+  await new Promise(r => setTimeout(r, 200));
+  const found = searchLocal(query);
+  if (!found.length) {
+    results.innerHTML = `<div class="sheet-empty">No products found for "<strong>${query}</strong>".<br>Try milk, eggs, bread, chicken...</div>`;
+    results.innerHTML = `<div class="sheet-empty">No products found for "<strong>${escapeHtml(query)}</strong>".<br>Try milk, eggs, bread, chicken...</div>`;
+    return;
+  }
+  renderResults(found.slice(0, 8));
 }
 
 function renderResults(products) {
   const results = document.getElementById('sheetResults');
   results.innerHTML = '';
   products.forEach(p => {
+    const safeName = escapeHtml(p.product_name);
+    const safeBrand = p.brands ? escapeHtml(p.brands.split(',')[0]) : '';
+    const safeImg = escapeHtml(p.img);
     const card = document.createElement('div');
     card.className = 'result-card';
     card.innerHTML = `
       <img class="result-img" src="${p.img}" alt="${p.product_name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <img class="result-img" src="${safeImg}" alt="${safeName}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
       <div class="result-img-placeholder" style="display:none">${p.emoji || '🛒'}</div>
       <div class="result-name">${p.product_name}</div>
       ${p.brands ? `<div class="result-brand">${p.brands.split(',')[0]}</div>` : ''}
+      <div class="result-name">${safeName}</div>
+      ${safeBrand ? `<div class="result-brand">${safeBrand}</div>` : ''}
       <div class="result-add-badge">✓ Selected</div>
     `;
     card.onclick = () => selectProduct(card, p);
@@ -2584,50 +2370,7 @@ function confirmAdd() {
   const item = document.createElement('div');
   item.className = 'shopping-item';
   item.onclick = function() { toggleShopping(this); };
-  item.innerHTML = `
-    <div class="shopping-check"></div>
-    <img class="shopping-img" src="${p.img}" onerror="this.style.display='none'" alt="${p.product_name}">
-    <div><div class="shopping-name">${p.product_name}</div><div class="shopping-by">Added by you</div></div>
-  `;
-  section.appendChild(item);
-  closeItemSearch();
-  showToast(`✅ ${p.product_name.split(' ').slice(0,3).join(' ')} added!`);
-}
-
-// AUTOCOMPLETE
-function onSearchInput(val) {
-  autocompleteIndex = -1;
-  const dropdown = document.getElementById('autocompleteDropdown');
-  const q = val.trim().toLowerCase();
-  if (q.length < 1) { dropdown.classList.remove('open'); return; }
-  const scored = PRODUCTS.map(p => {
-    const n = p.product_name.toLowerCase();
-    let score = 0;
-    if (n.startsWith(q)) score = 3;
-    else if (n.includes(q)) score = 2;
-    else if (p.brands.toLowerCase().includes(q) || p.category.includes(q)) score = 1;
-    return { p, score };
-  }).filter(x => x.score > 0).sort((a,b) => b.score - a.score).slice(0, 6).map(x => x.p);
-
-  if (!scored.length) { dropdown.classList.remove('open'); return; }
-  const regex = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
-  dropdown.innerHTML = scored.map(p => `
-    <div class="autocomplete-item" onmousedown="selectSuggestion('${p.product_name.replace(/'/g,"\\'")}')">
-      <span class="autocomplete-emoji">${p.emoji}</span>
-      <div class="autocomplete-text">
-        <div class="autocomplete-name">${p.product_name.replace(regex, '<span class="autocomplete-highlight">$1</span>')}</div>
-        <div class="autocomplete-brand">${p.brands}</div>
-      </div>
-    </div>`).join('');
-  dropdown.classList.add('open');
-}
-
-function selectSuggestion(name) {
-  document.getElementById('sheetSearch').value = name;
-  document.getElementById('autocompleteDropdown').classList.remove('open');
-  searchItems();
-}
-
+@@ -2631,28 +2680,50 @@ function selectSuggestion(name) {
 function handleSearchKey(e) {
   const dropdown = document.getElementById('autocompleteDropdown');
   const items = dropdown.querySelectorAll('.autocomplete-item');
