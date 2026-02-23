@@ -2358,6 +2358,11 @@ let calDate = new Date();
 
 // ============ SPLASH ============
 window.addEventListener('load', () => {
+  // Skip splash and onboarding — go straight to app
+  document.getElementById('splash').style.display = 'none';
+  document.getElementById('onboarding').style.display = 'none';
+  document.getElementById('mainApp').classList.remove('hidden');
+  document.getElementById('mainApp').classList.add('active');
   setTimeout(() => {
     const splash = document.getElementById('splash');
     splash.style.opacity = '0';
