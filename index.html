@@ -77,8 +77,9 @@ body {
   justify-content: center;
   gap: 1rem;
   z-index: 999;
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition: opacity 0.28s ease, transform 0.28s ease;
 }
+
 
 #splash.gone {
   opacity: 0;
@@ -2105,9 +2106,9 @@ const PRODUCTS = [
   { product_name: "Spaghetti (1lb)", brands: "Barilla", category: "pantry", emoji: "🍝", img: "https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=200&q=80" },
   { product_name: "Jasmine Rice (5lb)", brands: "Lundberg", category: "pantry", emoji: "🍚", img: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=200&q=80" },
     { product_name: "Rolled Oats", brands: "Bob's Red Mill", category: "pantry", emoji: "🥣", img: "https://images.unsplash.com/photo-1614961233913-a5113a4a34ed?w=200&q=80" },
-  { product_name: "Peanut Butter", brands: "Jif", category: "pantry", emoji: "🥜", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=200&q=80" },
-  { product_name: "Honey (12oz)", brands: "Nature Nate's", category: "pantry", emoji: "🍯", img: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=200&q=80" },
-  { product_name: "Orange Juice (52oz)", brands: "Tropicana", category: "beverages", emoji: "🍊", img: "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=200&q=80" },
+  const ONBOARDING_DONE_KEY = 'nestsync.onboardingDone';
+const SPLASH_DISPLAY_MS = 800;
+const SPLASH_FADE_MS = 280;
   { product_name: "Sparkling Water (12pk)", brands: "LaCroix", category: "beverages", emoji: "💧", img: "https://images.unsplash.com/photo-1622543925917-763c34d1a86e?w=200&q=80" },
   { product_name: "Ground Coffee (12oz)", brands: "Peet's", category: "beverages", emoji: "☕", img: "https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=200&q=80" },
   { product_name: "Tortilla Chips", brands: "Tostitos", category: "snacks", emoji: "🌮", img: "https://images.unsplash.com/photo-1600952841320-db92ec4047ca?w=200&q=80" },
@@ -2118,7 +2119,30 @@ const PRODUCTS = [
   { product_name: "Chicken Breast", brands: "Perdue", category: "chicken", emoji: "🍗", img: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=200&q=80" },
   { product_name: "Butter Croissants", brands: "Trader Joe's", category: "bread", emoji: "🥐", img: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=200&q=80" },
 ];
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const splash = document.getElementById('splash');
+    if (!splash) return;
 
+    splash.style.opacity = '0';
+    splash.style.transition = `opacity ${SPLASH_FADE_MS}ms ease`;
+    setTimeout(() => {
+      splash.style.display = 'none';
+      splash.classList.remove('active');
+      if (hasCompletedOnboarding()) {
+        launchMainApp();
+      } else {
+        const onboarding = document.getElementById('onboarding');
+        if (onboarding) {
+          onboarding.classList.remove('hidden');
+          onboarding.classList.add('active');
+        }
+      }
+    }, SPLASH_FADE_MS);
+  }, SPLASH_DISPLAY_MS);
+
+  // keep the rest of your existing load code below this
+});
 // ============ STATE ============
 let currentStep = 0;
 let selectedColor = null;
