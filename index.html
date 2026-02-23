@@ -5,25 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#3A2618">
+<meta name="theme-color" content="#3B2214">
 <title>NestSync — Family OS</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
- --cream: #F8F2E8;
-  --warm-white: #FFF9F2;
-  --bark: #3A2618;
-  --bark-light: #6B4B39;
-  --clay: #E26D35;
-  --clay-light: #F3A17C;
-  --sage: #A38AAE;
-  --sage-light: #D8CDE0;
-  --dusk: #8E76A8;
-  --dusk-light: #D8CCE5;
-  --sand: #DFC8AE;
-  --sand-light: #F1E6D8;
-  --alert: #D85D45;
+  /* Requested palette: Cream + Mocha + Orange + subtle Lavender */
+  --palette-cream: #ECE7DF;
+  --palette-mocha: #3B2214;
+  --palette-orange: #E46F38;
+  --palette-lavender: #9488AA;
+
+  --cream: var(--palette-cream);
+  --warm-white: #E6E0D8;
+  --bark: var(--palette-mocha);
+  --bark-light: #6E5648;
+  --clay: var(--palette-orange);
+  --clay-light: #F1A27F;
+  --sage: #8A8FA0;
+  --sage-light: #C6CBD8;
+  --dusk: var(--palette-lavender);
+  --dusk-light: #D9D0E2;
+  --sand: #DCCBB5;
+  --sand-light: #EEE4D7;
+  --alert: #D85F44;
   --bg: var(--cream);
   --card-bg: var(--warm-white);
   --text: var(--bark);
@@ -33,14 +39,14 @@
 }
 
 body.dark {
-   --bg: #1A1411;
-  --card-bg: #2A1E18;
-  --text: #F6ECE1;
-  --text-light: #C7ADA0;
-  --border: #3A2A23;
-  --warm-white: #2A1E18;
-  --cream: #201712;
-  --sand-light: #3A2A23;
+  --bg: #1B1411;
+  --card-bg: #2B201A;
+  --text: #F4EADF;
+  --text-light: #C8B0A2;
+  --border: #3A2C25;
+  --warm-white: #2B201A;
+  --cream: #221912;
+  --sand-light: #3A2C25;
 }
 
 body {
@@ -77,7 +83,7 @@ body {
   justify-content: center;
   gap: 1rem;
   z-index: 999;
- transition: opacity 0.28s ease, transform 0.28s ease;
+  transition: opacity 0.28s ease, transform 0.28s ease;
 }
 
 #splash.gone {
@@ -339,7 +345,7 @@ body {
 #mainApp { display: flex; flex-direction: column; }
 
 .app-header {
-  background: var(--bark);
+  background: linear-gradient(90deg, #3B2214 0%, #4A2B17 100%);
   padding: 0 1.5rem;
   display: flex;
   align-items: center;
@@ -503,7 +509,7 @@ body {
 }
 
 .icon-clay { background: #FCEEE5; }
-.icon-sage { background: #E8F2EB; }
+.icon-sage { background: #E7E6EF; }
 .icon-dusk { background: #EDE9F5; }
 .icon-sand { background: #F5EFE6; }
 
@@ -1237,7 +1243,7 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
 }
 
 .result-card:hover { border-color: var(--clay); transform: translateY(-2px); }
-.result-card.selected { border-color: var(--sage); background: #EEF6F1; }
+.result-card.selected { border-color: var(--dusk); background: #EEE9F4; }
 
 .result-img { width: 72px; height: 72px; object-fit: contain; border-radius: 10px; background: white; padding: 4px; }
 .result-img-placeholder { width: 72px; height: 72px; border-radius: 10px; background: var(--card-bg); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
@@ -1312,7 +1318,7 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
 }
 
 .widget-chores {
-  background: linear-gradient(135deg, var(--sage) 0%, #5A8068 100%);
+  background: linear-gradient(135deg, #9D97AB 0%, #6D857B 100%);
   padding: 1rem;
   display: flex;
   flex-direction: column;
