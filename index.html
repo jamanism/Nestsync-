@@ -2653,6 +2653,29 @@ function getEmoji(term) {
 }
 
 // ============ INSTALL ============
+function setInstallOpen(isOpen) {
+  const overlay = document.getElementById('installOverlay');
+  const sheet = document.getElementById('installSheet');
+  if (!overlay || !sheet) return;
+  overlay.classList.toggle('open', isOpen);
+  sheet.classList.toggle('open', isOpen);
+}
+
 function showInstallInstructions() {
   document.getElementById('installOverlay').classList.add('open');
   document.g
+  setInstallOpen(true);
+}
+
+function closeInstall() {
+  setInstallOpen(false);
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape') return;
+  const overlay = document.getElementById('installOverlay');
+  if (overlay?.classList.contains('open')) closeInstall();
+});
+</script>
+</body>
+</html>
