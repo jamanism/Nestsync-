@@ -141,7 +141,73 @@ body {
   from { width: 0; }
   to { width: 100%; }
 }
+<!-- ============ SIGNUP ============ -->
+<div class="screen hidden" id="signup">
+  <div style="padding:3rem 2rem;max-width:420px;margin:auto">
+    <h2 style="margin-bottom:1.5rem">Create Your Account</h2>
 
+    <input class="field-input" placeholder="Full Name" style="margin-bottom:1rem">
+    <input class="field-input" placeholder="Email" style="margin-bottom:1rem">
+    <input class="field-input" type="password" placeholder="Password" style="margin-bottom:1.5rem">
+
+    <button class="btn-primary" onclick="goToPaywall()">
+      Continue
+    </button>
+  </div>
+</div>
+
+<!-- ============ PAYWALL ============ -->
+<div class="screen hidden" id="paywall">
+  <div style="padding:2rem;max-width:520px;margin:auto">
+
+    <h2 style="margin-bottom:0.5rem">Choose Your Plan</h2>
+    <p style="color:var(--text-light);margin-bottom:2rem">
+      Start Pro with a 7-day free trial.
+    </p>
+
+    <!-- FREE PLAN -->
+    <div class="plan-tier">
+      <div class="plan-tier-header">
+        <div class="plan-tier-name">Free</div>
+        <div class="plan-tier-price">$0</div>
+      </div>
+
+      <ul class="plan-tier-features">
+        <li>Up to 3 family members</li>
+        <li>Basic calendar</li>
+        <li>Basic grocery list</li>
+        <li class="locked">Advanced insights</li>
+      </ul>
+
+      <button class="plan-tier-btn secondary" onclick="chooseFree()">
+        Continue Free
+      </button>
+    </div>
+
+    <!-- PRO PLAN -->
+    <div class="plan-tier recommended">
+      <div class="plan-tier-badge">Most Popular</div>
+
+      <div class="plan-tier-header">
+        <div class="plan-tier-name">Pro</div>
+        <div class="plan-tier-price">$7.99 / month</div>
+      </div>
+
+      <ul class="plan-tier-features">
+        <li>Unlimited members</li>
+        <li>Advanced calendar</li>
+        <li>Smart grocery search</li>
+        <li>Harmony insights</li>
+        <li>Priority support</li>
+      </ul>
+
+      <button class="plan-tier-btn primary" onclick="startTrial()">
+        Start 7-Day Free Trial
+      </button>
+    </div>
+
+  </div>
+</div>
 /* ============ ONBOARDING ============ */
 #onboarding {
   background: var(--cream);
@@ -3256,5 +3322,55 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 </script>
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const existingPlan = localStorage.getItem("plan");
+
+  if (existingPlan) {
+    showScreen("mainApp");
+    return;
+  }
+
+  // Show splash first
+  setTimeout(() => {
+    showScreen("signup");
+  }, 2500);
+
+});
+
+// Screen switch helper
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => {
+    s.classList.remove("active");
+    s.classList.add("hidden");
+  });
+
+  const screen = document.getElementById(id);
+  screen.classList.remove("hidden");
+  screen.classList.add("active");
+}
+
+// Signup → Paywall
+function goToPaywall() {
+  showScreen("paywall");
+}
+
+// Free Plan
+function chooseFree() {
+  localStorage.setItem("plan", "free");
+  showScreen("mainApp");
+}
+
+// Start 7-Day Trial
+function startTrial() {
+  const trialEnd = new Date();
+  trialEnd.setDate(trialEnd.getDate() + 7);
+
+  localStorage.setItem("plan", "pro_trial");
+  localStorage.setItem("trialEnds", trialEnd.toISOString());
+
+  showScreen("mainApp");
+}
 </body>
 </html>
