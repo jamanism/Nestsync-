@@ -1123,34 +1123,6 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
 .plan-sub { font-size: 0.75rem; color: rgba(255,255,255,0.75); margin-top: 2px; }
 .plan-upgrade { background: white; color: var(--clay); border: none; border-radius: 10px; padding: 0.5rem 0.85rem; font-size: 0.8rem; font-family: var(--font); cursor: pointer; font-weight: 700; }
 
-/* ============ PLANS / PRICING ============ */
-.plans-sheet .sheet-title { margin-bottom: 0.5rem; }
-.plan-tier {
-  background: var(--card-bg);
-  border: 2px solid var(--border);
-  border-radius: 16px;
-  padding: 1rem;
-  margin-bottom: 0.75rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-.plan-tier.recommended { border-color: var(--clay); box-shadow: 0 0 0 1px var(--clay); }
-.plan-tier.recommended .plan-tier-badge { display: block; }
-.plan-tier-badge { display: none; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--clay); margin-bottom: 0.4rem; }
-.plan-tier-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; }
-.plan-tier-name { font-size: 1rem; font-weight: 700; color: var(--text); }
-.plan-tier-price { font-size: 1.1rem; font-weight: 700; color: var(--clay); }
-.plan-tier-desc { font-size: 0.75rem; color: var(--text-light); margin-bottom: 0.6rem; }
-.plan-tier-features { font-size: 0.72rem; color: var(--text); line-height: 1.6; }
-.plan-tier-features li { margin-bottom: 0.2rem; list-style: none; padding-left: 1.2em; position: relative; }
-.plan-tier-features li::before { content: '✓'; position: absolute; left: 0; color: var(--sage); font-weight: 700; }
-.plan-tier-features li.locked { opacity: 0.5; }
-.plan-tier-features li.locked::before { content: '—'; color: var(--text-light); }
-.plan-tier-btn { width: 100%; margin-top: 0.75rem; padding: 0.6rem; border-radius: 10px; font-size: 0.85rem; font-weight: 600; font-family: var(--font); cursor: pointer; border: none; }
-.plan-tier-btn.primary { background: var(--clay); color: white; }
-.plan-tier-btn.secondary { background: var(--bg); color: var(--text); border: 1.5px solid var(--border); }
-.plan-tier-btn.current { background: var(--sage); color: white; cursor: default; }
-.pro-plan-limit { font-size: 0.7rem; color: var(--text-light); margin-top: 0.25rem; }
-
 /* ============ ITEM SEARCH SHEET ============ */
 .sheet-overlay {
   display: none;
@@ -1511,7 +1483,6 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
     <div class="header-right">
       <span class="date-chip" id="headerDate"></span>
       <div class="avatar-stack" id="headerAvatars"></div>
-      <button onclick="switchTab('settings')" style="background:none;border:none;color:var(--sand);cursor:pointer;font-size:1.1rem;padding:0.25rem" title="Settings">⚙️</button>
     </div>
   </div>
 
@@ -1648,8 +1619,8 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
         </div>
       </div>
 
-      <!-- Harmony Score (Pro+) -->
-      <div class="card fade-up" id="harmonyCard">
+      <!-- Harmony Score -->
+      <div class="card fade-up">
         <div class="card-header">
           <div class="card-title"><div class="card-icon icon-dusk">✨</div> Family Harmony Score</div>
           <button class="card-action">This week →</button>
@@ -1710,7 +1681,7 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
         </div>
       </div>
 
-      <button class="add-event-fab" onclick="addEventClick()">+</button>
+      <button class="add-event-fab" onclick="showToast('➕ Add event coming soon!')">+</button>
     </div>
 
     <!-- TASKS TAB -->
@@ -1922,12 +1893,12 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
         <span class="profile-edit">Edit</span>
       </div>
 
-      <div class="plan-card" id="settingsPlanCard">
+      <div class="plan-card">
         <div>
-          <div class="plan-name" id="settingsPlanName">Free Plan</div>
-          <div class="plan-sub" id="settingsPlanSub">12 items · 4 events/day · 3 members</div>
+          <div class="plan-name">Free Plan</div>
+          <div class="plan-sub">Upgrade for AI chores, insights & more</div>
         </div>
-        <button class="plan-upgrade" onclick="openPlansSheet()">View Plans</button>
+        <button class="plan-upgrade" onclick="showToast('Premium coming soon! 🚀')">Upgrade</button>
       </div>
 
       <div class="settings-section">
@@ -1948,7 +1919,7 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
         </div>
       </div>
 
-      <div class="settings-section" id="notificationsSection">
+      <div class="settings-section">
         <div class="settings-section-title">Notifications</div>
         <div class="settings-group">
           <div class="settings-row"><span class="settings-row-icon">📍</span><span class="settings-row-label">Location & Safety Alerts</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
@@ -1979,7 +1950,7 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
       <div class="settings-section">
         <div class="settings-section-title">Subscription</div>
         <div class="settings-group">
-          <div class="settings-row" onclick="openPlansSheet()" style="cursor:pointer"><span class="settings-row-icon">⭐</span><span class="settings-row-label">Current Plan</span><span class="settings-row-value" id="settingsPlanValue">Free</span><span class="settings-row-arrow">›</span></div>
+          <div class="settings-row"><span class="settings-row-icon">⭐</span><span class="settings-row-label">Current Plan</span><span class="settings-row-value">Free</span><span class="settings-row-arrow">›</span></div>
           <div class="settings-row"><span class="settings-row-icon">💳</span><span class="settings-row-label">Billing & Payment</span><span class="settings-row-arrow">›</span></div>
           <div class="settings-row" style="color:var(--alert)"><span class="settings-row-icon">🗑</span><span class="settings-row-label" style="color:var(--alert)">Delete Account</span><span class="settings-row-arrow" style="color:var(--alert)">›</span></div>
         </div>
@@ -2079,71 +2050,6 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
     </div>
   </div>
   <button class="sheet-confirm" onclick="closeInstall()">Got it!</button>
-</div>
-
-<!-- PLANS / PRICING SHEET -->
-<div class="sheet-overlay" id="plansOverlay" onclick="closePlansSheet()"></div>
-<div class="item-sheet plans-sheet" id="plansSheet">
-  <div class="sheet-handle"></div>
-  <div class="sheet-title">Choose Your Plan</div>
-  <div style="font-size:0.8rem;color:var(--text-light);margin-bottom:1rem;text-align:center">Pick the plan that fits your family</div>
-
-  <div class="plan-tier" id="planTierFree">
-    <div class="plan-tier-header">
-      <span class="plan-tier-name">Free</span>
-      <span class="plan-tier-price">$0</span>
-    </div>
-    <div class="plan-tier-desc">Get started with the essentials</div>
-    <ul class="plan-tier-features">
-      <li>Grocery list — 12 items max</li>
-      <li>Shared calendar — 4 events/day max</li>
-      <li>3 family members max</li>
-      <li>Basic task list (no assignment, no points)</li>
-      <li>Location sharing (view only)</li>
-      <li class="locked">No chore point system</li>
-      <li class="locked">No Family Harmony Score</li>
-      <li class="locked">No notifications</li>
-    </ul>
-    <button class="plan-tier-btn secondary" id="planBtnFree" onclick="selectPlan('free')">Current Plan</button>
-  </div>
-
-  <div class="plan-tier recommended" id="planTierPro">
-    <div class="plan-tier-badge">Most Popular</div>
-    <div class="plan-tier-header">
-      <span class="plan-tier-name">Pro</span>
-      <span class="plan-tier-price">$7.99<span style="font-size:0.75rem;font-weight:500;color:var(--text-light)">/mo</span></span>
-    </div>
-    <div class="plan-tier-desc">Up to 4 members · Everything in Free, plus:</div>
-    <ul class="plan-tier-features">
-      <li>Full grocery search + unlimited items</li>
-      <li>Unlimited calendar + conflict detection</li>
-      <li>Task assignment to members</li>
-      <li>Chore point system</li>
-      <li>Family Harmony Score</li>
-      <li>Push notifications & reminders</li>
-      <li>Recurring tasks</li>
-      <li>AI chore rotation</li>
-      <li>Location + custom places</li>
-      <li>Place alerts (arrive/leave)</li>
-      <li>30-day location history</li>
-      <li>Driver reports per member</li>
-    </ul>
-    <button class="plan-tier-btn primary" id="planBtnPro" onclick="selectPlan('pro')">Upgrade to Pro</button>
-  </div>
-
-  <div class="plan-tier" id="planTierFamily">
-    <div class="plan-tier-header">
-      <span class="plan-tier-name">Family</span>
-      <span class="plan-tier-price">$11.99<span style="font-size:0.75rem;font-weight:500;color:var(--text-light)">/mo</span></span>
-    </div>
-    <div class="plan-tier-desc">5+ members · Everything in Pro, plus:</div>
-    <ul class="plan-tier-features">
-      <li>5th member and beyond</li>
-    </ul>
-    <button class="plan-tier-btn primary" id="planBtnFamily" onclick="selectPlan('family')">Upgrade to Family</button>
-  </div>
-
-  <button class="sheet-confirm" onclick="closePlansSheet()" style="background:var(--bg);color:var(--text)">Close</button>
 </div>
 
 <!-- TOAST -->
@@ -2450,181 +2356,8 @@ let selectedProduct = null;
 let autocompleteIndex = -1;
 let calDate = new Date();
 
-// ============ PLANS & FEATURE GATING ============
-const PLAN_LIMITS = {
-  free: {
-    groceryMax: 12,
-    eventsPerDayMax: 4,
-    membersMax: 3,
-    grocerySearch: false,
-    taskAssignment: false,
-    chorePoints: false,
-    harmonyScore: false,
-    notifications: false,
-    conflictDetection: false
-  },
-  pro: {
-    groceryMax: Infinity,
-    eventsPerDayMax: Infinity,
-    membersMax: 4,
-    grocerySearch: true,
-    taskAssignment: true,
-    chorePoints: true,
-    harmonyScore: true,
-    notifications: true,
-    conflictDetection: true
-  },
-  family: {
-    groceryMax: Infinity,
-    eventsPerDayMax: Infinity,
-    membersMax: Infinity,
-    grocerySearch: true,
-    taskAssignment: true,
-    chorePoints: true,
-    harmonyScore: true,
-    notifications: true,
-    conflictDetection: true
-  }
-};
-
-let currentPlan = 'free';
-
-function loadPlan() {
-  try {
-    const stored = localStorage.getItem('ns_plan');
-    currentPlan = (stored && ['free','pro','family'].includes(stored)) ? stored : 'free';
-  } catch (e) { currentPlan = 'free'; }
-}
-
-function savePlan(plan) {
-  currentPlan = plan;
-  try { localStorage.setItem('ns_plan', plan); } catch (e) {}
-  applyPlanUI();
-  updatePlanSheetButtons();
-  showToast(plan === 'free' ? 'Switched to Free plan' : `Upgraded to ${plan === 'pro' ? 'Pro' : 'Family'} plan! 🎉`);
-}
-
-function hasFeature(feature) {
-  return !!PLAN_LIMITS[currentPlan]?.[feature];
-}
-
-function getLimit(limit) {
-  return PLAN_LIMITS[currentPlan]?.[limit] ?? 0;
-}
-
-function countGroceryItems() {
-  let n = 0;
-  document.querySelectorAll('#tab-shopping .shopping-item').forEach(() => n++);
-  return n;
-}
-
-function countEventsToday() {
-  return document.querySelectorAll('#tab-family-time .event-card').length;
-}
-
-function countMembers() {
-  return 1 + familyMembers.length;
-}
-
-function openPlansSheet() {
-  document.getElementById('plansOverlay').classList.add('open');
-  document.getElementById('plansSheet').classList.add('open');
-  updatePlanSheetButtons();
-}
-
-function closePlansSheet() {
-  document.getElementById('plansOverlay').classList.remove('open');
-  document.getElementById('plansSheet').classList.remove('open');
-}
-
-function selectPlan(plan) {
-  if (plan === currentPlan) {
-    closePlansSheet();
-    return;
-  }
-  if (plan === 'free') {
-    savePlan('free');
-    closePlansSheet();
-    return;
-  }
-  savePlan(plan);
-  closePlansSheet();
-}
-
-function updatePlanSheetButtons() {
-  ['free','pro','family'].forEach(p => {
-    const btn = document.getElementById('planBtn' + (p === 'free' ? 'Free' : p === 'pro' ? 'Pro' : 'Family'));
-    if (!btn) return;
-    if (p === currentPlan) {
-      btn.textContent = 'Current Plan';
-      btn.className = 'plan-tier-btn current';
-    } else if (p === 'free') {
-      btn.textContent = 'Switch to Free';
-      btn.className = 'plan-tier-btn secondary';
-    } else {
-      btn.textContent = p === 'pro' ? 'Upgrade to Pro' : 'Upgrade to Family';
-      btn.className = 'plan-tier-btn primary';
-    }
-  });
-}
-
-function applyPlanUI() {
-  const limits = PLAN_LIMITS[currentPlan];
-  if (!limits) return;
-
-  const planNames = { free: 'Free', pro: 'Pro', family: 'Family' };
-  const planSubs = {
-    free: '12 items · 4 events/day · 3 members',
-    pro: 'Up to 4 members · All features',
-    family: '5+ members · All features'
-  };
-
-  const nameEl = document.getElementById('settingsPlanName');
-  const subEl = document.getElementById('settingsPlanSub');
-  const valueEl = document.getElementById('settingsPlanValue');
-  if (nameEl) nameEl.textContent = planNames[currentPlan] + ' Plan';
-  if (subEl) subEl.textContent = planSubs[currentPlan];
-  if (valueEl) valueEl.textContent = planNames[currentPlan];
-
-  const harmonyCard = document.getElementById('harmonyCard');
-  if (harmonyCard) harmonyCard.style.display = limits.harmonyScore ? '' : 'none';
-
-  document.querySelectorAll('.chore-assignee').forEach(el => {
-    el.style.display = limits.taskAssignment ? '' : 'none';
-  });
-
-  document.querySelectorAll('.task-badge').forEach(el => {
-    el.style.display = limits.taskAssignment ? '' : 'none';
-  });
-
-  document.querySelectorAll('.tasks-filter .filter-chip').forEach((el, i) => {
-    if (i === 0) return;
-    el.style.display = limits.taskAssignment ? '' : 'none';
-  });
-
-  const notifSection = document.getElementById('notificationsSection');
-  if (notifSection) notifSection.style.display = limits.notifications ? '' : 'none';
-
-  const addGroceryBtn = document.querySelector('.add-grocery-btn');
-  if (addGroceryBtn) {
-    addGroceryBtn.textContent = limits.grocerySearch ? '+ Add item with photo' : '+ Add item';
-  }
-
-  const alertBanner = document.getElementById('alertBanner');
-  if (alertBanner) alertBanner.style.display = limits.conflictDetection ? '' : 'none';
-
-  document.querySelectorAll('.event-conflict, .event-card-conflict').forEach(el => {
-    el.style.display = limits.conflictDetection ? '' : 'none';
-  });
-}
-
 // ============ SPLASH ============
 window.addEventListener('load', () => {
-  // Skip splash and onboarding — go straight to app
-  document.getElementById('splash').style.display = 'none';
-  document.getElementById('onboarding').style.display = 'none';
-  document.getElementById('mainApp').classList.remove('hidden');
-  document.getElementById('mainApp').classList.add('active');
   setTimeout(() => {
     const splash = document.getElementById('splash');
     splash.style.opacity = '0';
@@ -2649,8 +2382,6 @@ window.addEventListener('load', () => {
 
   buildColorGrid();
   buildCalendar();
-  loadPlan();
-  applyPlanUI();
 
   // Dark mode from system
   if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -2747,11 +2478,6 @@ function onboardPrev() {
 }
 
 function showAddMember() {
-  const max = getLimit('membersMax');
-  if (countMembers() >= max) {
-    showToast(`Free plan: ${max} members max. Upgrade to Pro for more!`);
-    return;
-  }
   document.getElementById('addMemberForm').style.display = 'block';
   document.getElementById('newMemberName').focus();
 }
@@ -2760,11 +2486,6 @@ function addMember() {
   const name = document.getElementById('newMemberName').value.trim();
   const role = document.getElementById('newMemberRole').value;
   if (!name) return;
-  const max = getLimit('membersMax');
-  if (countMembers() >= max) {
-    showToast(`Free plan limited to ${max} members. Upgrade for more!`);
-    return;
-  }
   familyMembers.push({ name, role });
   document.getElementById('newMemberName').value = '';
   renderMembersList();
@@ -2874,15 +2595,6 @@ function switchTab(tabId) {
   document.querySelectorAll('.nav-item').forEach((n, i) => n.classList.toggle('active', tabs[i] === tabId));
   prevTab = currentTab;
   currentTab = tabId;
-}
-
-function addEventClick() {
-  const max = getLimit('eventsPerDayMax');
-  if (countEventsToday() >= max) {
-    showToast(`Free plan: ${max} events/day max. Upgrade for unlimited calendar!`);
-    return;
-  }
-  showToast('➕ Add event coming soon!');
 }
 
 // Settings accessible from anywhere
@@ -2998,44 +2710,9 @@ function copyCode() {
 let selectedProduct2 = null;
 
 function openItemSearch() {
-  if (!hasFeature('grocerySearch')) {
-    const max = getLimit('groceryMax');
-    if (countGroceryItems() >= max) {
-      showToast(`Free plan: ${max} items max. Upgrade for unlimited + search!`);
-      return;
-    }
-    const name = prompt('Add grocery item:');
-    if (name && name.trim()) {
-      addSimpleGroceryItem(name.trim());
-    }
-    return;
-  }
-  if (countGroceryItems() >= getLimit('groceryMax')) {
-    showToast('Grocery list is full. Remove items to add more.');
-    return;
-  }
   document.getElementById('sheetOverlay').classList.add('open');
   document.getElementById('itemSheet').classList.add('open');
   setTimeout(() => document.getElementById('sheetSearch').focus(), 350);
-}
-
-function addSimpleGroceryItem(name) {
-  const max = getLimit('groceryMax');
-  if (countGroceryItems() >= max) {
-    showToast(`Free plan: ${max} items max. Upgrade for more!`);
-    return;
-  }
-  const section = document.querySelector('#tab-shopping .shopping-section:last-of-type');
-  const item = document.createElement('div');
-  item.className = 'shopping-item';
-  item.onclick = function() { toggleShopping(this); };
-  item.innerHTML = `
-    <div class="shopping-check"></div>
-    <div class="shopping-img-placeholder">🛒</div>
-    <div><div class="shopping-name">${name}</div><div class="shopping-by">Added by you</div></div>
-  `;
-  section.appendChild(item);
-  showToast(`✅ ${name} added!`);
 }
 
 function closeItemSearch() {
@@ -3112,11 +2789,6 @@ function selectProduct(card, product) {
 
 function confirmAdd() {
   if (!selectedProduct2) return;
-  const max = getLimit('groceryMax');
-  if (countGroceryItems() >= max) {
-    showToast(`Grocery list limit reached (${max}). Upgrade for unlimited!`);
-    return;
-  }
   const p = selectedProduct2;
 
   // Add to shopping tab
@@ -3195,21 +2867,4 @@ function getEmoji(term) {
 // ============ INSTALL ============
 function showInstallInstructions() {
   document.getElementById('installOverlay').classList.add('open');
-  document.getElementById('installSheet').classList.add('open');
-}
-
-function closeInstall() {
-  document.getElementById('installOverlay').classList.remove('open');
-  document.getElementById('installSheet').classList.remove('open');
-}
-
-// ============ TOAST ============
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
-</script>
-</body>
-</html>
+  document.g
