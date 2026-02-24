@@ -1476,6 +1476,15 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
           <option>Parent</option>
           <option>Kid</option>
         </select>
+        <div class="field-label">Permissions</div>
+        <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;margin-bottom:0.35rem">
+          <input type="checkbox" id="newMemberCanEdit" checked style="width:16px;height:16px">
+          <span>Can make changes (tasks, groceries, etc.)</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;margin-bottom:0.5rem">
+          <input type="checkbox" id="newMemberCanAddEvents" checked style="width:16px;height:16px">
+          <span>Can add events to the calendar</span>
+        </label>
         <button class="btn-primary" onclick="addMember()" style="margin-top:0.25rem">Add Member</button>
       </div>
     </div>
@@ -1686,6 +1695,11 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
         </div>
         <div class="calendar-grid" id="calendarGrid"></div>
       </div>
+
+      <button class="sheet-confirm" style="margin-top:0.5rem"
+        onclick="showToast('📷 Calendar scan coming soon — snap a photo and NestSync will suggest events to import.')">
+        Scan paper calendar (AI)
+      </button>
 
       <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-light);font-weight:700;margin-bottom:0.75rem">Today's Events</div>
 
@@ -1925,7 +1939,7 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
       <div class="plan-card" id="settingsPlanCard">
         <div>
           <div class="plan-name" id="settingsPlanName">Free Plan</div>
-          <div class="plan-sub" id="settingsPlanSub">12 items · 4 events/day · 3 members</div>
+          <div class="plan-sub" id="settingsPlanSub">12 items · 4 events/day · 4 members</div>
         </div>
         <button class="plan-upgrade" onclick="openPlansSheet()">View Plans</button>
       </div>
@@ -2097,7 +2111,7 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
     <ul class="plan-tier-features">
       <li>Grocery list — 12 items max</li>
       <li>Shared calendar — 4 events/day max</li>
-      <li>3 family members max</li>
+      <li>4 family members max</li>
       <li>Basic task list (no assignment, no points)</li>
       <li>Location sharing (view only)</li>
       <li class="locked">No chore point system</li>
@@ -2113,7 +2127,7 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
       <span class="plan-tier-name">Pro</span>
       <span class="plan-tier-price">$7.99<span style="font-size:0.75rem;font-weight:500;color:var(--text-light)">/mo</span></span>
     </div>
-    <div class="plan-tier-desc">Up to 4 members · Everything in Free, plus:</div>
+    <div class="plan-tier-desc">Unlimited members · Everything in Free, plus:</div>
     <ul class="plan-tier-features">
       <li>Full grocery search + unlimited items</li>
       <li>Unlimited calendar + conflict detection</li>
@@ -2455,7 +2469,7 @@ const PLAN_LIMITS = {
   free: {
     groceryMax: 12,
     eventsPerDayMax: 4,
-    membersMax: 3,
+    membersMax: 4,
     grocerySearch: false,
     taskAssignment: false,
     chorePoints: false,
@@ -2466,7 +2480,7 @@ const PLAN_LIMITS = {
   pro: {
     groceryMax: Infinity,
     eventsPerDayMax: Infinity,
-    membersMax: 4,
+    membersMax: Infinity,
     grocerySearch: true,
     taskAssignment: true,
     chorePoints: true,
@@ -2488,6 +2502,18 @@ const PLAN_LIMITS = {
 };
 
 let currentPlan = 'free';
+
+function hasSeenPaywall() {
+  try {
+    return localStorage.getItem('ns_paywall_seen') === '1';
+  } catch (e) { return false; }
+}
+
+function markPaywallSeen() {
+  try {
+    localStorage.setItem('ns_paywall_seen', '1');
+  } catch (e) {}
+}
 
 function loadPlan() {
   try {
@@ -2539,15 +2565,18 @@ function closePlansSheet() {
 
 function selectPlan(plan) {
   if (plan === currentPlan) {
+    markPaywallSeen();
     closePlansSheet();
     return;
   }
   if (plan === 'free') {
     savePlan('free');
+    markPaywallSeen();
     closePlansSheet();
     return;
   }
   savePlan(plan);
+  markPaywallSeen();
   closePlansSheet();
 }
 
@@ -2574,9 +2603,9 @@ function applyPlanUI() {
 
   const planNames = { free: 'Free', pro: 'Pro', family: 'Family' };
   const planSubs = {
-    free: '12 items · 4 events/day · 3 members',
-    pro: 'Up to 4 members · All features',
-    family: '5+ members · All features'
+    free: '12 items · 4 events/day · 4 members',
+    pro: 'Unlimited members · All features',
+    family: 'Unlimited members · All features'
   };
 
   const nameEl = document.getElementById('settingsPlanName');
@@ -2765,8 +2794,14 @@ function addMember() {
     showToast(`Free plan limited to ${max} members. Upgrade for more!`);
     return;
   }
-  familyMembers.push({ name, role });
+  const canEdit = document.getElementById('newMemberCanEdit').checked;
+  const canAddEvents = document.getElementById('newMemberCanAddEvents').checked;
+  familyMembers.push({ name, role, canEdit, canAddEvents });
   document.getElementById('newMemberName').value = '';
+  const editCb = document.getElementById('newMemberCanEdit');
+  const eventsCb = document.getElementById('newMemberCanAddEvents');
+  if (editCb) editCb.checked = true;
+  if (eventsCb) eventsCb.checked = true;
   renderMembersList();
   document.getElementById('addMemberForm').style.display = 'none';
 }
@@ -2834,6 +2869,9 @@ function finishOnboarding() {
     ob.style.display = 'none';
     ob.classList.remove('active');
     launchMainApp();
+    if (!hasSeenPaywall()) {
+      openPlansSheet();
+    }
   }, 400);
 }
 
@@ -2973,10 +3011,17 @@ function toggleDarkMode() {
 
 // ============ MEMBERS ============
 function showMemberDetail(name, role, email, color) {
+  const member = familyMembers.find(m => m.name === name) || {};
   document.getElementById('sheetMemberAvatar').textContent = name[0];
   document.getElementById('sheetMemberAvatar').style.background = color;
   document.getElementById('sheetMemberName').textContent = name;
-  document.getElementById('sheetMemberRole').textContent = role + (role === 'Parent' ? ' · Admin' : '');
+  const perms = [];
+  if (member.name) {
+    perms.push(member.canEdit ? 'Can edit' : 'View-only');
+    perms.push(member.canAddEvents ? 'Can add events' : 'No event add');
+  }
+  document.getElementById('sheetMemberRole').textContent =
+    role + (role === 'Parent' ? ' · Admin' : '') + (perms.length ? ' · ' + perms.join(' · ') : '');
   document.getElementById('sheetMemberEmail').textContent = email || 'No email set';
   document.getElementById('memberOverlay').classList.add('open');
   document.getElementById('memberSheet').classList.add('open');
