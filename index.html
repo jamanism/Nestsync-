@@ -2,87 +2,363 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NestSync</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#2C1F14">
+<title>NestSync — Family OS</title>
 <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 :root {
-  --bark: #1f1f1f;
-  --sand: #d8cfc4;
-  --bg: #f5f3ef;
-  --text-light: #777;
+  --cream: #F7F3EE;
+  --warm-white: #FDFAF7;
+  --bark: #2C1F14;
+  --bark-light: #5C4033;
+  --clay: #C97B52;
+  --clay-light: #E8A97A;
+  --sage: #7A9E87;
+  --sage-light: #B2CDBA;
+  --dusk: #8B7EA8;
+  --dusk-light: #C4BAD9;
+  --sand: #D4BFA0;
+  --sand-light: #EDE4D6;
+  --alert: #E07B5A;
+  --bg: var(--cream);
+  --card-bg: var(--warm-white);
+  --text: var(--bark);
+  --text-light: var(--bark-light);
+  --border: var(--sand-light);
+  --font: 'SF Pro Rounded', -apple-system, ui-rounded, 'Helvetica Neue', sans-serif;
+}
+
+body.dark {
+  --bg: #0F0F0F;
+  --card-bg: #1A1A1A;
+  --text: #F0EDE8;
+  --text-light: #9A9087;
+  --border: #2A2A2A;
+  --warm-white: #1A1A1A;
+  --cream: #141414;
+  --sand-light: #222222;
 }
 
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: var(--font);
   background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow: hidden;
+  transition: background 0.3s, color 0.3s;
 }
 
-/* ================= SCREEN SYSTEM ================= */
+/* ============ APP SHELL ============ */
+#app { width: 100vw; height: 100vh; overflow: hidden; position: relative; }
 
+/* ============ SCREENS ============ */
 .screen {
-  display: none;
-  height: 100vh;
-}
-
-.screen.active {
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
+  background: var(--bg);
+  transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.38s ease;
+  will-change: transform;
 }
 
-/* ================= SPLASH ================= */
+.screen.hidden { transform: translateX(100%); pointer-events: none; }
+.screen.slide-left { transform: translateX(-30%); opacity: 0.5; pointer-events: none; }
+.screen.active { transform: translateX(0); opacity: 1; }
 
+/* ============ SPLASH ============ */
 #splash {
+  background: var(--bark);
   align-items: center;
   justify-content: center;
-  background: var(--bark);
-  color: white;
-  text-align: center;
+  gap: 1rem;
+  z-index: 999;
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-/* ================= SIGNUP & PAYWALL ================= */
+#splash.gone {
+  opacity: 0;
+  pointer-events: none;
+  display: none !important;
+}
 
-.center-box {
-  max-width: 420px;
-  margin: auto;
+.splash-logo {
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: splashIn 0.8s 0.3s cubic-bezier(0.34,1.2,0.64,1) forwards;
+}
+
+.nest-white { color: #FFFFFF; }
+.nest-orange { color: #FF6B2C; }
+
+.splash-tagline {
+  font-size: 0.9rem;
+  color: var(--sand);
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  opacity: 0;
+  animation: splashIn 0.6s 0.7s ease forwards;
+}
+
+.splash-icon {
+  font-size: 3.5rem;
+  opacity: 0;
+  animation: splashIn 0.6s 0.1s ease forwards;
+  margin-bottom: 0.5rem;
+}
+
+.splash-bar {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.splash-bar-fill {
+  height: 100%;
+  background: var(--clay-light);
+  border-radius: 2px;
+  animation: loadBar 2s ease forwards;
+}
+
+@keyframes splashIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes loadBar {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+/* ============ ONBOARDING ============ */
+#onboarding {
+  background: var(--cream);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.onboard-header {
+  padding: 3.5rem 1.5rem 1.25rem;
+  background: var(--bark);
+  flex-shrink: 0;
+}
+
+.onboard-steps {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 1.5rem;
+}
+
+.step-dot {
+  height: 4px;
+  flex: 1;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.2);
+  transition: background 0.3s;
+}
+
+.step-dot.active { background: var(--clay-light); }
+.step-dot.done { background: var(--sage); }
+
+.onboard-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1.1;
+  margin-bottom: 0.4rem;
+}
+
+.onboard-sub {
+  font-size: 0.88rem;
+  color: var(--sand);
+  font-weight: 300;
+}
+
+.onboard-body {
+  flex: 1;
   padding: 2rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.onboard-step { display: none; flex-direction: column; gap: 1.2rem; }
+.onboard-step.active { display: flex; }
+
+.field-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-light);
+  margin-bottom: 0.4rem;
 }
 
 .field-input {
   width: 100%;
-  padding: 12px;
-  margin-bottom: 1rem;
-  box-sizing: border-box;
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 0.85rem 1rem;
+  font-size: 1rem;
+  font-family: var(--font);
+  background: var(--card-bg);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.field-input:focus { border-color: var(--clay); }
+
+.onboard-footer {
+  padding: 1rem 1.5rem 2.5rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  background: var(--cream);
 }
 
 .btn-primary {
-  width: 100%;
-  padding: 12px;
-  background: var(--bark);
+  flex: 1;
+  background: var(--clay);
   color: white;
   border: none;
+  border-radius: 14px;
+  padding: 0.95rem;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: var(--font);
   cursor: pointer;
-  font-weight: bold;
+  transition: background 0.2s, transform 0.1s;
 }
+
+.btn-primary:active { transform: scale(0.98); }
+.btn-primary:hover { background: var(--bark); }
 
 .btn-secondary {
-  width: 100%;
-  padding: 12px;
-  background: #999;
-  color: white;
+  background: var(--border);
+  color: var(--text);
   border: none;
+  border-radius: 14px;
+  padding: 0.95rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-family: var(--font);
   cursor: pointer;
-  font-weight: bold;
-  margin-bottom: 1rem;
 }
 
-/* ================= MAIN APP ================= */
-
-#mainApp {
-  flex-direction: column;
-  background: white;
+/* COLOR PALETTE */
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.75rem;
 }
+
+.color-swatch {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: white;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 3px solid transparent;
+}
+
+.color-swatch:hover { transform: scale(1.1); }
+.color-swatch.selected { border-color: white; box-shadow: 0 0 0 3px var(--clay); transform: scale(1.1); }
+.color-swatch.taken { opacity: 0.5; cursor: not-allowed; }
+.color-swatch.taken::after {
+  content: attr(data-initial);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.4);
+  border-radius: 50%;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+/* MEMBER CARDS IN ONBOARDING */
+.member-card-ob {
+  background: var(--card-bg);
+  border-radius: 14px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1.5px solid var(--border);
+}
+
+.member-avatar-ob {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+
+.member-info-ob { flex: 1; }
+.member-name-ob { font-weight: 600; font-size: 0.9rem; }
+.member-role-ob { font-size: 0.75rem; color: var(--text-light); }
+
+.add-member-btn {
+  width: 100%;
+  background: var(--card-bg);
+  border: 2px dashed var(--border);
+  border-radius: 14px;
+  padding: 0.85rem;
+  font-size: 0.9rem;
+  color: var(--text-light);
+  cursor: pointer;
+  font-family: var(--font);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.add-member-btn:hover { border-color: var(--clay); color: var(--clay); }
+
+.role-select {
+  width: 100%;
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 0.85rem 1rem;
+  font-size: 1rem;
+  font-family: var(--font);
+  background: var(--card-bg);
+  color: var(--text);
+  outline: none;
+  appearance: none;
+}
+
+/* ============ MAIN APP ============ */
+#mainApp { display: flex; flex-direction: column; }
 
 .app-header {
   background: var(--bark);
@@ -92,23 +368,27 @@ body {
   justify-content: space-between;
   height: 60px;
   flex-shrink: 0;
-  color: white;
+  position: relative;
+  z-index: 10;
 }
 
 .app-logo {
   font-size: 1.3rem;
   font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+.header-right { display: flex; align-items: center; gap: 0.75rem; }
+
+.date-chip {
+  font-size: 0.72rem;
+  color: var(--sand);
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
-.avatar-stack {
-  display: flex;
-}
+.avatar-stack { display: flex; }
 
 .avatar {
   width: 30px;
@@ -121,181 +401,2815 @@ body {
   font-size: 0.65rem;
   font-weight: 700;
   margin-left: -6px;
-  background: var(--sand);
-  color: black;
+  cursor: pointer;
+  transition: transform 0.2s;
+  color: white;
+  flex-shrink: 0;
 }
 
-.avatar:first-child {
-  margin-left: 0;
+.avatar:first-child { margin-left: 0; }
+.avatar:hover { transform: translateY(-3px); z-index: 10; }
+
+/* SCREEN CONTAINER */
+.screen-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
 }
 
-.app-content {
-  padding: 2rem;
+.tab-screen {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  padding: 1.25rem;
+  padding-bottom: 85px;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.35s ease;
+  pointer-events: none;
 }
 
-.plan-banner {
-  background: #f3f3f3;
-  padding: 10px;
+.tab-screen.active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: all;
+}
+
+.tab-screen.slide-left {
+  opacity: 0.4;
+  transform: translateX(-25%);
+}
+
+/* ============ BOTTOM NAV ============ */
+.bottom-nav {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: #1A1008;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0.5rem 0.25rem 1.5rem;
+  z-index: 50;
+  flex-shrink: 0;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  opacity: 0.45;
+  transition: all 0.2s;
+  padding: 0.3rem 0.6rem;
+  border-radius: 14px;
+  min-width: 58px;
+}
+
+.nav-item.active {
+  opacity: 1;
+  background: rgba(255,107,44,0.15);
+}
+
+.nav-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.nav-label {
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+  color: white;
+  white-space: nowrap;
+}
+
+.nav-dot { display: none; }
+.nav-item.active .nav-label { color: #FF6B2C; }
+
+/* ============ CARDS ============ */
+.card {
+  background: var(--card-bg);
+  border-radius: 18px;
+  padding: 1.25rem;
   margin-bottom: 1rem;
+  transition: background 0.3s;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 0.85rem;
 }
+
+.icon-clay { background: #FCEEE5; }
+.icon-sage { background: #E8F2EB; }
+.icon-dusk { background: #EDE9F5; }
+.icon-sand { background: #F5EFE6; }
+
+.card-action {
+  font-size: 0.75rem;
+  color: var(--clay);
+  cursor: pointer;
+  font-weight: 600;
+  border: none;
+  background: none;
+  font-family: var(--font);
+}
+
+/* ============ DASHBOARD ============ */
+.greeting { margin-bottom: 1.25rem; }
+
+.greeting h1 {
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.greeting h1 em { font-style: normal; color: var(--clay); }
+.greeting p { margin-top: 0.3rem; font-size: 0.82rem; color: var(--text-light); font-weight: 300; }
+
+.alert-banner {
+  background: var(--alert);
+  color: white;
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.82rem;
+}
+
+.alert-dismiss {
+  margin-left: auto;
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  border-radius: 6px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.7rem;
+  cursor: pointer;
+  font-family: var(--font);
+  flex-shrink: 0;
+}
+
+/* SCHEDULE */
+.schedule-list { display: flex; flex-direction: column; gap: 0.65rem; }
+
+.event { display: flex; align-items: flex-start; gap: 0.65rem; }
+.event-time { font-size: 0.68rem; color: var(--text-light); min-width: 38px; padding-top: 2px; text-align: right; }
+.event-bar { width: 3px; border-radius: 2px; min-height: 34px; flex-shrink: 0; }
+.bar-clay { background: var(--clay); }
+.bar-sage { background: var(--sage); }
+.bar-dusk { background: var(--dusk); }
+.bar-alert { background: var(--alert); }
+.event-name { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+.event-who { font-size: 0.72rem; color: var(--text-light); margin-top: 1px; }
+.event-conflict { display: inline-flex; align-items: center; font-size: 0.68rem; background: #FFF0EC; color: var(--alert); padding: 2px 6px; border-radius: 4px; margin-top: 2px; font-weight: 600; }
+
+/* CHORES */
+.chore-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 10px;
+  background: var(--bg);
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+  transition: background 0.15s;
+}
+
+.chore-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--sand);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  font-size: 0.65rem;
+}
+
+.chore-item.done .chore-check { background: var(--sage); border-color: var(--sage); color: white; }
+.chore-item.done .chore-name { text-decoration: line-through; opacity: 0.5; }
+.chore-name { font-size: 0.85rem; flex: 1; color: var(--text); }
+.chore-assignee { font-size: 0.68rem; color: white; border-radius: 20px; padding: 2px 7px; }
+
+.progress-wrap { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.75rem; }
+.progress-bar { flex: 1; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--sage); border-radius: 3px; transition: width 0.5s ease; }
+.progress-label { font-size: 0.72rem; color: var(--text-light); white-space: nowrap; }
+
+/* GROCERY */
+.grocery-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  padding: 0.5rem 0;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+.grocery-item:last-child { border-bottom: none; }
+.grocery-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dot-clay { background: var(--clay); }
+.dot-dusk { background: var(--dusk); }
+.dot-sage { background: var(--sage); }
+.grocery-item.checked { opacity: 0.4; text-decoration: line-through; }
+.grocery-count { margin-left: auto; font-size: 0.7rem; color: var(--text-light); }
+.grocery-section-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-light); font-weight: 600; margin: 0.5rem 0 0.2rem; }
+
+.grocery-item-img { width: 32px; height: 32px; border-radius: 7px; object-fit: contain; background: white; padding: 2px; flex-shrink: 0; }
+
+.add-grocery-btn {
+  width: 100%;
+  background: var(--bg);
+  border: 1.5px dashed var(--sand);
+  border-radius: 10px;
+  padding: 0.6rem;
+  font-size: 0.82rem;
+  color: var(--text-light);
+  cursor: pointer;
+  font-family: var(--font);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.add-grocery-btn:hover { border-color: var(--clay); color: var(--clay); }
+
+/* LOCATION MAP */
+.location-map {
+  background: linear-gradient(135deg, #E8F0E9 0%, #D4E6D6 50%, #BDD4C0 100%);
+  border-radius: 12px;
+  height: 110px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e3522 50%, #162819 100%); }
+
+.map-grid {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.map-road-h { position: absolute; left: 0; right: 0; height: 5px; background: rgba(255,255,255,0.45); top: 50%; transform: translateY(-50%); }
+.map-road-v { position: absolute; top: 0; bottom: 0; width: 5px; background: rgba(255,255,255,0.45); left: 35%; }
+
+.map-pin { position: absolute; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+.pin-bubble { width: 26px; height: 26px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+.pin-bubble span { transform: rotate(45deg); font-size: 0.65rem; color: white; font-weight: 700; }
+.pin-label { font-size: 0.6rem; font-weight: 600; margin-top: 2px; color: var(--bark); white-space: nowrap; }
+.pin-home { top: 28%; left: 30%; }
+.pin-mom { top: 12%; left: 53%; }
+.pin-kid { top: 52%; left: 62%; }
+.pin-bubble.home { background: var(--bark); border-radius: 50%; transform: none; font-size: 0.8rem; }
+.pin-bubble.mom-pin { background: var(--clay); }
+.pin-bubble.kid-pin { background: var(--dusk); }
+
+.location-list { display: flex; flex-direction: column; gap: 0.45rem; }
+.location-item { display: flex; align-items: center; gap: 0.65rem; font-size: 0.82rem; }
+.loc-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.loc-name { font-weight: 600; flex: 1; color: var(--text); }
+.loc-place { font-size: 0.72rem; color: var(--text-light); }
+.loc-time { font-size: 0.68rem; color: var(--text-light); }
+
+/* HARMONY SCORE */
+.insight-score { display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1rem; }
+.score-ring { position: relative; width: 68px; height: 68px; flex-shrink: 0; }
+.score-ring svg { transform: rotate(-90deg); width: 68px; height: 68px; }
+.score-ring circle { fill: none; stroke-width: 6; }
+.ring-bg { stroke: var(--border); }
+.ring-fill { stroke: var(--sage); stroke-linecap: round; stroke-dasharray: 176; stroke-dashoffset: 44; }
+.score-number { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.score-num { font-size: 1.3rem; font-weight: 700; line-height: 1; color: var(--text); }
+.score-lbl { font-size: 0.5rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; }
+.score-details { flex: 1; }
+.score-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text); }
+.breakdown-row { display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; margin-bottom: 0.3rem; }
+.breakdown-label { color: var(--text-light); min-width: 80px; }
+.mini-bar { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.mini-fill { height: 100%; border-radius: 2px; }
+.tip { display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.78rem; padding: 0.55rem 0.7rem; border-radius: 8px; background: var(--bg); margin-bottom: 0.5rem; }
+.tip-icon { font-size: 0.85rem; flex-shrink: 0; }
+.tip-text { color: var(--text); line-height: 1.4; }
+.tip-text strong { font-weight: 600; }
+
+/* ============ FAMILY TIME SCREEN ============ */
+.screen-title { font-size: 1.4rem; font-weight: 700; color: var(--text); margin-bottom: 1.25rem; }
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.cal-month { font-size: 1rem; font-weight: 700; color: var(--text); }
+.cal-nav { background: var(--card-bg); border: none; border-radius: 8px; width: 32px; height: 32px; font-size: 1rem; cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; }
+
+.week-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.week-day-label { text-align: center; font-size: 0.65rem; font-weight: 600; color: var(--text-light); text-transform: uppercase; }
+
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 1.25rem; }
+
+.cal-day {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  position: relative;
+  color: var(--text);
+}
+
+.cal-day:hover { background: var(--border); }
+.cal-day.today { background: var(--clay); color: white; font-weight: 700; }
+.cal-day.has-event::after { content: ''; position: absolute; bottom: 3px; width: 4px; height: 4px; border-radius: 50%; background: var(--sage); }
+.cal-day.today.has-event::after { background: white; }
+.cal-day.other-month { opacity: 0.3; }
+
+.events-list-full { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.event-card {
+  background: var(--card-bg);
+  border-radius: 14px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  border-left: 4px solid var(--clay);
+}
+
+.event-card-time { font-size: 0.72rem; color: var(--text-light); white-space: nowrap; }
+.event-card-name { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+.event-card-who { font-size: 0.75rem; color: var(--text-light); }
+.event-card-conflict { font-size: 0.7rem; background: #FFF0EC; color: var(--alert); padding: 2px 7px; border-radius: 5px; font-weight: 600; display: inline-block; margin-top: 3px; }
+
+.add-event-fab {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--clay);
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(201,123,82,0.4);
+  z-index: 40;
+  font-family: var(--font);
+  transition: transform 0.2s;
+}
+
+.add-event-fab:active { transform: scale(0.92); }
+
+/* ============ TASKS SCREEN ============ */
+.tasks-filter {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  scrollbar-width: none;
+}
+
+.tasks-filter::-webkit-scrollbar { display: none; }
+
+.filter-chip {
+  flex-shrink: 0;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.78rem;
+  font-family: var(--font);
+  background: var(--card-bg);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-weight: 500;
+}
+
+.filter-chip.active { background: var(--clay); border-color: var(--clay); color: white; }
+
+.task-section-title {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-light);
+  font-weight: 700;
+  margin: 1rem 0 0.5rem;
+}
+
+.task-card {
+  background: var(--card-bg);
+  border-radius: 14px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.task-card.done { opacity: 0.5; }
+.task-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--sand); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; transition: all 0.2s; }
+.task-card.done .task-check { background: var(--sage); border-color: var(--sage); color: white; }
+.task-card.done .task-name { text-decoration: line-through; }
+.task-name { font-size: 0.88rem; font-weight: 500; flex: 1; color: var(--text); }
+.task-badge { font-size: 0.68rem; color: white; border-radius: 20px; padding: 2px 8px; font-weight: 600; }
+.task-due { font-size: 0.7rem; color: var(--text-light); }
+
+/* ============ SHOPPING SCREEN ============ */
+.shopping-header-card {
+  background: var(--clay);
+  border-radius: 18px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.shopping-stats { display: flex; gap: 1.5rem; margin-top: 0.75rem; }
+.shopping-stat-num { font-size: 1.5rem; font-weight: 700; }
+.shopping-stat-lbl { font-size: 0.72rem; opacity: 0.8; }
+
+.shopping-section { margin-bottom: 1.25rem; }
+.shopping-section-title {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-light);
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+  padding: 0 0.25rem;
+}
+
+.shopping-item {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.shopping-item.checked { opacity: 0.45; }
+.shopping-item.checked .shopping-name { text-decoration: line-through; }
+.shopping-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--sand); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; transition: all 0.2s; }
+.shopping-item.checked .shopping-check { background: var(--sage); border-color: var(--sage); color: white; }
+.shopping-img { width: 38px; height: 38px; border-radius: 9px; object-fit: contain; background: white; padding: 3px; flex-shrink: 0; }
+.shopping-img-placeholder { width: 38px; height: 38px; border-radius: 9px; background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+.shopping-name { font-size: 0.88rem; font-weight: 500; flex: 1; color: var(--text); }
+.shopping-by { font-size: 0.7rem; color: var(--text-light); }
+
+/* ============ MEMBERS SCREEN ============ */
+.members-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 1.25rem; }
+
+.member-card {
+  background: var(--card-bg);
+  border-radius: 18px;
+  padding: 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.member-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+
+.member-avatar-lg {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: white;
+  position: relative;
+}
+
+.member-online {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--sage);
+  border: 2px solid var(--card-bg);
+}
+
+.member-name-lg { font-size: 0.92rem; font-weight: 700; color: var(--text); }
+.member-role-lg { font-size: 0.7rem; color: var(--text-light); font-weight: 500; }
+.member-tasks-lg { font-size: 0.72rem; color: var(--clay); font-weight: 600; }
+
+.member-location-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  color: var(--text-light);
+}
+
+.member-detail-card {
+  background: var(--card-bg);
+  border-radius: 18px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.member-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.member-detail-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: white;
+}
+
+.member-detail-name { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+.member-detail-role { font-size: 0.78rem; color: var(--text-light); }
+.member-detail-email { font-size: 0.75rem; color: var(--clay); margin-top: 2px; }
+
+.member-stat-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.member-stat {
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+}
+
+.member-stat-num { font-size: 1.3rem; font-weight: 700; color: var(--clay); }
+.member-stat-lbl { font-size: 0.65rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; }
+
+.family-code-card {
+  background: var(--bark);
+  border-radius: 18px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.family-code-label { font-size: 0.72rem; color: var(--sand); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.25rem; }
+.family-code { font-size: 1.8rem; font-weight: 700; color: white; letter-spacing: 0.15em; }
+.copy-code-btn { background: var(--clay); color: white; border: none; border-radius: 10px; padding: 0.5rem 0.85rem; font-size: 0.8rem; font-family: var(--font); cursor: pointer; font-weight: 600; }
+
+/* ============ SETTINGS SCREEN ============ */
+.settings-section { margin-bottom: 1.5rem; }
+.settings-section-title {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-light);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding: 0 0.25rem;
+}
+
+.settings-group { background: var(--card-bg); border-radius: 16px; overflow: hidden; }
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.settings-row:last-child { border-bottom: none; }
+.settings-row:hover { background: var(--bg); }
+.settings-row-icon { font-size: 1.1rem; width: 28px; }
+.settings-row-label { font-size: 0.9rem; color: var(--text); flex: 1; }
+.settings-row-value { font-size: 0.8rem; color: var(--text-light); margin-right: 0.4rem; }
+.settings-row-arrow { color: var(--text-light); font-size: 0.75rem; }
+
+/* TOGGLE */
+.toggle {
+  width: 44px;
+  height: 26px;
+  border-radius: 13px;
+  background: var(--border);
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.toggle.on { background: var(--sage); }
+
+.toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: white;
+  transition: transform 0.2s cubic-bezier(0.34,1.2,0.64,1);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+.toggle.on .toggle-thumb { transform: translateX(18px); }
+
+/* PROFILE ROW */
+.profile-row {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1rem;
+  background: var(--card-bg);
+  border-radius: 16px;
+  margin-bottom: 1.5rem;
+  cursor: pointer;
+}
+
+.profile-avatar { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 700; color: white; }
+.profile-name { font-size: 1rem; font-weight: 700; color: var(--text); }
+.profile-email { font-size: 0.78rem; color: var(--text-light); }
+.profile-edit { margin-left: auto; font-size: 0.78rem; color: var(--clay); font-weight: 600; }
+
+/* PLAN CARD */
+.plan-card {
+  background: linear-gradient(135deg, var(--clay) 0%, #A85E38 100%);
+  border-radius: 16px;
+  padding: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.plan-name { font-size: 1rem; font-weight: 700; color: white; }
+.plan-sub { font-size: 0.75rem; color: rgba(255,255,255,0.75); margin-top: 2px; }
+.plan-upgrade { background: white; color: var(--clay); border: none; border-radius: 10px; padding: 0.5rem 0.85rem; font-size: 0.8rem; font-family: var(--font); cursor: pointer; font-weight: 700; }
+
+/* ============ PLANS / PRICING ============ */
+.plans-sheet .sheet-title { margin-bottom: 0.5rem; }
+.plan-tier {
+  background: var(--card-bg);
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.plan-tier.recommended { border-color: var(--clay); box-shadow: 0 0 0 1px var(--clay); }
+.plan-tier.recommended .plan-tier-badge { display: block; }
+.plan-tier-badge { display: none; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--clay); margin-bottom: 0.4rem; }
+.plan-tier-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; }
+.plan-tier-name { font-size: 1rem; font-weight: 700; color: var(--text); }
+.plan-tier-price { font-size: 1.1rem; font-weight: 700; color: var(--clay); }
+.plan-tier-desc { font-size: 0.75rem; color: var(--text-light); margin-bottom: 0.6rem; }
+.plan-tier-features { font-size: 0.72rem; color: var(--text); line-height: 1.6; }
+.plan-tier-features li { margin-bottom: 0.2rem; list-style: none; padding-left: 1.2em; position: relative; }
+.plan-tier-features li::before { content: '✓'; position: absolute; left: 0; color: var(--sage); font-weight: 700; }
+.plan-tier-features li.locked { opacity: 0.5; }
+.plan-tier-features li.locked::before { content: '—'; color: var(--text-light); }
+.plan-tier-btn { width: 100%; margin-top: 0.75rem; padding: 0.6rem; border-radius: 10px; font-size: 0.85rem; font-weight: 600; font-family: var(--font); cursor: pointer; border: none; }
+.plan-tier-btn.primary { background: var(--clay); color: white; }
+.plan-tier-btn.secondary { background: var(--bg); color: var(--text); border: 1.5px solid var(--border); }
+.plan-tier-btn.current { background: var(--sage); color: white; cursor: default; }
+.pro-plan-limit { font-size: 0.7rem; color: var(--text-light); margin-top: 0.25rem; }
+
+/* ============ ITEM SEARCH SHEET ============ */
+.sheet-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 200;
+  backdrop-filter: blur(2px);
+}
+
+.sheet-overlay.open { display: block; }
+
+.item-sheet {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--card-bg);
+  border-radius: 24px 24px 0 0;
+  z-index: 201;
+  padding: 1.25rem 1.25rem 2rem;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.34,1.1,0.64,1);
+}
+
+.item-sheet.open { transform: translateY(0); }
+
+.sheet-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 1rem; }
+.sheet-title { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 1rem; text-align: center; }
+
+.sheet-search-wrap { display: flex; gap: 0.6rem; margin-bottom: 0.85rem; }
+
+.autocomplete-wrap { position: relative; flex: 1; }
+
+.sheet-search {
+  width: 100%;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 0.65rem 1rem;
+  font-size: 0.92rem;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.sheet-search:focus { border-color: var(--clay); }
+
+.autocomplete-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0; right: 0;
+  background: var(--card-bg);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  overflow: hidden;
+  z-index: 300;
+  border: 1.5px solid var(--border);
+}
+
+.autocomplete-dropdown.open { display: block; }
+
+.autocomplete-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 1rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+
+.autocomplete-item:last-child { border-bottom: none; }
+.autocomplete-item:hover { background: var(--bg); }
+.autocomplete-emoji { font-size: 1rem; width: 22px; text-align: center; }
+.autocomplete-text { flex: 1; }
+.autocomplete-name { font-weight: 500; }
+.autocomplete-brand { font-size: 0.68rem; color: var(--text-light); }
+.autocomplete-highlight { color: var(--clay); }
+
+.sheet-search-btn {
+  background: var(--clay);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 0 1rem;
+  font-size: 0.88rem;
+  cursor: pointer;
+  font-family: var(--font);
+  font-weight: 600;
+}
+
+.sheet-suggestions { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 0.85rem; }
+
+.suggestion-chip {
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.75rem;
+  color: var(--text);
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all 0.15s;
+}
+
+.suggestion-chip:hover { border-color: var(--clay); color: var(--clay); }
+
+.sheet-results {
+  overflow-y: auto;
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem;
+  padding-bottom: 0.5rem;
+}
+
+.result-card {
+  background: var(--bg);
+  border-radius: 14px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.15s, transform 0.15s;
+}
+
+.result-card:hover { border-color: var(--clay); transform: translateY(-2px); }
+.result-card.selected { border-color: var(--sage); background: #EEF6F1; }
+
+.result-img { width: 72px; height: 72px; object-fit: contain; border-radius: 10px; background: white; padding: 4px; }
+.result-img-placeholder { width: 72px; height: 72px; border-radius: 10px; background: var(--card-bg); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
+.result-name { font-size: 0.75rem; font-weight: 600; text-align: center; color: var(--text); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.result-brand { font-size: 0.65rem; color: var(--text-light); text-align: center; }
+.result-add-badge { display: none; font-size: 0.65rem; background: var(--sage); color: white; border-radius: 20px; padding: 2px 7px; font-weight: 600; }
+.result-card.selected .result-add-badge { display: block; }
+
+.sheet-empty { grid-column: span 2; text-align: center; color: var(--text-light); font-size: 0.85rem; padding: 2rem; }
+.sheet-loading { grid-column: span 2; text-align: center; color: var(--text-light); font-size: 0.85rem; padding: 2rem; display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
+.spinner { width: 26px; height: 26px; border: 3px solid var(--border); border-top-color: var(--clay); border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.sheet-confirm {
+  background: var(--clay);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 0.85rem;
+  width: 100%;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: var(--font);
+  cursor: pointer;
+  margin-top: 0.75rem;
+  transition: background 0.2s;
+}
+
+.sheet-confirm:disabled { background: var(--border); cursor: default; color: var(--text-light); }
+
+/* ============ ADD TO HOME SCREEN BANNER ============ */
+.home-screen-banner {
+  background: var(--bark);
+  border-radius: 14px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.hsb-icon { font-size: 1.5rem; }
+.hsb-text { flex: 1; }
+.hsb-title { font-size: 0.85rem; font-weight: 700; color: white; }
+.hsb-sub { font-size: 0.72rem; color: var(--sand); margin-top: 2px; }
+.hsb-btn { background: var(--clay); color: white; border: none; border-radius: 9px; padding: 0.45rem 0.75rem; font-size: 0.75rem; font-family: var(--font); cursor: pointer; font-weight: 700; white-space: nowrap; }
+.hsb-close { color: var(--sand); background: none; border: none; cursor: pointer; font-size: 1rem; }
+
+/* WIDGET PREVIEW */
+.widget-preview-section { margin-bottom: 1.25rem; }
+.widget-preview-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-light); font-weight: 700; margin-bottom: 0.75rem; padding: 0 0.25rem; }
+.widgets-row { display: flex; gap: 0.75rem; overflow-x: auto; padding-bottom: 0.5rem; scrollbar-width: none; }
+.widgets-row::-webkit-scrollbar { display: none; }
+
+.widget-card {
+  flex-shrink: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+}
+
+.widget-small { width: 155px; height: 155px; }
+.widget-medium { width: 320px; height: 155px; }
+
+.widget-schedule {
+  background: var(--bark);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.widget-chores {
+  background: linear-gradient(135deg, var(--sage) 0%, #5A8068 100%);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.widget-title { font-size: 0.65rem; font-weight: 700; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+.widget-logo { font-size: 0.6rem; font-weight: 700; color: rgba(255,255,255,0.4); position: absolute; bottom: 8px; right: 10px; }
+
+.widget-event { margin-bottom: 0.4rem; }
+.widget-event-time { font-size: 0.6rem; color: var(--clay-light); font-weight: 600; }
+.widget-event-name { font-size: 0.72rem; font-weight: 700; color: white; }
+
+.widget-chore-item { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.35rem; }
+.widget-chore-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.6); flex-shrink: 0; }
+.widget-chore-name { font-size: 0.72rem; color: white; font-weight: 500; }
+.widget-chore-done { text-decoration: line-through; opacity: 0.5; }
+
+/* ============ ANIMATIONS ============ */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.fade-up { animation: fadeUp 0.4s ease both; }
+
+/* ============ TOAST ============ */
+.toast {
+  position: fixed;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--bark);
+  color: white;
+  padding: 0.65rem 1.25rem;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  opacity: 0;
+  transition: all 0.3s;
+  z-index: 500;
+  white-space: nowrap;
+}
+
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
 
-<!-- ================= SPLASH ================= -->
+<div id="app">
+
+<!-- ============ SPLASH ============ -->
 <div class="screen active" id="splash">
-  <h1>NestSync</h1>
-  <p>Organize Your Family Life</p>
+  <div class="splash-logo"><span class="nest-white">Nest</span><span class="nest-orange">Sync</span></div>
+  <div class="splash-tagline">The Operating System for Modern Families</div>
+  <div class="splash-bar"><div class="splash-bar-fill"></div></div>
 </div>
 
-<!-- ================= SIGNUP ================= -->
-<div class="screen" id="signup">
-  <div class="center-box">
-    <h2>Create Account</h2>
-
-    <input class="field-input" placeholder="Full Name">
-    <input class="field-input" placeholder="Email">
-    <input type="password" class="field-input" placeholder="Password">
-
-    <button class="btn-primary" onclick="goToPaywall()">
-      Continue
-    </button>
+<!-- ============ ONBOARDING ============ -->
+<div class="screen hidden" id="onboarding">
+  <div class="onboard-header">
+    <div class="onboard-steps">
+      <div class="step-dot active" id="dot0"></div>
+      <div class="step-dot" id="dot1"></div>
+      <div class="step-dot" id="dot2"></div>
+      <div class="step-dot" id="dot3"></div>
+    </div>
+    <div class="onboard-title" id="onboardTitle">Welcome to NestSync</div>
+    <div class="onboard-sub" id="onboardSub">Let's set up your family in just a few steps.</div>
   </div>
-</div>
 
-<!-- ================= PAYWALL ================= -->
-<div class="screen" id="paywall">
-  <div class="center-box">
-    <h2>Choose Your Plan</h2>
-    <p style="color:var(--text-light);margin-bottom:2rem;">
-      Premium includes a 7-day free trial.
-    </p>
+  <div class="onboard-body">
+    <!-- Step 0: Family name -->
+    <div class="onboard-step active" id="step0">
+      <div>
+        <div class="field-label">Your Family Name</div>
+        <input class="field-input" id="familyName" placeholder="e.g. The Thompsons" maxlength="30">
+      </div>
+      <div>
+        <div class="field-label">Your Name</div>
+        <input class="field-input" id="creatorName" placeholder="e.g. Sarah" maxlength="20">
+      </div>
+      <div>
+        <div class="field-label">Your Email</div>
+        <input class="field-input" id="creatorEmail" type="email" placeholder="sarah@email.com">
+      </div>
+      <div>
+        <div class="field-label">Password</div>
+        <input class="field-input" id="creatorPass" type="password" placeholder="Create a password">
+      </div>
+    </div>
 
-    <button class="btn-secondary" onclick="chooseFree()">
-      Continue Free
-    </button>
+    <!-- Step 1: Pick color -->
+    <div class="onboard-step" id="step1">
+      <div>
+        <div class="field-label">Pick Your Color</div>
+        <p style="font-size:0.82rem;color:var(--text-light);margin-bottom:1rem">This color represents you across the whole app — calendar, chores, location pin, and more.</p>
+        <div class="color-grid" id="colorGrid"></div>
+      </div>
+    </div>
 
-    <button class="btn-primary" onclick="startTrial()">
-      Premium — $7.99/month<br>
-      Includes 7-Day Free Trial
-    </button>
-  </div>
-</div>
+    <!-- Step 2: Add family members -->
+    <div class="onboard-step" id="step2">
+      <div>
+        <div class="field-label">Add Family Members</div>
+        <p style="font-size:0.82rem;color:var(--text-light);margin-bottom:0.75rem">Add your family — they'll get an invite to join. You can always add more later.</p>
+        <div id="membersList"></div>
+        <button class="add-member-btn" onclick="showAddMember()">＋ Add a family member</button>
+      </div>
+      <div id="addMemberForm" style="display:none;background:var(--card-bg);border-radius:14px;padding:1rem;border:1.5px solid var(--border)">
+        <div class="field-label">Name</div>
+        <input class="field-input" id="newMemberName" placeholder="Name" style="margin-bottom:0.75rem" maxlength="20">
+        <div class="field-label">Role</div>
+        <select class="role-select" id="newMemberRole" style="margin-bottom:0.75rem">
+          <option>Parent</option>
+          <option>Kid</option>
+        </select>
+        <button class="btn-primary" onclick="addMember()" style="margin-top:0.25rem">Add Member</button>
+      </div>
+    </div>
 
-<!-- ================= MAIN APP ================= -->
-<div class="screen" id="mainApp">
-
-  <div class="app-header">
-    <div class="app-logo">NestSync</div>
-
-    <div class="header-right">
-      <div class="avatar-stack">
-        <div class="avatar">A</div>
-        <div class="avatar">B</div>
-        <div class="avatar">C</div>
+    <!-- Step 3: All set -->
+    <div class="onboard-step" id="step3">
+      <div style="text-align:center;padding:1rem 0">
+        <div style="font-size:4rem;margin-bottom:1rem">🎉</div>
+        <div style="font-size:1.3rem;font-weight:700;color:var(--text);margin-bottom:0.5rem">You're all set!</div>
+        <div style="font-size:0.88rem;color:var(--text-light);line-height:1.6" id="summaryText"></div>
+      </div>
+      <div style="background:var(--card-bg);border-radius:14px;padding:1rem;text-align:center">
+        <div style="font-size:0.72rem;color:var(--text-light);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.4rem">Your Family Invite Code</div>
+        <div style="font-size:2rem;font-weight:700;color:var(--clay);letter-spacing:0.2em" id="inviteCode"></div>
+        <div style="font-size:0.75rem;color:var(--text-light);margin-top:0.4rem">Share this with your family to join</div>
       </div>
     </div>
   </div>
 
-  <div class="app-content">
-    <div id="planBanner" class="plan-banner"></div>
-
-    <h3>Family Dashboard</h3>
-    <p>Your family organization hub is ready.</p>
+  <div class="onboard-footer">
+    <button class="btn-secondary" id="onboardBack" onclick="onboardPrev()" style="display:none">Back</button>
+    <button class="btn-primary" id="onboardNext" onclick="onboardNext()">Continue →</button>
   </div>
-
+  <div style="text-align:center;padding:0 0 1rem">
+    <button onclick="skipOnboarding()" style="background:none;border:none;font-size:0.78rem;color:var(--text-light);cursor:pointer;font-family:var(--font);text-decoration:underline">Skip setup for now</button>
+  </div>
 </div>
 
-<script>
+<!-- ============ MAIN APP ============ -->
+<div class="screen hidden" id="mainApp">
+  <div class="app-header">
+    <div class="app-logo"><span class="nest-white">Nest</span><span class="nest-orange">Sync</span></div>
+    <div class="header-right">
+      <span class="date-chip" id="headerDate"></span>
+      <div class="avatar-stack" id="headerAvatars"></div>
+      <button onclick="switchTab('settings')" style="background:none;border:none;color:var(--sand);cursor:pointer;font-size:1.1rem;padding:0.25rem" title="Settings">⚙️</button>
+    </div>
+  </div>
 
-/* ================= SCREEN NAVIGATION ================= */
+  <div class="screen-container">
 
-function showScreen(id) {
-  document.querySelectorAll(".screen").forEach(screen => {
-    screen.classList.remove("active");
-  });
-  document.getElementById(id).classList.add("active");
+    <!-- DASHBOARD TAB -->
+    <div class="tab-screen active" id="tab-dashboard">
+      <div class="greeting fade-up">
+        <h1>Good <span id="timeGreeting">morning</span>, <em id="familyGreeting">Thompson family.</em></h1>
+        <p>6 events today · 4 chores pending · 3 items needed</p>
+      </div>
+
+      <div class="alert-banner fade-up" id="alertBanner">
+        <span>⚡</span>
+        <div style="flex:1;font-size:0.8rem"><strong>Schedule conflict:</strong> Lily's soccer overlaps Jake's dentist at 4:00 PM.</div>
+        <button class="alert-dismiss" onclick="this.closest('.alert-banner').style.display='none'">Dismiss</button>
+      </div>
+
+      <!-- Add to Home Screen Banner -->
+      <div class="home-screen-banner fade-up" id="addHomeBanner">
+        <div class="hsb-icon">📱</div>
+        <div class="hsb-text">
+          <div class="hsb-title">Add to Home Screen</div>
+          <div class="hsb-sub">Install NestSync like a native app</div>
+        </div>
+        <button class="hsb-btn" onclick="showInstallInstructions()">Install</button>
+        <button class="hsb-close" onclick="document.getElementById('addHomeBanner').style.display='none'">✕</button>
+      </div>
+
+      <!-- Widget Previews -->
+      <div class="widget-preview-section fade-up">
+        <div class="widget-preview-title">📱 Home Screen Widgets Preview</div>
+        <div class="widgets-row">
+          <div class="widget-card widget-small">
+            <div class="widget-schedule">
+              <div class="widget-title">Today</div>
+              <div class="widget-event">
+                <div class="widget-event-time">8:00 AM</div>
+                <div class="widget-event-name">School Drop-off</div>
+              </div>
+              <div class="widget-event">
+                <div class="widget-event-time">4:00 PM</div>
+                <div class="widget-event-name">Soccer Practice</div>
+              </div>
+              <div class="widget-event">
+                <div class="widget-event-time">6:30 PM</div>
+                <div class="widget-event-name">Family Dinner</div>
+              </div>
+              <div class="widget-logo">NestSync</div>
+            </div>
+          </div>
+          <div class="widget-card widget-small">
+            <div class="widget-chores">
+              <div class="widget-title">My Tasks</div>
+              <div class="widget-chore-item">
+                <div class="widget-chore-dot" style="background:rgba(255,255,255,0.3)"></div>
+                <div class="widget-chore-name widget-chore-done">Unload dishwasher</div>
+              </div>
+              <div class="widget-chore-item">
+                <div class="widget-chore-dot"></div>
+                <div class="widget-chore-name">Vacuum living room</div>
+              </div>
+              <div class="widget-chore-item">
+                <div class="widget-chore-dot"></div>
+                <div class="widget-chore-name">Take out trash</div>
+              </div>
+              <div class="widget-logo">NestSync</div>
+            </div>
+          </div>
+          <div class="widget-card widget-medium">
+            <div class="widget-schedule" style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+              <div>
+                <div class="widget-title">Schedule</div>
+                <div class="widget-event"><div class="widget-event-time">8:00 AM</div><div class="widget-event-name">Drop-off</div></div>
+                <div class="widget-event"><div class="widget-event-time">3:30 PM</div><div class="widget-event-name">Pickup</div></div>
+                <div class="widget-event"><div class="widget-event-time">6:30 PM</div><div class="widget-event-name">Dinner</div></div>
+              </div>
+              <div style="background:rgba(255,255,255,0.07);border-radius:12px;padding:0.5rem">
+                <div class="widget-title">Tasks</div>
+                <div class="widget-chore-item"><div class="widget-chore-dot" style="background:rgba(255,255,255,0.3)"></div><div class="widget-chore-name" style="font-size:0.65rem;text-decoration:line-through;opacity:0.5">Dishes</div></div>
+                <div class="widget-chore-item"><div class="widget-chore-dot"></div><div class="widget-chore-name" style="font-size:0.65rem">Vacuum</div></div>
+                <div class="widget-chore-item"><div class="widget-chore-dot"></div><div class="widget-chore-name" style="font-size:0.65rem">Trash</div></div>
+              </div>
+              <div class="widget-logo" style="bottom:8px;right:12px">NestSync</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schedule -->
+      <div class="card fade-up">
+        <div class="card-header">
+          <div class="card-title"><div class="card-icon icon-clay">📅</div> Today's Schedule</div>
+          <button class="card-action" onclick="switchTab('family-time')">View All →</button>
+        </div>
+        <div class="schedule-list">
+          <div class="event"><span class="event-time">8:00a</span><div class="event-bar bar-clay"></div><div><div class="event-name">School drop-off</div><div class="event-who">Marcus · Lily, Jake</div></div></div>
+          <div class="event"><span class="event-time">9:30a</span><div class="event-bar bar-sage"></div><div><div class="event-name">Sarah's team standup</div><div class="event-who">Sarah · Work</div></div></div>
+          <div class="event"><span class="event-time">4:00p</span><div class="event-bar bar-alert"></div><div><div class="event-name">Lily — Soccer Practice</div><div class="event-who">Riverside Field</div><div class="event-conflict">⚠ Conflict</div></div></div>
+          <div class="event"><span class="event-time">6:30p</span><div class="event-bar bar-clay"></div><div><div class="event-name">Family dinner</div><div class="event-who">Everyone · Home</div></div></div>
+        </div>
+      </div>
+
+      <!-- Chores -->
+      <div class="card fade-up">
+        <div class="card-header">
+          <div class="card-title"><div class="card-icon icon-sage">🧹</div> Chores</div>
+          <button class="card-action" onclick="switchTab('tasks')">View All →</button>
+        </div>
+        <div class="chore-item done" onclick="toggleChore(this)"><div class="chore-check">✓</div><span class="chore-name">Unload dishwasher</span><span class="chore-assignee" style="background:#7A9E87">Lily</span></div>
+        <div class="chore-item" onclick="toggleChore(this)"><div class="chore-check"></div><span class="chore-name">Take out trash</span><span class="chore-assignee" style="background:#8B7EA8">Jake</span></div>
+        <div class="chore-item" onclick="toggleChore(this)"><div class="chore-check"></div><span class="chore-name">Vacuum living room</span><span class="chore-assignee" style="background:#C97B52">Marcus</span></div>
+        <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" id="dashProgress" style="width:33%"></div></div><span class="progress-label">1 of 3 done</span></div>
+      </div>
+
+      <!-- Location -->
+      <div class="card fade-up">
+        <div class="card-header">
+          <div class="card-title"><div class="card-icon icon-sage">📍</div> Family Location</div>
+          <button class="card-action">Privacy</button>
+        </div>
+        <div class="location-map">
+          <div class="map-grid"></div>
+          <div class="map-road-h"></div>
+          <div class="map-road-v"></div>
+          <div class="map-pin pin-home"><div class="pin-bubble home">🏠</div></div>
+          <div class="map-pin pin-mom"><div class="pin-bubble mom-pin"><span>S</span></div><div class="pin-label">Sarah</div></div>
+          <div class="map-pin pin-kid"><div class="pin-bubble kid-pin"><span>L</span></div><div class="pin-label">Lily</div></div>
+        </div>
+        <div class="location-list">
+          <div class="location-item"><div class="loc-dot" style="background:var(--clay)"></div><span class="loc-name">Sarah</span><span class="loc-place">Downtown Office</span><span class="loc-time">12m ago</span></div>
+          <div class="location-item"><div class="loc-dot" style="background:var(--sage)"></div><span class="loc-name">Marcus</span><span class="loc-place">Home</span><span class="loc-time">Now</span></div>
+          <div class="location-item"><div class="loc-dot" style="background:var(--dusk)"></div><span class="loc-name">Lily</span><span class="loc-place">Lincoln Middle School</span><span class="loc-time">Now</span></div>
+        </div>
+      </div>
+
+      <!-- Harmony Score (Pro+) -->
+      <div class="card fade-up" id="harmonyCard">
+        <div class="card-header">
+          <div class="card-title"><div class="card-icon icon-dusk">✨</div> Family Harmony Score</div>
+          <button class="card-action">This week →</button>
+        </div>
+        <div class="insight-score">
+          <div class="score-ring">
+            <svg viewBox="0 0 68 68"><circle class="ring-bg" cx="34" cy="34" r="28"/><circle class="ring-fill" cx="34" cy="34" r="28"/></svg>
+            <div class="score-number"><span class="score-num">75</span><span class="score-lbl">/ 100</span></div>
+          </div>
+          <div class="score-details">
+            <div class="score-title">Good week — one conflict</div>
+            <div class="breakdown-row"><span class="breakdown-label">Chores</span><div class="mini-bar"><div class="mini-fill" style="width:80%;background:var(--sage)"></div></div><span style="font-size:0.75rem">80%</span></div>
+            <div class="breakdown-row"><span class="breakdown-label">Schedule</span><div class="mini-bar"><div class="mini-fill" style="width:65%;background:var(--clay)"></div></div><span style="font-size:0.75rem">65%</span></div>
+          </div>
+        </div>
+        <div class="tip"><span class="tip-icon">💡</span><div class="tip-text"><strong>AI Tip:</strong> Move Jake's dentist to Thursday 3 PM — no conflicts that day.</div></div>
+        <div class="tip"><span class="tip-icon">🛒</span><div class="tip-text"><strong>Grocery:</strong> Marcus passes Whole Foods on the way home. 5 items on the list.</div></div>
+      </div>
+    </div>
+
+    <!-- FAMILY TIME TAB -->
+    <div class="tab-screen hidden" id="tab-family-time">
+      <div class="screen-title">📅 Family Time</div>
+
+      <div class="card">
+        <div class="calendar-header">
+          <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
+          <div class="cal-month" id="calMonth"></div>
+          <button class="cal-nav" onclick="changeMonth(1)">›</button>
+        </div>
+        <div class="week-days">
+          <div class="week-day-label">Su</div><div class="week-day-label">Mo</div><div class="week-day-label">Tu</div>
+          <div class="week-day-label">We</div><div class="week-day-label">Th</div><div class="week-day-label">Fr</div><div class="week-day-label">Sa</div>
+        </div>
+        <div class="calendar-grid" id="calendarGrid"></div>
+      </div>
+
+      <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-light);font-weight:700;margin-bottom:0.75rem">Today's Events</div>
+
+      <div class="events-list-full">
+        <div class="event-card" style="border-left-color:var(--clay)">
+          <div><div class="event-card-time">8:00 AM</div><div class="event-card-name">School Drop-off</div><div class="event-card-who">Marcus · Lily, Jake</div></div>
+        </div>
+        <div class="event-card" style="border-left-color:var(--sage)">
+          <div><div class="event-card-time">9:30 AM</div><div class="event-card-name">Sarah's Team Standup</div><div class="event-card-who">Sarah · Work (Zoom)</div></div>
+        </div>
+        <div class="event-card" style="border-left-color:var(--dusk)">
+          <div><div class="event-card-time">3:30 PM</div><div class="event-card-name">School Pickup</div><div class="event-card-who">Sarah · Lily, Jake</div></div>
+        </div>
+        <div class="event-card" style="border-left-color:var(--alert)">
+          <div><div class="event-card-time">4:00 PM</div><div class="event-card-name">Lily — Soccer Practice</div><div class="event-card-who">Riverside Field</div><div class="event-card-conflict">⚠ Conflicts with Jake's dentist</div></div>
+        </div>
+        <div class="event-card" style="border-left-color:var(--alert)">
+          <div><div class="event-card-time">4:00 PM</div><div class="event-card-name">Jake — Dentist Appt.</div><div class="event-card-who">Dr. Kim · Elm St. Dental</div><div class="event-card-conflict">⚠ Conflicts with Lily's soccer</div></div>
+        </div>
+        <div class="event-card" style="border-left-color:var(--clay)">
+          <div><div class="event-card-time">6:30 PM</div><div class="event-card-name">Family Dinner</div><div class="event-card-who">Everyone · Home</div></div>
+        </div>
+      </div>
+
+      <button class="add-event-fab" onclick="addEventClick()">+</button>
+    </div>
+
+    <!-- TASKS TAB -->
+    <div class="tab-screen hidden" id="tab-tasks">
+      <div class="screen-title">🧹 Tasks</div>
+
+      <div class="tasks-filter">
+        <button class="filter-chip active" onclick="filterTasks(this,'all')">All</button>
+        <button class="filter-chip" onclick="filterTasks(this,'sarah')">Sarah</button>
+        <button class="filter-chip" onclick="filterTasks(this,'marcus')">Marcus</button>
+        <button class="filter-chip" onclick="filterTasks(this,'lily')">Lily</button>
+        <button class="filter-chip" onclick="filterTasks(this,'jake')">Jake</button>
+      </div>
+
+      <div id="tasksContainer">
+        <div class="task-section-title">Due Today</div>
+        <div class="task-card done" onclick="toggleTask(this)" data-member="lily">
+          <div class="task-check">✓</div>
+          <span class="task-name">Unload dishwasher</span>
+          <span class="task-badge" style="background:#7A9E87">Lily</span>
+        </div>
+        <div class="task-card" onclick="toggleTask(this)" data-member="jake">
+          <div class="task-check"></div>
+          <span class="task-name">Take out trash</span>
+          <span class="task-badge" style="background:#8B7EA8">Jake</span>
+        </div>
+        <div class="task-card" onclick="toggleTask(this)" data-member="marcus">
+          <div class="task-check"></div>
+          <span class="task-name">Vacuum living room</span>
+          <span class="task-badge" style="background:#C97B52">Marcus</span>
+        </div>
+        <div class="task-card" onclick="toggleTask(this)" data-member="sarah">
+          <div class="task-check"></div>
+          <span class="task-name">Wipe kitchen counters</span>
+          <span class="task-badge" style="background:#5A8BAA">Sarah</span>
+        </div>
+        <div class="task-card done" onclick="toggleTask(this)" data-member="sarah">
+          <div class="task-check">✓</div>
+          <span class="task-name">Start laundry</span>
+          <span class="task-badge" style="background:#5A8BAA">Sarah</span>
+        </div>
+
+        <div class="task-section-title">Upcoming</div>
+        <div class="task-card" onclick="toggleTask(this)" data-member="marcus">
+          <div class="task-check"></div>
+          <span class="task-name">Mow the lawn</span>
+          <span class="task-due" style="margin-right:0.5rem">Sat</span>
+          <span class="task-badge" style="background:#C97B52">Marcus</span>
+        </div>
+        <div class="task-card" onclick="toggleTask(this)" data-member="jake">
+          <div class="task-check"></div>
+          <span class="task-name">Clean bathroom</span>
+          <span class="task-due" style="margin-right:0.5rem">Fri</span>
+          <span class="task-badge" style="background:#8B7EA8">Jake</span>
+        </div>
+        <div class="task-card" onclick="toggleTask(this)" data-member="lily">
+          <div class="task-check"></div>
+          <span class="task-name">Organize bookshelf</span>
+          <span class="task-due" style="margin-right:0.5rem">Sun</span>
+          <span class="task-badge" style="background:#7A9E87">Lily</span>
+        </div>
+      </div>
+
+      <button class="add-event-fab" onclick="showToast('➕ Add task coming soon!')">+</button>
+    </div>
+
+    <!-- SHOPPING TAB -->
+    <div class="tab-screen hidden" id="tab-shopping">
+      <div class="shopping-header-card">
+        <div style="font-size:1rem;font-weight:700">🛒 Shopping List</div>
+        <div class="shopping-stats">
+          <div><div class="shopping-stat-num">8</div><div class="shopping-stat-lbl">Items</div></div>
+          <div><div class="shopping-stat-num">3</div><div class="shopping-stat-lbl">Got it</div></div>
+          <div><div class="shopping-stat-num">2</div><div class="shopping-stat-lbl">Members</div></div>
+        </div>
+      </div>
+
+      <div class="shopping-section">
+        <div class="shopping-section-title">Produce</div>
+        <div class="shopping-item" onclick="toggleShopping(this)">
+          <div class="shopping-check"></div>
+          <div class="shopping-img-placeholder">🍌</div>
+          <div><div class="shopping-name">Bananas</div><div class="shopping-by">Added by Sarah</div></div>
+        </div>
+        <div class="shopping-item" onclick="toggleShopping(this)">
+          <div class="shopping-check"></div>
+          <div class="shopping-img-placeholder">🥬</div>
+          <div><div class="shopping-name">Baby Spinach</div><div class="shopping-by">Added by Marcus</div></div>
+        </div>
+      </div>
+
+      <div class="shopping-section">
+        <div class="shopping-section-title">Dairy & Eggs</div>
+        <div class="shopping-item checked" onclick="toggleShopping(this)">
+          <div class="shopping-check">✓</div>
+          <div class="shopping-img-placeholder">🥛</div>
+          <div><div class="shopping-name">Whole Milk (1 gal)</div><div class="shopping-by">Added by Sarah</div></div>
+        </div>
+        <div class="shopping-item" onclick="toggleShopping(this)">
+          <div class="shopping-check"></div>
+          <div class="shopping-img-placeholder">🥚</div>
+          <div><div class="shopping-name">Free Range Eggs</div><div class="shopping-by">Added by Marcus</div></div>
+        </div>
+        <div class="shopping-item checked" onclick="toggleShopping(this)">
+          <div class="shopping-check">✓</div>
+          <div class="shopping-img-placeholder">🫙</div>
+          <div><div class="shopping-name">Greek Yogurt</div><div class="shopping-by">Added by Sarah</div></div>
+        </div>
+      </div>
+
+      <div class="shopping-section">
+        <div class="shopping-section-title">Pantry</div>
+        <div class="shopping-item" onclick="toggleShopping(this)">
+          <div class="shopping-check"></div>
+          <div class="shopping-img-placeholder">🫙</div>
+          <div><div class="shopping-name">Olive Oil</div><div class="shopping-by">Added by Marcus</div></div>
+        </div>
+        <div class="shopping-item checked" onclick="toggleShopping(this)">
+          <div class="shopping-check">✓</div>
+          <div class="shopping-img-placeholder">🍝</div>
+          <div><div class="shopping-name">Penne Pasta</div><div class="shopping-by">Added by Sarah</div></div>
+        </div>
+        <div class="shopping-item" onclick="toggleShopping(this)">
+          <div class="shopping-check"></div>
+          <div class="shopping-img-placeholder">🍞</div>
+          <div><div class="shopping-name">Sourdough Bread</div><div class="shopping-by">Added by Marcus</div></div>
+        </div>
+      </div>
+
+      <button class="add-grocery-btn" onclick="openItemSearch()">+ Add item with photo</button>
+    </div>
+
+    <!-- MEMBERS TAB -->
+    <div class="tab-screen hidden" id="tab-members">
+      <div class="screen-title">👥 Members</div>
+
+      <div class="family-code-card">
+        <div>
+          <div class="family-code-label">Family Invite Code</div>
+          <div class="family-code" id="displayInviteCode">NS-4821</div>
+        </div>
+        <button class="copy-code-btn" onclick="copyCode()">Copy</button>
+      </div>
+
+      <div class="members-grid" id="membersGrid">
+        <div class="member-card" onclick="showMemberDetail('Sarah','Parent','sarah@email.com','#C97B52')">
+          <div class="member-avatar-lg" style="background:#C97B52">S<div class="member-online"></div></div>
+          <div class="member-name-lg">Sarah</div>
+          <div class="member-role-lg">Parent · Admin</div>
+          <div class="member-tasks-lg">1 task today</div>
+          <div class="member-location-row">📍 Downtown Office</div>
+        </div>
+        <div class="member-card" onclick="showMemberDetail('Marcus','Parent','marcus@email.com','#7A9E87')">
+          <div class="member-avatar-lg" style="background:#7A9E87">M</div>
+          <div class="member-name-lg">Marcus</div>
+          <div class="member-role-lg">Parent</div>
+          <div class="member-tasks-lg">1 task today</div>
+          <div class="member-location-row">📍 Home</div>
+        </div>
+        <div class="member-card" onclick="showMemberDetail('Lily','Kid','','#8B7EA8')">
+          <div class="member-avatar-lg" style="background:#8B7EA8">L<div class="member-online"></div></div>
+          <div class="member-name-lg">Lily</div>
+          <div class="member-role-lg">Kid</div>
+          <div class="member-tasks-lg">2 tasks today</div>
+          <div class="member-location-row">📍 School</div>
+        </div>
+        <div class="member-card" onclick="showMemberDetail('Jake','Kid','','#5A8BAA')">
+          <div class="member-avatar-lg" style="background:#5A8BAA">J<div class="member-online"></div></div>
+          <div class="member-name-lg">Jake</div>
+          <div class="member-role-lg">Kid</div>
+          <div class="member-tasks-lg">1 task today</div>
+          <div class="member-location-row">📍 School</div>
+        </div>
+      </div>
+
+      <div class="member-detail-card" id="memberDetailCard" style="display:none">
+        <div class="member-detail-header">
+          <div class="member-detail-avatar" id="detailAvatar">S</div>
+          <div>
+            <div class="member-detail-name" id="detailName">Sarah</div>
+            <div class="member-detail-role" id="detailRole">Parent · Admin</div>
+            <div class="member-detail-email" id="detailEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="07746675666f47626a666e6b2964686a">[email&#160;protected]</a></div>
+          </div>
+          <button onclick="document.getElementById('memberDetailCard').style.display='none'" style="margin-left:auto;background:var(--bg);border:none;border-radius:8px;padding:0.3rem 0.6rem;cursor:pointer;color:var(--text-light)">✕</button>
+        </div>
+        <div class="member-stat-row">
+          <div class="member-stat"><div class="member-stat-num">12</div><div class="member-stat-lbl">Tasks Done</div></div>
+          <div class="member-stat"><div class="member-stat-num">4</div><div class="member-stat-lbl">Events</div></div>
+          <div class="member-stat"><div class="member-stat-num">92%</div><div class="member-stat-lbl">On Time</div></div>
+        </div>
+        <div style="font-size:0.75rem;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem">Today's Tasks</div>
+        <div class="task-card done" style="margin-bottom:0.5rem"><div class="task-check">✓</div><span class="task-name">Start laundry</span></div>
+        <div class="task-card"><div class="task-check"></div><span class="task-name">Wipe kitchen counters</span></div>
+      </div>
+
+      <button class="add-event-fab" onclick="showToast('Invite sent! 📨')">+</button>
+    </div>
+
+    <!-- SETTINGS TAB (accessible from nav) -->
+    <div class="tab-screen hidden" id="tab-settings">
+      <div class="screen-title">⚙️ Settings</div>
+
+      <div class="profile-row">
+        <div class="profile-avatar" id="profileAvatar" style="background:var(--clay)">S</div>
+        <div>
+          <div class="profile-name" id="profileName">Sarah Thompson</div>
+          <div class="profile-email" id="profileEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0f7c6e7d6e674f6a626e6663216c6062">[email&#160;protected]</a></div>
+        </div>
+        <span class="profile-edit">Edit</span>
+      </div>
+
+      <div class="plan-card" id="settingsPlanCard">
+        <div>
+          <div class="plan-name" id="settingsPlanName">Free Plan</div>
+          <div class="plan-sub" id="settingsPlanSub">12 items · 4 events/day · 3 members</div>
+        </div>
+        <button class="plan-upgrade" onclick="openPlansSheet()">View Plans</button>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">Account</div>
+        <div class="settings-group">
+          <div class="settings-row"><span class="settings-row-icon">👤</span><span class="settings-row-label">Edit Profile</span><span class="settings-row-arrow">›</span></div>
+          <div class="settings-row"><span class="settings-row-icon">🔑</span><span class="settings-row-label">Change Password</span><span class="settings-row-arrow">›</span></div>
+          <div class="settings-row"><span class="settings-row-icon">📧</span><span class="settings-row-label">Change Email</span><span class="settings-row-arrow">›</span></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">Family</div>
+        <div class="settings-group">
+          <div class="settings-row"><span class="settings-row-icon">👥</span><span class="settings-row-label">Manage Members</span><span class="settings-row-arrow">›</span></div>
+          <div class="settings-row"><span class="settings-row-icon">🏡</span><span class="settings-row-label">Family Name</span><span class="settings-row-value" id="settingsFamilyName">The Thompsons</span><span class="settings-row-arrow">›</span></div>
+          <div class="settings-row"><span class="settings-row-icon">🔗</span><span class="settings-row-label">Invite Code</span><span class="settings-row-value" id="settingsInviteCode">NS-4821</span><span class="settings-row-arrow">›</span></div>
+        </div>
+      </div>
+
+      <div class="settings-section" id="notificationsSection">
+        <div class="settings-section-title">Notifications</div>
+        <div class="settings-group">
+          <div class="settings-row"><span class="settings-row-icon">📍</span><span class="settings-row-label">Location & Safety Alerts</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
+          <div class="settings-row"><span class="settings-row-icon">📅</span><span class="settings-row-label">Schedule Alerts</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
+          <div class="settings-row"><span class="settings-row-icon">🧹</span><span class="settings-row-label">Chore Reminders</span><div class="toggle" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
+          <div class="settings-row"><span class="settings-row-icon">🌙</span><span class="settings-row-label">Quiet Hours (10pm–7am)</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">Privacy & Safety</div>
+        <div class="settings-group">
+          <div class="settings-row"><span class="settings-row-icon">📍</span><span class="settings-row-label">Share My Location</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
+          <div class="settings-row"><span class="settings-row-icon">👁</span><span class="settings-row-label">Location Precision</span><span class="settings-row-value">Exact</span><span class="settings-row-arrow">›</span></div>
+          <div class="settings-row"><span class="settings-row-icon">📤</span><span class="settings-row-label">Export My Data</span><span class="settings-row-arrow">›</span></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">App Preferences</div>
+        <div class="settings-group">
+          <div class="settings-row"><span class="settings-row-icon">🌙</span><span class="settings-row-label">Dark Mode</span><div class="toggle" id="darkToggle" onclick="toggleDarkMode()"><div class="toggle-thumb"></div></div></div>
+          <div class="settings-row"><span class="settings-row-icon">📅</span><span class="settings-row-label">Week Starts On</span><span class="settings-row-value">Sunday</span><span class="settings-row-arrow">›</span></div>
+          <div class="settings-row"><span class="settings-row-icon">📏</span><span class="settings-row-label">Distance Units</span><span class="settings-row-value">Miles</span><span class="settings-row-arrow">›</span></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">Subscription</div>
+        <div class="settings-group">
+          <div class="settings-row" onclick="openPlansSheet()" style="cursor:pointer"><span class="settings-row-icon">⭐</span><span class="settings-row-label">Current Plan</span><span class="settings-row-value" id="settingsPlanValue">Free</span><span class="settings-row-arrow">›</span></div>
+          <div class="settings-row"><span class="settings-row-icon">💳</span><span class="settings-row-label">Billing & Payment</span><span class="settings-row-arrow">›</span></div>
+          <div class="settings-row" style="color:var(--alert)"><span class="settings-row-icon">🗑</span><span class="settings-row-label" style="color:var(--alert)">Delete Account</span><span class="settings-row-arrow" style="color:var(--alert)">›</span></div>
+        </div>
+      </div>
+
+      <div style="text-align:center;padding:1rem;font-size:0.75rem;color:var(--text-light)">NestSync v1.0 · Made with ❤️ for families</div>
+    </div>
+
+  </div><!-- end screen-container -->
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="switchTab('dashboard')"><span class="nav-icon">🏠</span><span class="nav-label">Dashboard</span><div class="nav-dot"></div></div>
+    <div class="nav-item" onclick="switchTab('family-time')"><span class="nav-icon">📅</span><span class="nav-label">Family Time</span><div class="nav-dot"></div></div>
+    <div class="nav-item" onclick="switchTab('tasks')"><span class="nav-icon">🧹</span><span class="nav-label">Tasks</span><div class="nav-dot"></div></div>
+    <div class="nav-item" onclick="switchTab('shopping')"><span class="nav-icon">🛒</span><span class="nav-label">Shopping</span><div class="nav-dot"></div></div>
+    <div class="nav-item" onclick="switchTab('members')"><span class="nav-icon">👥</span><span class="nav-label">Members</span><div class="nav-dot"></div></div>
+  </div>
+
+</div><!-- end mainApp -->
+
+</div><!-- end #app -->
+
+<!-- ITEM SEARCH SHEET -->
+<div class="sheet-overlay" id="sheetOverlay" onclick="closeItemSearch()"></div>
+<div class="item-sheet" id="itemSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Add Grocery Item</div>
+  <div class="sheet-search-wrap">
+    <div class="autocomplete-wrap">
+      <input class="sheet-search" id="sheetSearch" placeholder="Search products..." autocomplete="off"
+        oninput="onSearchInput(this.value)"
+        onkeydown="handleSearchKey(event)">
+      <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
+    </div>
+    <button class="sheet-search-btn" onclick="searchItems()">Search</button>
+  </div>
+  <div class="sheet-suggestions" id="sheetSuggestions">
+    <button class="suggestion-chip" onclick="quickSearch('milk')">🥛 Milk</button>
+    <button class="suggestion-chip" onclick="quickSearch('eggs')">🥚 Eggs</button>
+    <button class="suggestion-chip" onclick="quickSearch('bread')">🍞 Bread</button>
+    <button class="suggestion-chip" onclick="quickSearch('banana')">🍌 Bananas</button>
+    <button class="suggestion-chip" onclick="quickSearch('chicken')">🍗 Chicken</button>
+    <button class="suggestion-chip" onclick="quickSearch('pasta')">🍝 Pasta</button>
+    <button class="suggestion-chip" onclick="quickSearch('butter')">🧈 Butter</button>
+    <button class="suggestion-chip" onclick="quickSearch('cheese')">🧀 Cheese</button>
+  </div>
+  <div class="sheet-results" id="sheetResults">
+    <div class="sheet-empty">Search or tap a suggestion to find products 🛒</div>
+  </div>
+  <button class="sheet-confirm" id="sheetConfirm" disabled onclick="confirmAdd()">Add to List</button>
+</div>
+
+<!-- MEMBER DETAIL OVERLAY -->
+<div class="sheet-overlay" id="memberOverlay" onclick="closeMemberSheet()"></div>
+<div class="item-sheet" id="memberSheet">
+  <div class="sheet-handle"></div>
+  <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--border)">
+    <div id="sheetMemberAvatar" style="width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;color:white;background:var(--clay)">S</div>
+    <div>
+      <div id="sheetMemberName" style="font-size:1.1rem;font-weight:700;color:var(--text)">Sarah</div>
+      <div id="sheetMemberRole" style="font-size:0.78rem;color:var(--text-light)">Parent · Admin</div>
+      <div id="sheetMemberEmail" style="font-size:0.75rem;color:var(--clay)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="16657764777e56737b777f7a3875797b">[email&#160;protected]</a></div>
+    </div>
+    <button onclick="closeMemberSheet()" style="margin-left:auto;background:var(--bg);border:none;border-radius:8px;padding:0.3rem 0.6rem;cursor:pointer;color:var(--text-light)">✕</button>
+  </div>
+  <div class="member-stat-row">
+    <div class="member-stat"><div class="member-stat-num">12</div><div class="member-stat-lbl">Tasks Done</div></div>
+    <div class="member-stat"><div class="member-stat-num">4</div><div class="member-stat-lbl">Events</div></div>
+    <div class="member-stat"><div class="member-stat-num">92%</div><div class="member-stat-lbl">On Time</div></div>
+  </div>
+  <div style="font-size:0.75rem;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem">Notification Override</div>
+  <div style="background:var(--card-bg);border-radius:14px;overflow:hidden;margin-bottom:1rem">
+    <div class="settings-row"><span class="settings-row-icon">📍</span><span class="settings-row-label">Location Alerts</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
+    <div class="settings-row"><span class="settings-row-icon">🧹</span><span class="settings-row-label">Chore Reminders</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
+  </div>
+  <button class="sheet-confirm" style="background:var(--alert)" onclick="closeMemberSheet();showToast('Member removed')">Remove from Family</button>
+</div>
+
+<!-- INSTALL INSTRUCTIONS SHEET -->
+<div class="sheet-overlay" id="installOverlay" onclick="closeInstall()"></div>
+<div class="item-sheet" id="installSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Add NestSync to Home Screen</div>
+  <div style="display:flex;flex-direction:column;gap:1rem;padding:0.5rem 0">
+    <div style="background:var(--bg);border-radius:14px;padding:1rem;display:flex;gap:0.75rem;align-items:flex-start">
+      <div style="width:28px;height:28px;background:var(--clay);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;flex-shrink:0">1</div>
+      <div><div style="font-weight:600;color:var(--text);margin-bottom:0.2rem">On iPhone (Safari)</div><div style="font-size:0.82rem;color:var(--text-light)">Tap the Share button (□↑) at the bottom of Safari, then tap "Add to Home Screen"</div></div>
+    </div>
+    <div style="background:var(--bg);border-radius:14px;padding:1rem;display:flex;gap:0.75rem;align-items:flex-start">
+      <div style="width:28px;height:28px;background:var(--clay);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;flex-shrink:0">2</div>
+      <div><div style="font-weight:600;color:var(--text);margin-bottom:0.2rem">On Android (Chrome)</div><div style="font-size:0.82rem;color:var(--text-light)">Tap the 3-dot menu (⋮) in Chrome, then tap "Add to Home Screen"</div></div>
+    </div>
+    <div style="background:var(--bg);border-radius:14px;padding:1rem;display:flex;gap:0.75rem;align-items:flex-start">
+      <div style="width:28px;height:28px;background:var(--sage);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;flex-shrink:0">✓</div>
+      <div><div style="font-weight:600;color:var(--text);margin-bottom:0.2rem">What you get</div><div style="font-size:0.82rem;color:var(--text-light)">NestSync gets its own icon on your home screen, launches fullscreen with no browser bar — feels just like a native app.</div></div>
+    </div>
+  </div>
+  <button class="sheet-confirm" onclick="closeInstall()">Got it!</button>
+</div>
+
+<!-- PLANS / PRICING SHEET -->
+<div class="sheet-overlay" id="plansOverlay" onclick="closePlansSheet()"></div>
+<div class="item-sheet plans-sheet" id="plansSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Choose Your Plan</div>
+  <div style="font-size:0.8rem;color:var(--text-light);margin-bottom:1rem;text-align:center">Pick the plan that fits your family</div>
+
+  <div class="plan-tier" id="planTierFree">
+    <div class="plan-tier-header">
+      <span class="plan-tier-name">Free</span>
+      <span class="plan-tier-price">$0</span>
+    </div>
+    <div class="plan-tier-desc">Get started with the essentials</div>
+    <ul class="plan-tier-features">
+      <li>Grocery list — 12 items max</li>
+      <li>Shared calendar — 4 events/day max</li>
+      <li>3 family members max</li>
+      <li>Basic task list (no assignment, no points)</li>
+      <li>Location sharing (view only)</li>
+      <li class="locked">No chore point system</li>
+      <li class="locked">No Family Harmony Score</li>
+      <li class="locked">No notifications</li>
+    </ul>
+    <button class="plan-tier-btn secondary" id="planBtnFree" onclick="selectPlan('free')">Current Plan</button>
+  </div>
+
+  <div class="plan-tier recommended" id="planTierPro">
+    <div class="plan-tier-badge">Most Popular</div>
+    <div class="plan-tier-header">
+      <span class="plan-tier-name">Pro</span>
+      <span class="plan-tier-price">$7.99<span style="font-size:0.75rem;font-weight:500;color:var(--text-light)">/mo</span></span>
+    </div>
+    <div class="plan-tier-desc">Up to 4 members · Everything in Free, plus:</div>
+    <ul class="plan-tier-features">
+      <li>Full grocery search + unlimited items</li>
+      <li>Unlimited calendar + conflict detection</li>
+      <li>Task assignment to members</li>
+      <li>Chore point system</li>
+      <li>Family Harmony Score</li>
+      <li>Push notifications & reminders</li>
+      <li>Recurring tasks</li>
+      <li>AI chore rotation</li>
+      <li>Location + custom places</li>
+      <li>Place alerts (arrive/leave)</li>
+      <li>30-day location history</li>
+      <li>Driver reports per member</li>
+    </ul>
+    <button class="plan-tier-btn primary" id="planBtnPro" onclick="selectPlan('pro')">Upgrade to Pro</button>
+  </div>
+
+  <div class="plan-tier" id="planTierFamily">
+    <div class="plan-tier-header">
+      <span class="plan-tier-name">Family</span>
+      <span class="plan-tier-price">$11.99<span style="font-size:0.75rem;font-weight:500;color:var(--text-light)">/mo</span></span>
+    </div>
+    <div class="plan-tier-desc">5+ members · Everything in Pro, plus:</div>
+    <ul class="plan-tier-features">
+      <li>5th member and beyond</li>
+    </ul>
+    <button class="plan-tier-btn primary" id="planBtnFamily" onclick="selectPlan('family')">Upgrade to Family</button>
+  </div>
+
+  <button class="sheet-confirm" onclick="closePlansSheet()" style="background:var(--bg);color:var(--text)">Close</button>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ============ DATA ============
+const COLORS = [
+  { id: 'clay', hex: '#C97B52', name: 'Clay' },
+  { id: 'sage', hex: '#7A9E87', name: 'Sage' },
+  { id: 'dusk', hex: '#8B7EA8', name: 'Dusk' },
+  { id: 'ocean', hex: '#5A8BAA', name: 'Ocean' },
+  { id: 'blush', hex: '#D4829A', name: 'Blush' },
+  { id: 'moss', hex: '#4A7C59', name: 'Moss' },
+  { id: 'honey', hex: '#C9A84C', name: 'Honey' },
+  { id: 'terra', hex: '#B85C3A', name: 'Terra' },
+  { id: 'sky', hex: '#6BAED6', name: 'Sky' },
+  { id: 'bark', hex: '#5C4033', name: 'Bark' },
+];
+
+const PRODUCTS = [
+
+  // ── DAIRY ──
+  { product_name: "Whole Milk (1 Gallon)", brands: "Great Value", category: "dairy", emoji: "🥛",
+    img: "https://i5.walmartimages.com/asr/5ef10d04-dc3c-489a-9add-c5fa1c69f506.f7cd0cc2e55e4e1e9e9b4f4d7d9c3b2e.jpeg?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
+  { product_name: "2% Reduced Fat Milk", brands: "Horizon Organic", category: "dairy", emoji: "🥛",
+    img: "https://i5.walmartimages.com/asr/3d2e1f0a-8b4c-4e6a-9c2d-1f5e8a7b3c9d.jpeg?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
+  { product_name: "Oat Milk", brands: "Oatly", category: "dairy", emoji: "🥛",
+    img: "https://images.freshop.com/00195988016498/08eca5fd8a0b01e7bef94b9f93c8c9e8_large.png" },
+  { product_name: "Almond Milk Unsweetened", brands: "Silk", category: "dairy", emoji: "🥛",
+    img: "https://images.freshop.com/00025293002883/fd5f9f01d2a42e7e3ba4e5c2e9b5a1c3_large.png" },
+  { product_name: "Greek Yogurt Plain", brands: "Chobani", category: "dairy", emoji: "🫙",
+    img: "https://images.freshop.com/00818290011601/1e9a2b3c4d5e6f7a8b9c0d1e2f3a4b5c_large.png" },
+  { product_name: "Strawberry Yogurt", brands: "Chobani", category: "dairy", emoji: "🫙",
+    img: "https://images.freshop.com/00818290016378/a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6_large.png" },
+  { product_name: "Salted Butter", brands: "Land O'Lakes", category: "dairy", emoji: "🧈",
+    img: "https://images.freshop.com/00021000000003/c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8_large.png" },
+  { product_name: "Unsalted Butter", brands: "Kerrygold", category: "dairy", emoji: "🧈",
+    img: "https://images.freshop.com/00767707090008/d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9_large.png" },
+  { product_name: "Shredded Mozzarella", brands: "Kraft", category: "dairy", emoji: "🧀",
+    img: "https://images.freshop.com/00021000025954/e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0_large.png" },
+  { product_name: "Sharp Cheddar Cheese", brands: "Tillamook", category: "dairy", emoji: "🧀",
+    img: "https://images.freshop.com/00072830000258/f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1_large.png" },
+  { product_name: "Cream Cheese", brands: "Philadelphia", category: "dairy", emoji: "🧀",
+    img: "https://images.freshop.com/00021000000812/a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2_large.png" },
+  { product_name: "Sour Cream", brands: "Daisy", category: "dairy", emoji: "🫙",
+    img: "https://images.freshop.com/00026400001015/b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3_large.png" },
+  { product_name: "Heavy Whipping Cream", brands: "Organic Valley", category: "dairy", emoji: "🥛",
+    img: "https://images.freshop.com/00093966000029/c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4_large.png" },
+  { product_name: "Cottage Cheese", brands: "Good Culture", category: "dairy", emoji: "🫙",
+    img: "https://images.freshop.com/00850590004127/d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5_large.png" },
+
+  // ── EGGS ──
+  { product_name: "Large White Eggs (12ct)", brands: "Happy Egg", category: "eggs", emoji: "🥚",
+    img: "https://images.freshop.com/00085592201006/e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6_large.png" },
+  { product_name: "Free Range Brown Eggs (12ct)", brands: "Vital Farms", category: "eggs", emoji: "🥚",
+    img: "https://images.freshop.com/00721902003015/f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7_large.png" },
+  { product_name: "Cage Free Eggs (18ct)", brands: "Pete & Gerry's", category: "eggs", emoji: "🥚",
+    img: "https://images.freshop.com/00036800388970/a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8_large.png" },
+
+  // ── PRODUCE ──
+  { product_name: "Bananas (Bunch)", brands: "Fresh", category: "produce", emoji: "🍌",
+    img: "https://i5.walmartimages.com/asr/91b1a54d-2de4-4d77-8029-7a4272b4c6fd.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
+  { product_name: "Strawberries (1lb)", brands: "Driscoll's", category: "produce", emoji: "🍓",
+    img: "https://i5.walmartimages.com/asr/e3994f65-6f8c-4a3d-8e72-7b9d5a1c2f3e.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
+  { product_name: "Blueberries (18oz)", brands: "Driscoll's", category: "produce", emoji: "🫐",
+    img: "https://i5.walmartimages.com/asr/4b5c6d7e-8f9a-0b1c-2d3e-4f5a6b7c8d9e.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
+  { product_name: "Honeycrisp Apples (3lb)", brands: "Fresh", category: "produce", emoji: "🍎",
+    img: "https://i5.walmartimages.com/asr/5c6d7e8f-9a0b-1c2d-3e4f-5a6b7c8d9e0f.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
+  { product_name: "Avocados (4ct)", brands: "Fresh", category: "produce", emoji: "🥑",
+    img: "https://i5.walmartimages.com/asr/6d7e8f9a-0b1c-2d3e-4f5a-6b7c8d9e0f1a.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
+  { product_name: "Baby Spinach (5oz)", brands: "Earthbound Farm", category: "produce", emoji: "🥬",
+    img: "https://images.freshop.com/00032601008226/b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9_large.png" },
+  { product_name: "Roma Tomatoes", brands: "Fresh", category: "produce", emoji: "🍅",
+    img: "https://i5.walmartimages.com/asr/8f9a0b1c-2d3e-4f5a-6b7c-8d9e0f1a2b3c.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
+  { product_name: "Broccoli Crown", brands: "Fresh", category: "produce", emoji: "🥦",
+    img: "https://i5.walmartimages.com/asr/9a0b1c2d-3e4f-5a6b-7c8d-9e0f1a2b3c4d.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
+  { product_name: "Baby Carrots (2lb)", brands: "Bolthouse Farms", category: "produce", emoji: "🥕",
+    img: "https://images.freshop.com/00071464009025/c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0_large.png" },
+  { product_name: "Russet Potatoes (5lb)", brands: "Fresh", category: "produce", emoji: "🥔",
+    img: "https://i5.walmartimages.com/asr/0b1c2d3e-4f5a-6b7c-8d9e-0f1a2b3c4d5e.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
+  { product_name: "Yellow Onions (3lb)", brands: "Fresh", category: "produce", emoji: "🧅",
+    img: "https://i5.walmartimages.com/asr/1c2d3e4f-5a6b-7c8d-9e0f-1a2b3c4d5e6f.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
+  { product_name: "Garlic (3 heads)", brands: "Fresh", category: "produce", emoji: "🧄",
+    img: "https://i5.walmartimages.com/asr/2d3e4f5a-6b7c-8d9e-0f1a-2b3c4d5e6f7a.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
+  { product_name: "Lemons (2lb bag)", brands: "Fresh", category: "produce", emoji: "🍋",
+    img: "https://i5.walmartimages.com/asr/3e4f5a6b-7c8d-9e0f-1a2b-3c4d5e6f7a8b.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
+  { product_name: "Navel Oranges (4lb)", brands: "Fresh", category: "produce", emoji: "🍊",
+    img: "https://i5.walmartimages.com/asr/4f5a6b7c-8d9e-0f1a-2b3c-4d5e6f7a8b9c.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
+  { product_name: "Celery Stalks", brands: "Fresh", category: "produce", emoji: "🥬",
+    img: "https://i5.walmartimages.com/asr/5a6b7c8d-9e0f-1a2b-3c4d-5e6f7a8b9c0d.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
+  { product_name: "Green Bell Peppers (3ct)", brands: "Fresh", category: "produce", emoji: "🫑",
+    img: "https://i5.walmartimages.com/asr/6b7c8d9e-0f1a-2b3c-4d5e-6f7a8b9c0d1e.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
+  { product_name: "Cucumber", brands: "Fresh", category: "produce", emoji: "🥒",
+    img: "https://i5.walmartimages.com/asr/7c8d9e0f-1a2b-3c4d-5e6f-7a8b9c0d1e2f.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
+
+  // ── BREAD & BAKERY ──
+  { product_name: "Sourdough Bread Loaf", brands: "Dave's Killer Bread", category: "bread", emoji: "🍞",
+    img: "https://images.freshop.com/00013000009398/d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1_large.png" },
+  { product_name: "Whole Wheat Bread", brands: "Nature's Own", category: "bread", emoji: "🍞",
+    img: "https://images.freshop.com/00073130000003/e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2_large.png" },
+  { product_name: "White Sandwich Bread", brands: "Wonder", category: "bread", emoji: "🍞",
+    img: "https://images.freshop.com/00028000420796/f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3_large.png" },
+  { product_name: "Everything Bagels (6ct)", brands: "Thomas'", category: "bread", emoji: "🥯",
+    img: "https://images.freshop.com/00073130003042/a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4_large.png" },
+  { product_name: "Flour Tortillas (10ct)", brands: "Mission", category: "bread", emoji: "🫓",
+    img: "https://images.freshop.com/00073731007323/b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5_large.png" },
+  { product_name: "Corn Tortillas (30ct)", brands: "Mission", category: "bread", emoji: "🫓",
+    img: "https://images.freshop.com/00073731007316/c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6_large.png" },
+  { product_name: "Butter Croissants (4ct)", brands: "Pillsbury", category: "bread", emoji: "🥐",
+    img: "https://images.freshop.com/00018000138792/d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7_large.png" },
+  { product_name: "English Muffins (6ct)", brands: "Thomas'", category: "bread", emoji: "🧁",
+    img: "https://images.freshop.com/00073130000218/e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8_large.png" },
+  { product_name: "Brioche Buns (8ct)", brands: "Pepperidge Farm", category: "bread", emoji: "🍞",
+    img: "https://images.freshop.com/00014100097032/f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9_large.png" },
+
+  // ── MEAT & SEAFOOD ──
+  { product_name: "Boneless Chicken Breast", brands: "Perdue", category: "meat", emoji: "🍗",
+    img: "https://images.freshop.com/00010000050060/a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0_large.png" },
+  { product_name: "Chicken Thighs Bone-In", brands: "Perdue", category: "meat", emoji: "🍗",
+    img: "https://images.freshop.com/00010000050770/b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1_large.png" },
+  { product_name: "Ground Beef 80/20 (1lb)", brands: "Laura's Lean", category: "meat", emoji: "🥩",
+    img: "https://images.freshop.com/00076870001028/c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2_large.png" },
+  { product_name: "Salmon Fillet (1lb)", brands: "Fresh", category: "meat", emoji: "🐟",
+    img: "https://i5.walmartimages.com/asr/a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
+  { product_name: "Bacon (16oz)", brands: "Oscar Mayer", category: "meat", emoji: "🥓",
+    img: "https://images.freshop.com/00044700032831/d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3_large.png" },
+  { product_name: "Italian Sausage Links", brands: "Johnsonville", category: "meat", emoji: "🌭",
+    img: "https://images.freshop.com/00070100085943/e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4_large.png" },
+  { product_name: "Shrimp Large (2lb)", brands: "SeaPak", category: "meat", emoji: "🍤",
+    img: "https://images.freshop.com/00047600020063/f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5_large.png" },
+  { product_name: "Ground Turkey (1lb)", brands: "Butterball", category: "meat", emoji: "🦃",
+    img: "https://images.freshop.com/00022655705015/a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6_large.png" },
+  { product_name: "Pork Chops Bone-In", brands: "Fresh", category: "meat", emoji: "🥩",
+    img: "https://i5.walmartimages.com/asr/b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e.png?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
+
+  // ── PANTRY ──
+  { product_name: "Extra Virgin Olive Oil (16oz)", brands: "California Olive Ranch", category: "pantry", emoji: "🫙",
+    img: "https://images.freshop.com/00854952003697/b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7_large.png" },
+  { product_name: "Vegetable Oil (48oz)", brands: "Crisco", category: "pantry", emoji: "🫙",
+    img: "https://images.freshop.com/00051500753216/c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8_large.png" },
+  { product_name: "Penne Pasta (1lb)", brands: "Barilla", category: "pantry", emoji: "🍝",
+    img: "https://images.freshop.com/00076808001230/d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9_large.png" },
+  { product_name: "Spaghetti (1lb)", brands: "Barilla", category: "pantry", emoji: "🍝",
+    img: "https://images.freshop.com/00076808000004/e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0_large.png" },
+  { product_name: "Rotini Pasta (1lb)", brands: "Barilla", category: "pantry", emoji: "🍝",
+    img: "https://images.freshop.com/00076808001254/f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1_large.png" },
+  { product_name: "Jasmine Rice (5lb)", brands: "Mahatma", category: "pantry", emoji: "🍚",
+    img: "https://images.freshop.com/00075040903097/a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2_large.png" },
+  { product_name: "Rolled Oats (42oz)", brands: "Quaker", category: "pantry", emoji: "🥣",
+    img: "https://images.freshop.com/00030000014336/b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3_large.png" },
+  { product_name: "Peanut Butter Creamy", brands: "Jif", category: "pantry", emoji: "🥜",
+    img: "https://images.freshop.com/00051500750093/c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4_large.png" },
+  { product_name: "Almond Butter", brands: "Justin's", category: "pantry", emoji: "🥜",
+    img: "https://images.freshop.com/00894455000902/d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5_large.png" },
+  { product_name: "Honey (12oz)", brands: "Nature Nate's", category: "pantry", emoji: "🍯",
+    img: "https://images.freshop.com/00853926003002/e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6_large.png" },
+  { product_name: "Maple Syrup (12oz)", brands: "Coombs Family Farms", category: "pantry", emoji: "🍯",
+    img: "https://images.freshop.com/00041155088043/f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7_large.png" },
+  { product_name: "Tomato Sauce (24oz)", brands: "Rao's Homemade", category: "pantry", emoji: "🍅",
+    img: "https://images.freshop.com/00747479112101/a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8_large.png" },
+  { product_name: "Chicken Broth (32oz)", brands: "Swanson", category: "pantry", emoji: "🍲",
+    img: "https://images.freshop.com/00051000021755/b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9_large.png" },
+  { product_name: "Canned Diced Tomatoes", brands: "Hunt's", category: "pantry", emoji: "🍅",
+    img: "https://images.freshop.com/00026600010152/c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0_large.png" },
+  { product_name: "Black Beans (15oz)", brands: "Bush's Best", category: "pantry", emoji: "🫘",
+    img: "https://images.freshop.com/00039400016786/d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1_large.png" },
+  { product_name: "Garbanzo Beans (15oz)", brands: "Goya", category: "pantry", emoji: "🫘",
+    img: "https://images.freshop.com/00041331022253/e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2_large.png" },
+  { product_name: "Tuna in Water (5oz)", brands: "Bumble Bee", category: "pantry", emoji: "🐟",
+    img: "https://images.freshop.com/00086600000206/f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3_large.png" },
+  { product_name: "All-Purpose Flour (5lb)", brands: "King Arthur", category: "pantry", emoji: "🌾",
+    img: "https://images.freshop.com/00071012001000/a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4_large.png" },
+  { product_name: "Granulated Sugar (4lb)", brands: "Domino", category: "pantry", emoji: "🍬",
+    img: "https://images.freshop.com/00049200002688/b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5_large.png" },
+  { product_name: "Brown Sugar (2lb)", brands: "Domino", category: "pantry", emoji: "🍬",
+    img: "https://images.freshop.com/00049200002695/c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6_large.png" },
+  { product_name: "Sea Salt", brands: "Morton", category: "pantry", emoji: "🧂",
+    img: "https://images.freshop.com/00024600012619/d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7_large.png" },
+  { product_name: "Black Pepper Ground", brands: "McCormick", category: "pantry", emoji: "🧂",
+    img: "https://images.freshop.com/00052100004744/e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8_large.png" },
+  { product_name: "Soy Sauce (10oz)", brands: "Kikkoman", category: "pantry", emoji: "🫙",
+    img: "https://images.freshop.com/00041390000109/f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9_large.png" },
+  { product_name: "Hot Sauce (5oz)", brands: "Frank's RedHot", category: "pantry", emoji: "🌶️",
+    img: "https://images.freshop.com/00041500285121/a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0_large.png" },
+
+  // ── BEVERAGES ──
+  { product_name: "Orange Juice (52oz)", brands: "Tropicana", category: "beverages", emoji: "🍊",
+    img: "https://images.freshop.com/00048500000284/b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1_large.png" },
+  { product_name: "Apple Juice (64oz)", brands: "Mott's", category: "beverages", emoji: "🍎",
+    img: "https://images.freshop.com/00014800001008/c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2_large.png" },
+  { product_name: "Sparkling Water (12pk)", brands: "LaCroix", category: "beverages", emoji: "💧",
+    img: "https://images.freshop.com/00811576000214/d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3_large.png" },
+  { product_name: "Ground Coffee (12oz)", brands: "Peet's Coffee", category: "beverages", emoji: "☕",
+    img: "https://images.freshop.com/00006802000132/e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4_large.png" },
+  { product_name: "Cold Brew Coffee (48oz)", brands: "Chameleon", category: "beverages", emoji: "☕",
+    img: "https://images.freshop.com/00852882006025/f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5_large.png" },
+  { product_name: "Green Tea (20ct)", brands: "Bigelow", category: "beverages", emoji: "🍵",
+    img: "https://images.freshop.com/00072310000045/a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6_large.png" },
+  { product_name: "Coconut Water (33oz)", brands: "Vita Coco", category: "beverages", emoji: "🥥",
+    img: "https://images.freshop.com/00898999001001/b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7_large.png" },
+  { product_name: "Gatorade Fruit Punch (32oz)", brands: "Gatorade", category: "beverages", emoji: "🥤",
+    img: "https://images.freshop.com/00052000337977/c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8_large.png" },
+  { product_name: "Vitamin D Whole Milk (1gal)", brands: "Fairlife", category: "beverages", emoji: "🥛",
+    img: "https://images.freshop.com/00041383380919/d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9_large.png" },
+
+  // ── SNACKS ──
+  { product_name: "Tortilla Chips (13oz)", brands: "Tostitos", category: "snacks", emoji: "🌮",
+    img: "https://images.freshop.com/00028400090507/e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0_large.png" },
+  { product_name: "Original Potato Chips", brands: "Lay's", category: "snacks", emoji: "🥔",
+    img: "https://images.freshop.com/00028400090606/f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1_large.png" },
+  { product_name: "Mixed Nuts (10oz)", brands: "Planters", category: "snacks", emoji: "🥜",
+    img: "https://images.freshop.com/00029000011490/a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2_large.png" },
+  { product_name: "Dark Chocolate Bar (3.5oz)", brands: "Lindt 70%", category: "snacks", emoji: "🍫",
+    img: "https://images.freshop.com/00037466019578/b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3_large.png" },
+  { product_name: "Granola Bars (6ct)", brands: "Kind", category: "snacks", emoji: "🍫",
+    img: "https://images.freshop.com/00602652249087/c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4_large.png" },
+  { product_name: "Rice Cakes (4.5oz)", brands: "Quaker", category: "snacks", emoji: "🍘",
+    img: "https://images.freshop.com/00030000060665/d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5_large.png" },
+  { product_name: "Crackers (13.8oz)", brands: "Ritz", category: "snacks", emoji: "🫙",
+    img: "https://images.freshop.com/00044000032281/e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6_large.png" },
+  { product_name: "Goldfish Crackers (30oz)", brands: "Pepperidge Farm", category: "snacks", emoji: "🐟",
+    img: "https://images.freshop.com/00014100096325/f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7_large.png" },
+  { product_name: "Popcorn (3pk)", brands: "Boom Chicka Pop", category: "snacks", emoji: "🍿",
+    img: "https://images.freshop.com/00818780010335/a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8_large.png" },
+  { product_name: "Trail Mix (30oz)", brands: "Kirkland", category: "snacks", emoji: "🥜",
+    img: "https://images.freshop.com/00096619271314/b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9_large.png" },
+
+  // ── FROZEN ──
+  { product_name: "Vanilla Ice Cream (48oz)", brands: "Häagen-Dazs", category: "frozen", emoji: "🍦",
+    img: "https://images.freshop.com/00074570000028/c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0_large.png" },
+  { product_name: "Frozen Blueberries (32oz)", brands: "Wyman's", category: "frozen", emoji: "🫐",
+    img: "https://images.freshop.com/00072310901033/d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1_large.png" },
+  { product_name: "Frozen Broccoli (12oz)", brands: "Birds Eye", category: "frozen", emoji: "🥦",
+    img: "https://images.freshop.com/00014500041025/e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2_large.png" },
+  { product_name: "Frozen Pizza", brands: "DiGiorno", category: "frozen", emoji: "🍕",
+    img: "https://images.freshop.com/00071921500018/f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3_large.png" },
+  { product_name: "Frozen Waffles (10ct)", brands: "Eggo", category: "frozen", emoji: "🧇",
+    img: "https://images.freshop.com/00038000291401/a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4_large.png" },
+  { product_name: "Chicken Nuggets (32oz)", brands: "Tyson", category: "frozen", emoji: "🍗",
+    img: "https://images.freshop.com/00023700023830/b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5_large.png" },
+  { product_name: "Edamame (16oz)", brands: "Seapoint Farms", category: "frozen", emoji: "🫛",
+    img: "https://images.freshop.com/00041321000038/c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6_large.png" },
+  { product_name: "Frozen Corn (12oz)", brands: "Birds Eye", category: "frozen", emoji: "🌽",
+    img: "https://images.freshop.com/00014500040660/d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7_large.png" },
+  { product_name: "Frozen Mango Chunks (16oz)", brands: "Dole", category: "frozen", emoji: "🥭",
+    img: "https://images.freshop.com/00071326017308/e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8_large.png" },
+
+  // ── BREAKFAST ──
+  { product_name: "Cheerios (18oz)", brands: "General Mills", category: "breakfast", emoji: "🥣",
+    img: "https://images.freshop.com/00016000275607/f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9_large.png" },
+  { product_name: "Honey Nut Cheerios (19.5oz)", brands: "General Mills", category: "breakfast", emoji: "🥣",
+    img: "https://images.freshop.com/00016000244238/a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0_large.png" },
+  { product_name: "Frosted Flakes (24oz)", brands: "Kellogg's", category: "breakfast", emoji: "🥣",
+    img: "https://images.freshop.com/00038000003479/b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1_large.png" },
+  { product_name: "Instant Oatmeal (8pk)", brands: "Quaker", category: "breakfast", emoji: "🥣",
+    img: "https://images.freshop.com/00030000010437/c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2_large.png" },
+  { product_name: "Pancake Mix (32oz)", brands: "Bisquick", category: "breakfast", emoji: "🥞",
+    img: "https://images.freshop.com/00016000437109/d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3_large.png" },
+
+  // ── HOUSEHOLD & PERSONAL ──
+  { product_name: "Dish Soap (21.6oz)", brands: "Dawn Platinum", category: "household", emoji: "🧴",
+    img: "https://images.freshop.com/00037000759270/e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4_large.png" },
+  { product_name: "Laundry Detergent (92oz)", brands: "Tide Free & Gentle", category: "household", emoji: "🧺",
+    img: "https://images.freshop.com/00037000263388/f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5_large.png" },
+  { product_name: "Paper Towels (8 rolls)", brands: "Bounty Select-A-Size", category: "household", emoji: "🧻",
+    img: "https://images.freshop.com/00037000761419/a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6_large.png" },
+  { product_name: "Toilet Paper (12 rolls)", brands: "Charmin Ultra Soft", category: "household", emoji: "🧻",
+    img: "https://images.freshop.com/00037000863359/b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7_large.png" },
+  { product_name: "Garbage Bags (20ct)", brands: "Glad Tall Kitchen", category: "household", emoji: "🛍️",
+    img: "https://images.freshop.com/00012587001099/c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8_large.png" },
+  { product_name: "Hand Soap (11.25oz)", brands: "Softsoap", category: "household", emoji: "🧴",
+    img: "https://images.freshop.com/00037000882900/d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9_large.png" },
+  { product_name: "Toothpaste (4.8oz)", brands: "Colgate Total", category: "household", emoji: "🪥",
+    img: "https://images.freshop.com/00035000040865/e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0_large.png" },
+  { product_name: "Shampoo (12.6oz)", brands: "Pantene Pro-V", category: "household", emoji: "🧴",
+    img: "https://images.freshop.com/00037000865780/f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1_large.png" },
+  { product_name: "Body Wash (22oz)", brands: "Dove Sensitive", category: "household", emoji: "🧴",
+    img: "https://images.freshop.com/00011111059872/a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2_large.png" },
+  { product_name: "Deodorant", brands: "Dove Men+Care", category: "household", emoji: "🧴",
+    img: "https://images.freshop.com/00011111031090/b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3_large.png" },
+
+  // ── BABY & KIDS ──
+  { product_name: "Baby Wipes (216ct)", brands: "Pampers Sensitive", category: "baby", emoji: "👶",
+    img: "https://images.freshop.com/00037000833131/c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4_large.png" },
+  { product_name: "Diapers Size 3 (144ct)", brands: "Pampers Swaddlers", category: "baby", emoji: "👶",
+    img: "https://images.freshop.com/00037000869948/d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5_large.png" },
+  { product_name: "Baby Formula (12.5oz)", brands: "Similac Pro-Advance", category: "baby", emoji: "🍼",
+    img: "https://images.freshop.com/00070074505596/e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6_large.png" },
+  { product_name: "Applesauce Pouches (12ct)", brands: "GoGo squeeZ", category: "baby", emoji: "🍎",
+    img: "https://images.freshop.com/00893220000283/f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7_large.png" },
+  { product_name: "Mac & Cheese", brands: "Kraft", category: "baby", emoji: "🧀",
+    img: "https://images.freshop.com/00021000016708/a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8_large.png" },
+];
+
+// ============ STATE ============
+let currentStep = 0;
+let selectedColor = null;
+let takenColors = {};
+let familyMembers = [];
+let currentTab = 'dashboard';
+let prevTab = null;
+let selectedProduct = null;
+let autocompleteIndex = -1;
+let calDate = new Date();
+
+// ============ PLANS & FEATURE GATING ============
+const PLAN_LIMITS = {
+  free: {
+    groceryMax: 12,
+    eventsPerDayMax: 4,
+    membersMax: 3,
+    grocerySearch: false,
+    taskAssignment: false,
+    chorePoints: false,
+    harmonyScore: false,
+    notifications: false,
+    conflictDetection: false
+  },
+  pro: {
+    groceryMax: Infinity,
+    eventsPerDayMax: Infinity,
+    membersMax: 4,
+    grocerySearch: true,
+    taskAssignment: true,
+    chorePoints: true,
+    harmonyScore: true,
+    notifications: true,
+    conflictDetection: true
+  },
+  family: {
+    groceryMax: Infinity,
+    eventsPerDayMax: Infinity,
+    membersMax: Infinity,
+    grocerySearch: true,
+    taskAssignment: true,
+    chorePoints: true,
+    harmonyScore: true,
+    notifications: true,
+    conflictDetection: true
+  }
+};
+
+let currentPlan = 'free';
+
+function loadPlan() {
+  try {
+    const stored = localStorage.getItem('ns_plan');
+    currentPlan = (stored && ['free','pro','family'].includes(stored)) ? stored : 'free';
+  } catch (e) { currentPlan = 'free'; }
 }
 
-/* ================= FLOW LOGIC ================= */
+function savePlan(plan) {
+  currentPlan = plan;
+  try { localStorage.setItem('ns_plan', plan); } catch (e) {}
+  applyPlanUI();
+  updatePlanSheetButtons();
+  showToast(plan === 'free' ? 'Switched to Free plan' : `Upgraded to ${plan === 'pro' ? 'Pro' : 'Family'} plan! 🎉`);
+}
 
-document.addEventListener("DOMContentLoaded", function() {
+function hasFeature(feature) {
+  return !!PLAN_LIMITS[currentPlan]?.[feature];
+}
 
-  const plan = localStorage.getItem("plan");
+function getLimit(limit) {
+  return PLAN_LIMITS[currentPlan]?.[limit] ?? 0;
+}
 
-  showScreen("splash");
+function countGroceryItems() {
+  let n = 0;
+  document.querySelectorAll('#tab-shopping .shopping-item').forEach(() => n++);
+  return n;
+}
 
-  setTimeout(() => {
+function countEventsToday() {
+  return document.querySelectorAll('#tab-family-time .event-card').length;
+}
 
-    if (!plan) {
-      showScreen("signup");
+function countMembers() {
+  return 1 + familyMembers.length;
+}
+
+function openPlansSheet() {
+  document.getElementById('plansOverlay').classList.add('open');
+  document.getElementById('plansSheet').classList.add('open');
+  updatePlanSheetButtons();
+}
+
+function closePlansSheet() {
+  document.getElementById('plansOverlay').classList.remove('open');
+  document.getElementById('plansSheet').classList.remove('open');
+}
+
+function selectPlan(plan) {
+  if (plan === currentPlan) {
+    closePlansSheet();
+    return;
+  }
+  if (plan === 'free') {
+    savePlan('free');
+    closePlansSheet();
+    return;
+  }
+  savePlan(plan);
+  closePlansSheet();
+}
+
+function updatePlanSheetButtons() {
+  ['free','pro','family'].forEach(p => {
+    const btn = document.getElementById('planBtn' + (p === 'free' ? 'Free' : p === 'pro' ? 'Pro' : 'Family'));
+    if (!btn) return;
+    if (p === currentPlan) {
+      btn.textContent = 'Current Plan';
+      btn.className = 'plan-tier-btn current';
+    } else if (p === 'free') {
+      btn.textContent = 'Switch to Free';
+      btn.className = 'plan-tier-btn secondary';
     } else {
-      checkTrialStatus();
-      showScreen("mainApp");
-      updateBanner();
+      btn.textContent = p === 'pro' ? 'Upgrade to Pro' : 'Upgrade to Family';
+      btn.className = 'plan-tier-btn primary';
     }
+  });
+}
 
-  }, 2500);
+function applyPlanUI() {
+  const limits = PLAN_LIMITS[currentPlan];
+  if (!limits) return;
+
+  const planNames = { free: 'Free', pro: 'Pro', family: 'Family' };
+  const planSubs = {
+    free: '12 items · 4 events/day · 3 members',
+    pro: 'Up to 4 members · All features',
+    family: '5+ members · All features'
+  };
+
+  const nameEl = document.getElementById('settingsPlanName');
+  const subEl = document.getElementById('settingsPlanSub');
+  const valueEl = document.getElementById('settingsPlanValue');
+  if (nameEl) nameEl.textContent = planNames[currentPlan] + ' Plan';
+  if (subEl) subEl.textContent = planSubs[currentPlan];
+  if (valueEl) valueEl.textContent = planNames[currentPlan];
+
+  const harmonyCard = document.getElementById('harmonyCard');
+  if (harmonyCard) harmonyCard.style.display = limits.harmonyScore ? '' : 'none';
+
+  document.querySelectorAll('.chore-assignee').forEach(el => {
+    el.style.display = limits.taskAssignment ? '' : 'none';
+  });
+
+  document.querySelectorAll('.task-badge').forEach(el => {
+    el.style.display = limits.taskAssignment ? '' : 'none';
+  });
+
+  document.querySelectorAll('.tasks-filter .filter-chip').forEach((el, i) => {
+    if (i === 0) return;
+    el.style.display = limits.taskAssignment ? '' : 'none';
+  });
+
+  const notifSection = document.getElementById('notificationsSection');
+  if (notifSection) notifSection.style.display = limits.notifications ? '' : 'none';
+
+  const addGroceryBtn = document.querySelector('.add-grocery-btn');
+  if (addGroceryBtn) {
+    addGroceryBtn.textContent = limits.grocerySearch ? '+ Add item with photo' : '+ Add item';
+  }
+
+  const alertBanner = document.getElementById('alertBanner');
+  if (alertBanner) alertBanner.style.display = limits.conflictDetection ? '' : 'none';
+
+  document.querySelectorAll('.event-conflict, .event-card-conflict').forEach(el => {
+    el.style.display = limits.conflictDetection ? '' : 'none';
+  });
+}
+
+// ============ SPLASH ============
+window.addEventListener('load', () => {
+  // Skip splash and onboarding — go straight to app
+  document.getElementById('splash').style.display = 'none';
+  document.getElementById('onboarding').style.display = 'none';
+  document.getElementById('mainApp').classList.remove('hidden');
+  document.getElementById('mainApp').classList.add('active');
+  setTimeout(() => {
+    const splash = document.getElementById('splash');
+    splash.style.opacity = '0';
+    splash.style.transition = 'opacity 0.5s ease';
+    setTimeout(() => {
+      splash.style.display = 'none';
+      splash.classList.remove('active');
+      document.getElementById('onboarding').classList.remove('hidden');
+      document.getElementById('onboarding').classList.add('active');
+    }, 500);
+  }, 2400);
+
+  // Set date
+  const now = new Date();
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('headerDate').textContent = `${days[now.getDay()]} · ${months[now.getMonth()]} ${now.getDate()}`;
+
+  // Greeting
+  const h = now.getHours();
+  document.getElementById('timeGreeting').textContent = h < 12 ? 'morning' : h < 17 ? 'afternoon' : 'evening';
+
+  buildColorGrid();
+  buildCalendar();
+  loadPlan();
+  applyPlanUI();
+
+  // Dark mode from system
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.body.classList.add('dark');
+    document.getElementById('darkToggle').classList.add('on');
+  }
 });
 
-function goToPaywall() {
-  showScreen("paywall");
+function launchMainApp() {
+  const app = document.getElementById('mainApp');
+  app.classList.remove('hidden');
+  app.style.opacity = '0';
+  app.classList.add('active');
+  requestAnimationFrame(() => {
+    app.style.transition = 'opacity 0.4s ease';
+    app.style.opacity = '1';
+  });
 }
 
-function chooseFree() {
-  localStorage.setItem("plan", "free");
-  showScreen("mainApp");
-  updateBanner();
-}
-
-function startTrial() {
-  const trialEnd = new Date();
-  trialEnd.setDate(trialEnd.getDate() + 7);
-
-  localStorage.setItem("plan", "pro_trial");
-  localStorage.setItem("trialEnds", trialEnd.toISOString());
-
-  showScreen("mainApp");
-  updateBanner();
-}
-
-/* ================= TRIAL LOGIC ================= */
-
-function checkTrialStatus() {
-  const plan = localStorage.getItem("plan");
-  const trialEnds = localStorage.getItem("trialEnds");
-
-  if (plan === "pro_trial" && trialEnds) {
-    const now = new Date();
-    const end = new Date(trialEnds);
-
-    if (now > end) {
-      localStorage.setItem("plan", "free");
-      localStorage.removeItem("trialEnds");
+// ============ COLOR GRID ============
+function buildColorGrid() {
+  const grid = document.getElementById('colorGrid');
+  grid.innerHTML = '';
+  COLORS.forEach(c => {
+    const sw = document.createElement('div');
+    sw.className = 'color-swatch';
+    sw.style.background = c.hex;
+    sw.dataset.id = c.id;
+    sw.dataset.hex = c.hex;
+    if (takenColors[c.id]) {
+      sw.classList.add('taken');
+      sw.dataset.initial = takenColors[c.id];
     }
-  }
+    sw.onclick = () => {
+      if (sw.classList.contains('taken')) return;
+      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+      sw.classList.add('selected');
+      selectedColor = c;
+    };
+    grid.appendChild(sw);
+  });
 }
 
-function updateBanner() {
-  const banner = document.getElementById("planBanner");
-  const plan = localStorage.getItem("plan");
-  const trialEnds = localStorage.getItem("trialEnds");
+// ============ ONBOARDING ============
+const steps = [
+  { title: 'Welcome to NestSync', sub: "Let's set up your family in just a few steps." },
+  { title: 'Pick Your Color', sub: 'This color is yours across the whole app.' },
+  { title: 'Add Your Family', sub: "Add members — they'll get an invite to join." },
+  { title: "You're all set!", sub: 'Your family hub is ready.' },
+];
 
-  if (plan === "pro_trial" && trialEnds) {
-    const now = new Date();
-    const end = new Date(trialEnds);
-    const daysLeft = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
+function onboardNext() {
+  if (currentStep === 0) {
+    const name = document.getElementById('familyName').value.trim();
+    const creator = document.getElementById('creatorName').value.trim();
+    if (!name || !creator) { showToast('Please fill in your name and family name'); return; }
+  }
+  if (currentStep === 1 && !selectedColor) { showToast('Please pick a color!'); return; }
 
-    banner.innerText = "Premium Trial — " + daysLeft + " days remaining.";
-  } else if (plan === "free") {
-    banner.innerText = "Free Plan";
+  if (currentStep === 2) {
+    buildSummary();
+  }
+
+  if (currentStep < steps.length - 1) {
+    document.getElementById(`step${currentStep}`).classList.remove('active');
+    document.getElementById(`dot${currentStep}`).classList.remove('active');
+    document.getElementById(`dot${currentStep}`).classList.add('done');
+    currentStep++;
+    document.getElementById(`step${currentStep}`).classList.add('active');
+    document.getElementById(`dot${currentStep}`).classList.add('active');
+    document.getElementById('onboardTitle').textContent = steps[currentStep].title;
+    document.getElementById('onboardSub').textContent = steps[currentStep].sub;
+    document.getElementById('onboardBack').style.display = 'block';
+    if (currentStep === steps.length - 1) {
+      document.getElementById('onboardNext').textContent = 'Enter NestSync →';
+    }
   } else {
-    banner.innerText = "";
+    finishOnboarding();
   }
 }
 
-</script>
+function onboardPrev() {
+  if (currentStep === 0) return;
+  document.getElementById(`step${currentStep}`).classList.remove('active');
+  document.getElementById(`dot${currentStep}`).classList.remove('active');
+  currentStep--;
+  document.getElementById(`step${currentStep}`).classList.add('active');
+  document.getElementById(`dot${currentStep}`).classList.remove('done');
+  document.getElementById(`dot${currentStep}`).classList.add('active');
+  document.getElementById('onboardTitle').textContent = steps[currentStep].title;
+  document.getElementById('onboardSub').textContent = steps[currentStep].sub;
+  document.getElementById('onboardNext').textContent = 'Continue →';
+  if (currentStep === 0) document.getElementById('onboardBack').style.display = 'none';
+}
 
+function showAddMember() {
+  const max = getLimit('membersMax');
+  if (countMembers() >= max) {
+    showToast(`Free plan: ${max} members max. Upgrade to Pro for more!`);
+    return;
+  }
+  document.getElementById('addMemberForm').style.display = 'block';
+  document.getElementById('newMemberName').focus();
+}
+
+function addMember() {
+  const name = document.getElementById('newMemberName').value.trim();
+  const role = document.getElementById('newMemberRole').value;
+  if (!name) return;
+  const max = getLimit('membersMax');
+  if (countMembers() >= max) {
+    showToast(`Free plan limited to ${max} members. Upgrade for more!`);
+    return;
+  }
+  familyMembers.push({ name, role });
+  document.getElementById('newMemberName').value = '';
+  renderMembersList();
+  document.getElementById('addMemberForm').style.display = 'none';
+}
+
+function renderMembersList() {
+  const list = document.getElementById('membersList');
+  list.innerHTML = '';
+  familyMembers.forEach((m, i) => {
+    const col = COLORS[i % COLORS.length].hex;
+    const div = document.createElement('div');
+    div.className = 'member-card-ob';
+    div.innerHTML = `
+      <div class="member-avatar-ob" style="background:${col}">${m.name[0]}</div>
+      <div class="member-info-ob">
+        <div class="member-name-ob">${m.name}</div>
+        <div class="member-role-ob">${m.role}</div>
+      </div>
+      <button onclick="familyMembers.splice(${i},1);renderMembersList()" style="background:none;border:none;color:var(--text-light);cursor:pointer;font-size:1rem">✕</button>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function buildSummary() {
+  const fname = document.getElementById('familyName').value.trim();
+  const creator = document.getElementById('creatorName').value.trim();
+  const code = 'NS-' + Math.floor(1000 + Math.random() * 9000);
+  document.getElementById('inviteCode').textContent = code;
+  document.getElementById('displayInviteCode').textContent = code;
+  document.getElementById('settingsInviteCode').textContent = code;
+  document.getElementById('summaryText').textContent = `${fname} is set up with ${1 + familyMembers.length} member${familyMembers.length ? 's' : ''}. Share the invite code with your family.`;
+  document.getElementById('familyGreeting').textContent = `${fname}.`;
+  document.getElementById('settingsFamilyName').textContent = `The ${fname.replace('The ', '')}`;
+  document.getElementById('profileName').textContent = `${creator} ${document.getElementById('familyName').value.split(' ').pop() || ''}`.trim();
+  document.getElementById('profileEmail').textContent = document.getElementById('creatorEmail').value || 'user@email.com';
+  document.getElementById('profileAvatar').textContent = creator[0];
+  if (selectedColor) document.getElementById('profileAvatar').style.background = selectedColor.hex;
+  buildHeaderAvatars(creator);
+}
+
+function buildHeaderAvatars(creatorName) {
+  const stack = document.getElementById('headerAvatars');
+  stack.innerHTML = '';
+  const all = [{ name: creatorName, color: selectedColor ? selectedColor.hex : '#C97B52' }, ...familyMembers.map((m, i) => ({ name: m.name, color: COLORS[(i + 1) % COLORS.length].hex }))];
+  all.slice(0, 4).forEach(m => {
+    const av = document.createElement('div');
+    av.className = 'avatar';
+    av.style.background = m.color;
+    av.textContent = m.name[0];
+    stack.appendChild(av);
+  });
+}
+
+function skipOnboarding() {
+  // Set demo defaults
+  document.getElementById('familyGreeting').textContent = 'your family.';
+  finishOnboarding();
+}
+
+function finishOnboarding() {
+  const ob = document.getElementById('onboarding');
+  ob.style.opacity = '0';
+  ob.style.transition = 'opacity 0.4s ease';
+  setTimeout(() => {
+    ob.style.display = 'none';
+    ob.classList.remove('active');
+    launchMainApp();
+  }, 400);
+}
+
+// ============ TAB NAVIGATION ============
+function switchTab(tabId) {
+  if (tabId === currentTab) return;
+
+  const tabs = ['dashboard','family-time','tasks','shopping','members','settings'];
+  const currentIndex = tabs.indexOf(currentTab);
+  const newIndex = tabs.indexOf(tabId);
+  const goingRight = newIndex > currentIndex;
+
+  const currentEl = document.getElementById(`tab-${currentTab}`);
+  const newEl = document.getElementById(`tab-${tabId}`);
+
+  currentEl.classList.remove('active');
+  currentEl.classList.add(goingRight ? 'slide-left' : 'hidden');
+
+  newEl.classList.remove('hidden','slide-left','active');
+  newEl.style.transform = goingRight ? 'translateX(100%)' : 'translateX(-25%)';
+  newEl.style.opacity = goingRight ? '0' : '0.4';
+  newEl.style.pointerEvents = 'none';
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      newEl.style.transform = '';
+      newEl.style.opacity = '';
+      newEl.style.pointerEvents = '';
+      newEl.classList.add('active');
+    });
+  });
+
+  setTimeout(() => {
+    currentEl.classList.remove('slide-left');
+    currentEl.classList.add('hidden');
+  }, 380);
+
+  document.querySelectorAll('.nav-item').forEach((n, i) => n.classList.toggle('active', tabs[i] === tabId));
+  prevTab = currentTab;
+  currentTab = tabId;
+}
+
+function addEventClick() {
+  const max = getLimit('eventsPerDayMax');
+  if (countEventsToday() >= max) {
+    showToast(`Free plan: ${max} events/day max. Upgrade for unlimited calendar!`);
+    return;
+  }
+  showToast('➕ Add event coming soon!');
+}
+
+// Settings accessible from anywhere
+function openSettings() { switchTab('settings'); }
+
+// ============ CALENDAR ============
+function buildCalendar() {
+  const grid = document.getElementById('calendarGrid');
+  if (!grid) return;
+  const month = calDate.getMonth();
+  const year = calDate.getFullYear();
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('calMonth').textContent = `${months[month]} ${year}`;
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const prevDays = new Date(year, month, 0).getDate();
+  const today = new Date();
+
+  const eventDays = [5, 8, 12, 15, 19, 23, 27];
+
+  grid.innerHTML = '';
+
+  for (let i = firstDay - 1; i >= 0; i--) {
+    const d = document.createElement('div');
+    d.className = 'cal-day other-month';
+    d.textContent = prevDays - i;
+    grid.appendChild(d);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const el = document.createElement('div');
+    el.className = 'cal-day';
+    el.textContent = d;
+    if (d === today.getDate() && month === today.getMonth() && year === today.getFullYear()) el.classList.add('today');
+    if (eventDays.includes(d)) el.classList.add('has-event');
+    el.onclick = () => showToast(`📅 ${months[month]} ${d}`);
+    grid.appendChild(el);
+  }
+
+  const remaining = 42 - firstDay - daysInMonth + 1;
+  for (let d = 1; d <= remaining && grid.children.length < 42; d++) {
+    const el = document.createElement('div');
+    el.className = 'cal-day other-month';
+    el.textContent = d;
+    grid.appendChild(el);
+  }
+}
+
+function changeMonth(dir) {
+  calDate.setMonth(calDate.getMonth() + dir);
+  buildCalendar();
+}
+
+// ============ TASK FILTER ============
+function filterTasks(btn, member) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.task-card').forEach(card => {
+    card.style.display = (member === 'all' || card.dataset.member === member) ? 'flex' : 'none';
+  });
+}
+
+// ============ TOGGLES ============
+function toggleChore(el) {
+  el.classList.toggle('done');
+  const check = el.querySelector('.chore-check');
+  if (check) check.textContent = el.classList.contains('done') ? '✓' : '';
+}
+
+function toggleTask(el) {
+  el.classList.toggle('done');
+  const check = el.querySelector('.task-check');
+  if (check) check.textContent = el.classList.contains('done') ? '✓' : '';
+}
+
+function toggleShopping(el) {
+  el.classList.toggle('checked');
+  const check = el.querySelector('.shopping-check');
+  if (check) check.textContent = el.classList.contains('checked') ? '✓' : '';
+}
+
+// ============ DARK MODE ============
+function toggleDarkMode() {
+  document.body.classList.toggle('dark');
+  document.getElementById('darkToggle').classList.toggle('on');
+}
+
+// ============ MEMBERS ============
+function showMemberDetail(name, role, email, color) {
+  document.getElementById('sheetMemberAvatar').textContent = name[0];
+  document.getElementById('sheetMemberAvatar').style.background = color;
+  document.getElementById('sheetMemberName').textContent = name;
+  document.getElementById('sheetMemberRole').textContent = role + (role === 'Parent' ? ' · Admin' : '');
+  document.getElementById('sheetMemberEmail').textContent = email || 'No email set';
+  document.getElementById('memberOverlay').classList.add('open');
+  document.getElementById('memberSheet').classList.add('open');
+}
+
+function closeMemberSheet() {
+  document.getElementById('memberOverlay').classList.remove('open');
+  document.getElementById('memberSheet').classList.remove('open');
+}
+
+// ============ COPY CODE ============
+function copyCode() {
+  const code = document.getElementById('displayInviteCode').textContent;
+  if (navigator.clipboard) navigator.clipboard.writeText(code);
+  showToast('📋 Code copied: ' + code);
+}
+
+// ============ GROCERY SEARCH ============
+let selectedProduct2 = null;
+
+function openItemSearch() {
+  if (!hasFeature('grocerySearch')) {
+    const max = getLimit('groceryMax');
+    if (countGroceryItems() >= max) {
+      showToast(`Free plan: ${max} items max. Upgrade for unlimited + search!`);
+      return;
+    }
+    const name = prompt('Add grocery item:');
+    if (name && name.trim()) {
+      addSimpleGroceryItem(name.trim());
+    }
+    return;
+  }
+  if (countGroceryItems() >= getLimit('groceryMax')) {
+    showToast('Grocery list is full. Remove items to add more.');
+    return;
+  }
+  document.getElementById('sheetOverlay').classList.add('open');
+  document.getElementById('itemSheet').classList.add('open');
+  setTimeout(() => document.getElementById('sheetSearch').focus(), 350);
+}
+
+function addSimpleGroceryItem(name) {
+  const max = getLimit('groceryMax');
+  if (countGroceryItems() >= max) {
+    showToast(`Free plan: ${max} items max. Upgrade for more!`);
+    return;
+  }
+  const section = document.querySelector('#tab-shopping .shopping-section:last-of-type');
+  const item = document.createElement('div');
+  item.className = 'shopping-item';
+  item.onclick = function() { toggleShopping(this); };
+  item.innerHTML = `
+    <div class="shopping-check"></div>
+    <div class="shopping-img-placeholder">🛒</div>
+    <div><div class="shopping-name">${name}</div><div class="shopping-by">Added by you</div></div>
+  `;
+  section.appendChild(item);
+  showToast(`✅ ${name} added!`);
+}
+
+function closeItemSearch() {
+  document.getElementById('sheetOverlay').classList.remove('open');
+  document.getElementById('itemSheet').classList.remove('open');
+  selectedProduct2 = null;
+  document.getElementById('sheetSearch').value = '';
+  document.getElementById('autocompleteDropdown').classList.remove('open');
+  document.getElementById('sheetResults').innerHTML = '<div class="sheet-empty">Search or tap a suggestion 🛒</div>';
+  document.getElementById('sheetConfirm').disabled = true;
+  document.getElementById('sheetConfirm').textContent = 'Add to List';
+  document.getElementById('sheetSuggestions').style.display = 'flex';
+}
+
+function quickSearch(term) {
+  document.getElementById('sheetSearch').value = term;
+  document.getElementById('autocompleteDropdown').classList.remove('open');
+  searchItems();
+}
+
+function searchLocal(query) {
+  const q = query.toLowerCase().trim();
+  if (!q) return [];
+  return PRODUCTS.filter(p =>
+    p.product_name.toLowerCase().includes(q) ||
+    p.brands.toLowerCase().includes(q) ||
+    p.category.toLowerCase().includes(q)
+  );
+}
+
+function searchItems() {
+  const query = document.getElementById('sheetSearch').value.trim();
+  if (!query) return;
+  document.getElementById('sheetSuggestions').style.display = 'none';
+  document.getElementById('autocompleteDropdown').classList.remove('open');
+  const results = document.getElementById('sheetResults');
+  selectedProduct2 = null;
+  document.getElementById('sheetConfirm').disabled = true;
+  document.getElementById('sheetConfirm').textContent = 'Add to List';
+
+  const found = searchLocal(query);
+  if (!found.length) {
+    results.innerHTML = `<div class="sheet-empty">No results for "<strong>${query}</strong>".<br>Try: milk, eggs, chicken, pasta, bread...</div>`;
+    return;
+  }
+  renderResults(found.slice(0, 12));
+}
+
+function renderResults(products) {
+  const results = document.getElementById('sheetResults');
+  results.innerHTML = '';
+  products.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'result-card';
+    card.innerHTML = `
+      <div class="result-img-placeholder" style="font-size:2.5rem;background:#F7F3EE;width:72px;height:72px;border-radius:10px;display:flex;align-items:center;justify-content:center">${p.emoji || '🛒'}</div>
+      <div class="result-name">${p.product_name}</div>
+      ${p.brands ? `<div class="result-brand">${p.brands.split(',')[0]}</div>` : ''}
+      <div class="result-add-badge">✓ Selected</div>
+    `;
+    card.onclick = () => selectProduct(card, p);
+    results.appendChild(card);
+  });
+}
+
+function selectProduct(card, product) {
+  document.querySelectorAll('.result-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  selectedProduct2 = product;
+  const shortName = product.product_name.split(' ').slice(0, 4).join(' ');
+  document.getElementById('sheetConfirm').disabled = false;
+  document.getElementById('sheetConfirm').textContent = `Add "${shortName}" to list`;
+}
+
+function confirmAdd() {
+  if (!selectedProduct2) return;
+  const max = getLimit('groceryMax');
+  if (countGroceryItems() >= max) {
+    showToast(`Grocery list limit reached (${max}). Upgrade for unlimited!`);
+    return;
+  }
+  const p = selectedProduct2;
+
+  // Add to shopping tab
+  const section = document.querySelector('#tab-shopping .shopping-section:last-of-type');
+  const item = document.createElement('div');
+  item.className = 'shopping-item';
+  item.onclick = function() { toggleShopping(this); };
+  item.innerHTML = `
+    <div class="shopping-check"></div>
+    <img class="shopping-img" src="${p.img}" onerror="this.style.display='none'" alt="${p.product_name}">
+    <div><div class="shopping-name">${p.product_name}</div><div class="shopping-by">Added by you</div></div>
+  `;
+  section.appendChild(item);
+  closeItemSearch();
+  showToast(`✅ ${p.product_name.split(' ').slice(0,3).join(' ')} added!`);
+}
+
+// AUTOCOMPLETE
+function onSearchInput(val) {
+  autocompleteIndex = -1;
+  const dropdown = document.getElementById('autocompleteDropdown');
+  const q = val.trim().toLowerCase();
+  if (q.length < 1) { dropdown.classList.remove('open'); return; }
+  const scored = PRODUCTS.map(p => {
+    const n = p.product_name.toLowerCase();
+    let score = 0;
+    if (n.startsWith(q)) score = 3;
+    else if (n.includes(q)) score = 2;
+    else if (p.brands.toLowerCase().includes(q) || p.category.includes(q)) score = 1;
+    return { p, score };
+  }).filter(x => x.score > 0).sort((a,b) => b.score - a.score).slice(0, 6).map(x => x.p);
+
+  if (!scored.length) { dropdown.classList.remove('open'); return; }
+  const regex = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+  dropdown.innerHTML = scored.map(p => `
+    <div class="autocomplete-item" onmousedown="selectSuggestion('${p.product_name.replace(/'/g,"\\'")}')">
+      <span class="autocomplete-emoji">${p.emoji}</span>
+      <div class="autocomplete-text">
+        <div class="autocomplete-name">${p.product_name.replace(regex, '<span class="autocomplete-highlight">$1</span>')}</div>
+        <div class="autocomplete-brand">${p.brands}</div>
+      </div>
+    </div>`).join('');
+  dropdown.classList.add('open');
+}
+
+function selectSuggestion(name) {
+  document.getElementById('sheetSearch').value = name;
+  document.getElementById('autocompleteDropdown').classList.remove('open');
+  searchItems();
+}
+
+function handleSearchKey(e) {
+  const dropdown = document.getElementById('autocompleteDropdown');
+  const items = dropdown.querySelectorAll('.autocomplete-item');
+  if (e.key === 'ArrowDown') { e.preventDefault(); autocompleteIndex = Math.min(autocompleteIndex + 1, items.length - 1); items.forEach((el, i) => el.style.background = i === autocompleteIndex ? 'var(--bg)' : ''); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); autocompleteIndex = Math.max(autocompleteIndex - 1, -1); items.forEach((el, i) => el.style.background = i === autocompleteIndex ? 'var(--bg)' : ''); }
+  else if (e.key === 'Enter') { if (autocompleteIndex >= 0 && items[autocompleteIndex]) { e.preventDefault(); selectSuggestion(items[autocompleteIndex].querySelector('.autocomplete-name').textContent); } else { dropdown.classList.remove('open'); searchItems(); } }
+  else if (e.key === 'Escape') dropdown.classList.remove('open');
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.autocomplete-wrap')) document.getElementById('autocompleteDropdown')?.classList.remove('open');
+});
+
+function getEmoji(term) {
+  const t = term.toLowerCase();
+  if (t.includes('milk')) return '🥛'; if (t.includes('egg')) return '🥚';
+  if (t.includes('bread')) return '🍞'; if (t.includes('banana')) return '🍌';
+  if (t.includes('chicken')) return '🍗'; if (t.includes('pasta')) return '🍝';
+  if (t.includes('butter')) return '🧈'; if (t.includes('cheese')) return '🧀';
+  if (t.includes('apple')) return '🍎'; if (t.includes('tomato')) return '🍅';
+  if (t.includes('coffee')) return '☕'; if (t.includes('juice')) return '🍊';
+  return '🛒';
+}
+
+// ============ INSTALL ============
+function showInstallInstructions() {
+  document.getElementById('installOverlay').classList.add('open');
+  document.getElementById('installSheet').classList.add('open');
+}
+
+function closeInstall() {
+  document.getElementById('installOverlay').classList.remove('open');
+  document.getElementById('installSheet').classList.remove('open');
+}
+
+// ============ TOAST ============
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
 </body>
 </html>
