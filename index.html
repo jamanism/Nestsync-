@@ -1,20 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<!--
-  ╔══════════════════════════════════════════════════════════════════════╗
-  ║  NESTSYNC - Family OS with Spoonacular Integration                  ║
-  ║                                                                      ║
-  ║  🍕 SPOONACULAR API INTEGRATED                                       ║
-  ║  - Real food/ingredient images from Spoonacular                      ║
-  ║  - API Key already configured and ready to use!                      ║
-  ║                                                                      ║
-  ║  ✨ Features:                                                        ║
-  ║  - Real product images fetched from Spoonacular API                  ║
-  ║  - Image caching to minimize API calls                              ║
-  ║  - Automatic fallback to emoji placeholders                          ║
-  ║  - Async image loading with smooth UX                               ║
-  ╚══════════════════════════════════════════════════════════════════════╝
--->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
@@ -85,7 +70,77 @@ body {
 .screen.slide-left { transform: translateX(-30%); opacity: 0.5; pointer-events: none; }
 .screen.active { transform: translateX(0); opacity: 1; }
 
-/* ============ SPLASH REMOVED ============ */
+/* ============ SPLASH ============ */
+#splash {
+  background: var(--bark);
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  z-index: 999;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+#splash.gone {
+  opacity: 0;
+  pointer-events: none;
+  display: none !important;
+}
+
+.splash-logo {
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: splashIn 0.8s 0.3s cubic-bezier(0.34,1.2,0.64,1) forwards;
+}
+
+.nest-white { color: #FFFFFF; }
+.nest-orange { color: #FF6B2C; }
+
+.splash-tagline {
+  font-size: 0.9rem;
+  color: var(--sand);
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  opacity: 0;
+  animation: splashIn 0.6s 0.7s ease forwards;
+}
+
+.splash-icon {
+  font-size: 3.5rem;
+  opacity: 0;
+  animation: splashIn 0.6s 0.1s ease forwards;
+  margin-bottom: 0.5rem;
+}
+
+.splash-bar {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.splash-bar-fill {
+  height: 100%;
+  background: var(--clay-light);
+  border-radius: 2px;
+  animation: loadBar 2s ease forwards;
+}
+
+@keyframes splashIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes loadBar {
+  from { width: 0; }
+  to { width: 100%; }
+}
 
 /* ============ ONBOARDING ============ */
 #onboarding {
@@ -1218,16 +1273,6 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
 .spinner { width: 26px; height: 26px; border: 3px solid var(--border); border-top-color: var(--clay); border-radius: 50%; animation: spin 0.7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ============ TOAST ANIMATIONS ============ */
-@keyframes toastSlideUp {
-  from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-  to { opacity: 1; transform: translateX(-50%) translateY(0); }
-}
-@keyframes toastSlideDown {
-  from { opacity: 1; transform: translateX(-50%) translateY(0); }
-  to { opacity: 0; transform: translateX(-50%) translateY(20px); }
-}
-
 .sheet-confirm {
   background: var(--clay);
   color: white;
@@ -1337,8 +1382,15 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
 
 <div id="app">
 
+<!-- ============ SPLASH ============ -->
+<div class="screen active" id="splash">
+  <div class="splash-logo"><span class="nest-white">Nest</span><span class="nest-orange">Sync</span></div>
+  <div class="splash-tagline">The Operating System for Modern Families</div>
+  <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+</div>
+
 <!-- ============ ONBOARDING ============ -->
-<div class="screen active" id="onboarding">
+<div class="screen hidden" id="onboarding">
   <div class="onboard-header">
     <div class="onboard-steps">
       <div class="step-dot active" id="dot0"></div>
@@ -2304,8 +2356,20 @@ let selectedProduct = null;
 let autocompleteIndex = -1;
 let calDate = new Date();
 
-// ============ INIT ============
+// ============ SPLASH ============
 window.addEventListener('load', () => {
+  setTimeout(() => {
+    const splash = document.getElementById('splash');
+    splash.style.opacity = '0';
+    splash.style.transition = 'opacity 0.5s ease';
+    setTimeout(() => {
+      splash.style.display = 'none';
+      splash.classList.remove('active');
+      document.getElementById('onboarding').classList.remove('hidden');
+      document.getElementById('onboarding').classList.add('active');
+    }, 500);
+  }, 2400);
+
   // Set date
   const now = new Date();
   const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -2499,34 +2563,15 @@ function switchTab(tabId) {
   if (tabId === currentTab) return;
 
   const tabs = ['dashboard','family-time','tasks','shopping','members','settings'];
-  const currentIndex = tabs.indexOf(currentTab);
-  const newIndex = tabs.indexOf(tabId);
-  const goingRight = newIndex > currentIndex;
-
   const currentEl = document.getElementById(`tab-${currentTab}`);
   const newEl = document.getElementById(`tab-${tabId}`);
 
+  // Instant switch - no transitions
   currentEl.classList.remove('active');
-  currentEl.classList.add(goingRight ? 'slide-left' : 'hidden');
-
-  newEl.classList.remove('hidden','slide-left','active');
-  newEl.style.transform = goingRight ? 'translateX(100%)' : 'translateX(-25%)';
-  newEl.style.opacity = goingRight ? '0' : '0.4';
-  newEl.style.pointerEvents = 'none';
-
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      newEl.style.transform = '';
-      newEl.style.opacity = '';
-      newEl.style.pointerEvents = '';
-      newEl.classList.add('active');
-    });
-  });
-
-  setTimeout(() => {
-    currentEl.classList.remove('slide-left');
-    currentEl.classList.add('hidden');
-  }, 380);
+  currentEl.classList.add('hidden');
+  
+  newEl.classList.remove('hidden');
+  newEl.classList.add('active');
 
   document.querySelectorAll('.nav-item').forEach((n, i) => n.classList.toggle('active', tabs[i] === tabId));
   prevTab = currentTab;
@@ -2619,40 +2664,6 @@ function toggleDarkMode() {
   document.getElementById('darkToggle').classList.toggle('on');
 }
 
-// ============ TOAST NOTIFICATIONS ============
-function showToast(message) {
-  // Remove any existing toasts
-  const existing = document.querySelector('.toast-notification');
-  if (existing) existing.remove();
-  
-  // Create new toast
-  const toast = document.createElement('div');
-  toast.className = 'toast-notification';
-  toast.textContent = message;
-  toast.style.cssText = `
-    position: fixed;
-    bottom: 100px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--bark);
-    color: white;
-    padding: 0.75rem 1.25rem;
-    border-radius: 12px;
-    font-size: 0.85rem;
-    font-weight: 500;
-    z-index: 10000;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    animation: toastSlideUp 0.3s ease;
-  `;
-  
-  document.body.appendChild(toast);
-  
-  setTimeout(() => {
-    toast.style.animation = 'toastSlideDown 0.3s ease';
-    setTimeout(() => toast.remove(), 300);
-  }, 2500);
-}
-
 // ============ MEMBERS ============
 function showMemberDetail(name, role, email, color) {
   document.getElementById('sheetMemberAvatar').textContent = name[0];
@@ -2674,49 +2685,6 @@ function copyCode() {
   const code = document.getElementById('displayInviteCode').textContent;
   if (navigator.clipboard) navigator.clipboard.writeText(code);
   showToast('📋 Code copied: ' + code);
-}
-
-// ============ SPOONACULAR API ============
-// Spoonacular API for food/grocery product images
-const SPOONACULAR_API_KEY = 'a1343fcfa97e4a9484583b4f6ad12d49';
-const imageCache = new Map(); // Cache for fetched images
-
-async function fetchSpoonacularImage(productName) {
-  // Check cache first
-  if (imageCache.has(productName)) {
-    return imageCache.get(productName);
-  }
-
-  try {
-    // Use Spoonacular's ingredient search to find matching food items
-    const searchUrl = `https://api.spoonacular.com/food/ingredients/search?query=${encodeURIComponent(productName)}&number=1&apiKey=${SPOONACULAR_API_KEY}`;
-    const searchResponse = await fetch(searchUrl);
-    
-    if (!searchResponse.ok) {
-      console.warn(`Spoonacular API returned status ${searchResponse.status}`);
-      imageCache.set(productName, null);
-      return null;
-    }
-    
-    const searchData = await searchResponse.json();
-    
-    if (searchData.results && searchData.results.length > 0) {
-      const ingredient = searchData.results[0];
-      // Spoonacular provides ingredient images in this format
-      const imageUrl = `https://spoonacular.com/cdn/ingredients_500x500/${ingredient.image}`;
-      imageCache.set(productName, imageUrl);
-      return imageUrl;
-    }
-    
-    // No results found
-    imageCache.set(productName, null);
-    return null;
-    
-  } catch (error) {
-    console.warn('Could not fetch Spoonacular image:', error.message);
-    imageCache.set(productName, null);
-    return null;
-  }
 }
 
 // ============ GROCERY SEARCH ============
@@ -2774,58 +2742,21 @@ function searchItems() {
   renderResults(found.slice(0, 12));
 }
 
-async function renderResults(products) {
+function renderResults(products) {
   const results = document.getElementById('sheetResults');
   results.innerHTML = '';
-  
-  for (const p of products) {
+  products.forEach(p => {
     const card = document.createElement('div');
     card.className = 'result-card';
-    
-    // Create image element with placeholder
-    const imgPlaceholder = document.createElement('div');
-    imgPlaceholder.className = 'result-img-placeholder';
-    imgPlaceholder.style.cssText = 'font-size:2.5rem;background:#F7F3EE;width:72px;height:72px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;';
-    imgPlaceholder.textContent = p.emoji || '🛒';
-    
-    const nameDiv = document.createElement('div');
-    nameDiv.className = 'result-name';
-    nameDiv.textContent = p.product_name;
-    
-    const brandDiv = p.brands ? (() => {
-      const div = document.createElement('div');
-      div.className = 'result-brand';
-      div.textContent = p.brands.split(',')[0];
-      return div;
-    })() : null;
-    
-    const badge = document.createElement('div');
-    badge.className = 'result-add-badge';
-    badge.textContent = '✓ Selected';
-    
-    card.appendChild(imgPlaceholder);
-    card.appendChild(nameDiv);
-    if (brandDiv) card.appendChild(brandDiv);
-    card.appendChild(badge);
-    
+    card.innerHTML = `
+      <div class="result-img-placeholder" style="font-size:2.5rem;background:#F7F3EE;width:72px;height:72px;border-radius:10px;display:flex;align-items:center;justify-content:center">${p.emoji || '🛒'}</div>
+      <div class="result-name">${p.product_name}</div>
+      ${p.brands ? `<div class="result-brand">${p.brands.split(',')[0]}</div>` : ''}
+      <div class="result-add-badge">✓ Selected</div>
+    `;
     card.onclick = () => selectProduct(card, p);
     results.appendChild(card);
-    
-    // Fetch Spoonacular image asynchronously
-    fetchSpoonacularImage(p.product_name).then(imageUrl => {
-      if (imageUrl) {
-        const img = document.createElement('img');
-        img.src = imageUrl;
-        img.alt = p.product_name;
-        img.style.cssText = 'width:72px;height:72px;border-radius:10px;object-fit:cover;flex-shrink:0;';
-        img.onerror = () => {
-          // If image fails to load, keep the emoji placeholder
-          img.style.display = 'none';
-        };
-        imgPlaceholder.replaceWith(img);
-      }
-    });
-  }
+  });
 }
 
 function selectProduct(card, product) {
@@ -2837,47 +2768,20 @@ function selectProduct(card, product) {
   document.getElementById('sheetConfirm').textContent = `Add "${shortName}" to list`;
 }
 
-async function confirmAdd() {
+function confirmAdd() {
   if (!selectedProduct2) return;
   const p = selectedProduct2;
-
-  // Fetch Spoonacular image
-  const imageUrl = await fetchSpoonacularImage(p.product_name);
 
   // Add to shopping tab
   const section = document.querySelector('#tab-shopping .shopping-section:last-of-type');
   const item = document.createElement('div');
   item.className = 'shopping-item';
   item.onclick = function() { toggleShopping(this); };
-  
-  const checkDiv = document.createElement('div');
-  checkDiv.className = 'shopping-check';
-  
-  const img = document.createElement('img');
-  img.className = 'shopping-img';
-  img.style.display = imageUrl ? '' : 'none';
-  if (imageUrl) {
-    img.src = imageUrl;
-    img.alt = p.product_name;
-  }
-  img.onerror = function() { this.style.display = 'none'; };
-  
-  const textDiv = document.createElement('div');
-  const nameDiv = document.createElement('div');
-  nameDiv.className = 'shopping-name';
-  nameDiv.textContent = p.product_name;
-  
-  const byDiv = document.createElement('div');
-  byDiv.className = 'shopping-by';
-  byDiv.textContent = 'Added by you';
-  
-  textDiv.appendChild(nameDiv);
-  textDiv.appendChild(byDiv);
-  
-  item.appendChild(checkDiv);
-  item.appendChild(img);
-  item.appendChild(textDiv);
-  
+  item.innerHTML = `
+    <div class="shopping-check"></div>
+    <img class="shopping-img" src="${p.img}" onerror="this.style.display='none'" alt="${p.product_name}">
+    <div><div class="shopping-name">${p.product_name}</div><div class="shopping-by">Added by you</div></div>
+  `;
   section.appendChild(item);
   closeItemSearch();
   showToast(`✅ ${p.product_name.split(' ').slice(0,3).join(' ')} added!`);
