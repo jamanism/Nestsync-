@@ -488,6 +488,8 @@ body {
 
 .nav-dot { display: none; }
 .nav-item.active .nav-label { color: #FF6B2C; }
+.nav-item .nav-icon { color: white; }
+.nav-item.active .nav-icon { color: #FF6B2C; }
 
 /* ============ CARDS ============ */
 .card {
@@ -1357,6 +1359,159 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
 @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 .fade-up { animation: fadeUp 0.4s ease both; }
 
+/* ============ DINNER SUGGESTIONS ============ */
+.dinner-card {
+  background: var(--card-bg);
+  border-radius: 14px;
+  padding: 0.6rem 0.85rem 0.65rem;
+  margin-bottom: 0.75rem;
+}
+.dinner-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+.dinner-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-light);
+}
+.dinner-add-btn {
+  font-family: var(--font);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.35rem 0.85rem;
+  border-radius: 20px;
+  border: 2px solid var(--clay);
+  background: transparent;
+  color: var(--clay);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.dinner-add-btn:hover { background: var(--clay); color: white; }
+
+.dinner-list { display: flex; flex-direction: column; gap: 0.4rem; }
+
+.dinner-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--sand-light);
+  border-radius: 12px;
+  padding: 0.55rem 0.75rem;
+  transition: all 0.2s;
+  animation: fadeSlideIn 0.3s ease;
+}
+.dinner-item.winner {
+  background: linear-gradient(135deg, #FFF0E8, #FFE4D0);
+  border: 1.5px solid var(--clay-light);
+}
+@keyframes fadeSlideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+.dinner-av {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; font-weight: 700; color: white;
+  flex-shrink: 0;
+}
+.dinner-item-info { flex: 1; min-width: 0; }
+.dinner-item-name { font-size: 0.82rem; font-weight: 600; color: var(--text); }
+.dinner-item-by { font-size: 0.65rem; color: var(--text-light); }
+
+.dinner-vote-area { display: flex; align-items: center; gap: 0.5rem; }
+.dinner-votes { font-size: 0.8rem; font-weight: 700; color: var(--text-light); min-width: 16px; text-align: center; }
+.dinner-vote-btn {
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all 0.2s;
+  color: var(--text-light);
+}
+.dinner-vote-btn:hover { border-color: var(--clay); color: var(--clay); }
+.dinner-vote-btn.voted { background: var(--clay); border-color: var(--clay); color: white; }
+
+.dinner-winner-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: var(--clay);
+  color: white;
+  padding: 0.15rem 0.5rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dinner-empty {
+  text-align: center;
+  padding: 1.25rem 0 0.5rem;
+}
+
+.dinner-who-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+.dinner-who {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+  opacity: 0.45;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.dinner-who.active { opacity: 1; transform: scale(1.1); }
+.dinner-who-av {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; font-weight: 700; color: white;
+}
+
+/* ============ CALENDAR CONNECT ============ */
+.cal-connect-row { align-items: center; gap: 0.75rem; }
+.cal-status-text { font-size: 0.72rem; color: var(--text-light); margin-top: 2px; }
+.cal-status-text.connected { color: var(--sage); font-weight: 600; }
+.cal-connect-btn {
+  font-family: var(--font); font-size: 0.78rem; font-weight: 600;
+  padding: 0.4rem 0.9rem; border-radius: 20px;
+  border: 2px solid var(--clay); background: transparent; color: var(--clay);
+  cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 0;
+}
+.cal-connect-btn:hover { background: var(--clay); color: white; }
+.cal-connect-btn.connected { border-color: var(--sage); color: var(--sage); }
+.cal-connect-btn.connected:hover { background: var(--sage); color: white; }
+.cal-sheet-logo { width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
+.cal-sheet-title { font-size: 1.2rem; font-weight: 700; text-align: center; margin-bottom: 0.4rem; }
+.cal-sheet-sub { font-size: 0.85rem; color: var(--text-light); text-align: center; margin-bottom: 1.5rem; line-height: 1.5; }
+.cal-perms-list { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.5rem; }
+.cal-perm-item { display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; }
+.cal-perm-check { width: 20px; height: 20px; border-radius: 50%; background: var(--sage); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem; font-weight: 700; flex-shrink: 0; }
+.cal-auth-btn { width: 100%; padding: 1rem; border-radius: 14px; border: none; font-size: 1rem; font-weight: 600; font-family: var(--font); cursor: pointer; transition: all 0.2s; margin-bottom: 0.75rem; }
+.cal-auth-btn.google { background: #4285F4; color: white; }
+.cal-auth-btn.google:hover { background: #3367D6; }
+.cal-auth-btn.apple { background: #000; color: white; }
+body.dark .cal-auth-btn.apple { background: #fff; color: #000; }
+.cal-cancel-btn { width: 100%; padding: 0.75rem; border-radius: 14px; border: none; background: transparent; font-size: 0.9rem; color: var(--text-light); font-family: var(--font); cursor: pointer; }
+.cal-connected-state { text-align: center; padding: 0.5rem 0 1rem; }
+.cal-connected-label { font-size: 1rem; font-weight: 700; color: var(--sage); margin-bottom: 0.3rem; }
+.cal-connected-email { font-size: 0.82rem; color: var(--text-light); margin-bottom: 1.5rem; }
+.cal-disconnect-btn { background: transparent; border: 2px solid var(--alert); color: var(--alert); border-radius: 14px; padding: 0.75rem 1.5rem; font-size: 0.9rem; font-weight: 600; font-family: var(--font); cursor: pointer; transition: all 0.2s; }
+.cal-disconnect-btn:hover { background: var(--alert); color: white; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 1s linear infinite; display: inline-block; }
+
 /* ============ TOAST ============ */
 .toast {
   position: fixed;
@@ -1501,81 +1656,53 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
         <button class="alert-dismiss" onclick="this.closest('.alert-banner').style.display='none'">Dismiss</button>
       </div>
 
-      <!-- Add to Home Screen Banner -->
-      <div class="home-screen-banner fade-up" id="addHomeBanner">
-        <div class="hsb-icon">📱</div>
-        <div class="hsb-text">
-          <div class="hsb-title">Add to Home Screen</div>
-          <div class="hsb-sub">Install NestSync like a native app</div>
+      <!-- Dinner Suggestions -->
+      <div class="dinner-card fade-up">
+        <div class="dinner-header">
+          <div class="dinner-title-row">
+            <svg width="18" height="18" viewBox="0 0 100 100" fill="none" style="display:block;stroke:currentColor;flex-shrink:0"><path d="M20 10 L20 55 Q20 70 35 75 L35 90" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path d="M50 10 L50 35 Q50 55 65 55 L65 10" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><line x1="65" y1="55" x2="65" y2="90" stroke-width="7" stroke-linecap="round"/><line x1="10" y1="35" x2="30" y2="35" stroke-width="7" stroke-linecap="round"/></svg>
+            <span class="dinner-label">What's for Dinner?</span>
+          </div>
+          <button class="dinner-add-btn" onclick="openDinnerInput()">+ Suggest</button>
         </div>
-        <button class="hsb-btn" onclick="showInstallInstructions()">Install</button>
-        <button class="hsb-close" onclick="document.getElementById('addHomeBanner').style.display='none'">✕</button>
+
+        <div class="dinner-list" id="dinnerList">
+          <!-- rendered by JS -->
+        </div>
+
+        <div class="dinner-empty" id="dinnerEmpty">
+          <div style="font-size:2rem;margin-bottom:0.4rem">🍽️</div>
+          <div style="font-size:0.85rem;color:var(--text-light)">No suggestions yet — be the first!</div>
+        </div>
       </div>
 
-      <!-- Widget Previews -->
-      <div class="widget-preview-section fade-up">
-        <div class="widget-preview-title">📱 Home Screen Widgets Preview</div>
-        <div class="widgets-row">
-          <div class="widget-card widget-small">
-            <div class="widget-schedule">
-              <div class="widget-title">Today</div>
-              <div class="widget-event">
-                <div class="widget-event-time">8:00 AM</div>
-                <div class="widget-event-name">School Drop-off</div>
-              </div>
-              <div class="widget-event">
-                <div class="widget-event-time">4:00 PM</div>
-                <div class="widget-event-name">Soccer Practice</div>
-              </div>
-              <div class="widget-event">
-                <div class="widget-event-time">6:30 PM</div>
-                <div class="widget-event-name">Family Dinner</div>
-              </div>
-              <div class="widget-logo">NestSync</div>
-            </div>
+      <!-- Dinner Input Sheet -->
+      <div class="overlay" id="dinnerOverlay" onclick="closeDinnerInput()"></div>
+      <div class="bottom-sheet" id="dinnerSheet">
+        <div class="sheet-handle"></div>
+        <div style="padding:0 1.25rem 1.5rem">
+          <div style="font-size:1.1rem;font-weight:700;margin-bottom:1.25rem">Suggest Tonight's Dinner</div>
+          <input class="field-input" id="dinnerInput" placeholder="e.g. Tacos, Pasta, Pizza..." maxlength="40" oninput="updateDinnerSubmit()"/>
+          <div class="field-label" style="margin-top:1rem">Suggesting as</div>
+          <div class="dinner-who-row" id="dinnerWhoRow">
+            <div class="dinner-who active" data-name="Sarah" data-color="#C97B52" onclick="selectDinnerWho(this)"><div class="dinner-who-av" style="background:#C97B52">S</div></div>
+            <div class="dinner-who" data-name="Marcus" data-color="#8B7EA8" onclick="selectDinnerWho(this)"><div class="dinner-who-av" style="background:#8B7EA8">M</div></div>
+            <div class="dinner-who" data-name="Lily" data-color="#7A9E87" onclick="selectDinnerWho(this)"><div class="dinner-who-av" style="background:#7A9E87">L</div></div>
+            <div class="dinner-who" data-name="Jake" data-color="#5C8FBF" onclick="selectDinnerWho(this)"><div class="dinner-who-av" style="background:#5C8FBF">J</div></div>
           </div>
-          <div class="widget-card widget-small">
-            <div class="widget-chores">
-              <div class="widget-title">My Tasks</div>
-              <div class="widget-chore-item">
-                <div class="widget-chore-dot" style="background:rgba(255,255,255,0.3)"></div>
-                <div class="widget-chore-name widget-chore-done">Unload dishwasher</div>
-              </div>
-              <div class="widget-chore-item">
-                <div class="widget-chore-dot"></div>
-                <div class="widget-chore-name">Vacuum living room</div>
-              </div>
-              <div class="widget-chore-item">
-                <div class="widget-chore-dot"></div>
-                <div class="widget-chore-name">Take out trash</div>
-              </div>
-              <div class="widget-logo">NestSync</div>
-            </div>
-          </div>
-          <div class="widget-card widget-medium">
-            <div class="widget-schedule" style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
-              <div>
-                <div class="widget-title">Schedule</div>
-                <div class="widget-event"><div class="widget-event-time">8:00 AM</div><div class="widget-event-name">Drop-off</div></div>
-                <div class="widget-event"><div class="widget-event-time">3:30 PM</div><div class="widget-event-name">Pickup</div></div>
-                <div class="widget-event"><div class="widget-event-time">6:30 PM</div><div class="widget-event-name">Dinner</div></div>
-              </div>
-              <div style="background:rgba(255,255,255,0.07);border-radius:12px;padding:0.5rem">
-                <div class="widget-title">Tasks</div>
-                <div class="widget-chore-item"><div class="widget-chore-dot" style="background:rgba(255,255,255,0.3)"></div><div class="widget-chore-name" style="font-size:0.65rem;text-decoration:line-through;opacity:0.5">Dishes</div></div>
-                <div class="widget-chore-item"><div class="widget-chore-dot"></div><div class="widget-chore-name" style="font-size:0.65rem">Vacuum</div></div>
-                <div class="widget-chore-item"><div class="widget-chore-dot"></div><div class="widget-chore-name" style="font-size:0.65rem">Trash</div></div>
-              </div>
-              <div class="widget-logo" style="bottom:8px;right:12px">NestSync</div>
-            </div>
-          </div>
+          <button class="btn-primary" id="dinnerSubmitBtn" onclick="submitDinnerSuggestion()" disabled style="margin-top:1.25rem">Add Suggestion</button>
         </div>
       </div>
+
+      <!-- Add to Home Screen Banner -->
+
+
+      <!-- Widget Previews -->
 
       <!-- Schedule -->
       <div class="card fade-up">
         <div class="card-header">
-          <div class="card-title"><div class="card-icon icon-clay">📅</div> Today's Schedule</div>
+          <div class="card-title"><svg width="16" height="16" viewBox="0 0 100 100" fill="none" style="display:inline-block;vertical-align:middle;margin-right:6px;stroke:currentColor"><rect x="8" y="18" width="84" height="74" rx="10" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><line x1="8" y1="42" x2="92" y2="42" stroke-width="8" stroke-linecap="round"/><line x1="32" y1="8" x2="32" y2="28" stroke-width="8" stroke-linecap="round"/><line x1="68" y1="8" x2="68" y2="28" stroke-width="8" stroke-linecap="round"/></svg> Today's Schedule</div>
           <button class="card-action" onclick="switchTab('family-time')">View All →</button>
         </div>
         <div class="schedule-list">
@@ -1589,7 +1716,7 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
       <!-- Chores -->
       <div class="card fade-up">
         <div class="card-header">
-          <div class="card-title"><div class="card-icon icon-sage">🧹</div> Chores</div>
+          <div class="card-title"><svg width="16" height="16" viewBox="0 0 100 100" fill="none" style="display:inline-block;vertical-align:middle;margin-right:6px;stroke:currentColor"><rect x="15" y="8" width="70" height="84" rx="10" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><line x1="30" y1="35" x2="70" y2="35" stroke-width="7" stroke-linecap="round"/><line x1="30" y1="50" x2="70" y2="50" stroke-width="7" stroke-linecap="round"/><line x1="30" y1="65" x2="55" y2="65" stroke-width="7" stroke-linecap="round"/></svg> Chores</div>
           <button class="card-action" onclick="switchTab('tasks')">View All →</button>
         </div>
         <div class="chore-item done" onclick="toggleChore(this)"><div class="chore-check">✓</div><span class="chore-name">Unload dishwasher</span><span class="chore-assignee" style="background:#7A9E87">Lily</span></div>
@@ -1601,14 +1728,14 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
       <!-- Location -->
       <div class="card fade-up">
         <div class="card-header">
-          <div class="card-title"><div class="card-icon icon-sage">📍</div> Family Location</div>
+          <div class="card-title"><svg width="16" height="16" viewBox="0 0 100 100" fill="none" style="display:inline-block;vertical-align:middle;margin-right:6px;stroke:currentColor"><circle cx="50" cy="38" r="26" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><line x1="50" y1="64" x2="50" y2="95" stroke-width="5" stroke-linecap="round"/><ellipse cx="50" cy="96" rx="6" ry="3" stroke-width="4"/></svg> Family Location</div>
           <button class="card-action">Privacy</button>
         </div>
         <div class="location-map">
           <div class="map-grid"></div>
           <div class="map-road-h"></div>
           <div class="map-road-v"></div>
-          <div class="map-pin pin-home"><div class="pin-bubble home">🏠</div></div>
+          <div class="map-pin pin-home"><div class="pin-bubble home"></div></div>
           <div class="map-pin pin-mom"><div class="pin-bubble mom-pin"><span>S</span></div><div class="pin-label">Sarah</div></div>
           <div class="map-pin pin-kid"><div class="pin-bubble kid-pin"><span>L</span></div><div class="pin-label">Lily</div></div>
         </div>
@@ -1620,30 +1747,12 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
       </div>
 
       <!-- Harmony Score -->
-      <div class="card fade-up">
-        <div class="card-header">
-          <div class="card-title"><div class="card-icon icon-dusk">✨</div> Family Harmony Score</div>
-          <button class="card-action">This week →</button>
-        </div>
-        <div class="insight-score">
-          <div class="score-ring">
-            <svg viewBox="0 0 68 68"><circle class="ring-bg" cx="34" cy="34" r="28"/><circle class="ring-fill" cx="34" cy="34" r="28"/></svg>
-            <div class="score-number"><span class="score-num">75</span><span class="score-lbl">/ 100</span></div>
-          </div>
-          <div class="score-details">
-            <div class="score-title">Good week — one conflict</div>
-            <div class="breakdown-row"><span class="breakdown-label">Chores</span><div class="mini-bar"><div class="mini-fill" style="width:80%;background:var(--sage)"></div></div><span style="font-size:0.75rem">80%</span></div>
-            <div class="breakdown-row"><span class="breakdown-label">Schedule</span><div class="mini-bar"><div class="mini-fill" style="width:65%;background:var(--clay)"></div></div><span style="font-size:0.75rem">65%</span></div>
-          </div>
-        </div>
-        <div class="tip"><span class="tip-icon">💡</span><div class="tip-text"><strong>AI Tip:</strong> Move Jake's dentist to Thursday 3 PM — no conflicts that day.</div></div>
-        <div class="tip"><span class="tip-icon">🛒</span><div class="tip-text"><strong>Grocery:</strong> Marcus passes Whole Foods on the way home. 5 items on the list.</div></div>
-      </div>
+
     </div>
 
     <!-- FAMILY TIME TAB -->
     <div class="tab-screen hidden" id="tab-family-time">
-      <div class="screen-title">📅 Family Time</div>
+      <div class="screen-title"><svg width="20" height="20" viewBox="0 0 100 100" fill="none" style="display:inline-block;vertical-align:middle;margin-right:8px;stroke:currentColor"><rect x="8" y="18" width="84" height="74" rx="10" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><line x1="8" y1="42" x2="92" y2="42" stroke-width="7" stroke-linecap="round"/><line x1="32" y1="8" x2="32" y2="28" stroke-width="7" stroke-linecap="round"/><line x1="68" y1="8" x2="68" y2="28" stroke-width="7" stroke-linecap="round"/></svg> Family Time</div>
 
       <div class="card">
         <div class="calendar-header">
@@ -1681,12 +1790,12 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
         </div>
       </div>
 
-      <button class="add-event-fab" onclick="showToast('➕ Add event coming soon!')">+</button>
+      <button class="add-event-fab" onclick="showToast('Add event coming soon!')">+</button>
     </div>
 
     <!-- TASKS TAB -->
     <div class="tab-screen hidden" id="tab-tasks">
-      <div class="screen-title">🧹 Tasks</div>
+      <div class="screen-title"><svg width="20" height="20" viewBox="0 0 100 100" fill="none" style="display:inline-block;vertical-align:middle;margin-right:8px;stroke:currentColor"><rect x="15" y="8" width="70" height="84" rx="10" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><line x1="30" y1="35" x2="70" y2="35" stroke-width="6" stroke-linecap="round"/><line x1="30" y1="50" x2="70" y2="50" stroke-width="6" stroke-linecap="round"/><line x1="30" y1="65" x2="55" y2="65" stroke-width="6" stroke-linecap="round"/></svg> Tasks</div>
 
       <div class="tasks-filter">
         <button class="filter-chip active" onclick="filterTasks(this,'all')">All</button>
@@ -1745,13 +1854,13 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
         </div>
       </div>
 
-      <button class="add-event-fab" onclick="showToast('➕ Add task coming soon!')">+</button>
+      <button class="add-event-fab" onclick="showToast('Add task coming soon!')">+</button>
     </div>
 
     <!-- SHOPPING TAB -->
     <div class="tab-screen hidden" id="tab-shopping">
       <div class="shopping-header-card">
-        <div style="font-size:1rem;font-weight:700">🛒 Shopping List</div>
+        <div style="font-size:1rem;font-weight:700;display:flex;align-items:center;gap:6px"><svg width="18" height="18" viewBox="0 0 100 100" fill="none" style="display:block;stroke:currentColor"><rect x="10" y="45" width="80" height="47" rx="8" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><line x1="10" y1="60" x2="90" y2="60" stroke-width="5" stroke-linecap="round"/><line x1="10" y1="75" x2="90" y2="75" stroke-width="5" stroke-linecap="round"/><line x1="35" y1="45" x2="35" y2="92" stroke-width="5" stroke-linecap="round"/><line x1="55" y1="45" x2="55" y2="92" stroke-width="5" stroke-linecap="round"/><line x1="75" y1="45" x2="75" y2="92" stroke-width="5" stroke-linecap="round"/><path d="M30 45 L20 20" stroke-width="7" stroke-linecap="round"/><path d="M70 45 L80 20" stroke-width="7" stroke-linecap="round"/><path d="M20 20 Q50 5 80 20" stroke-width="7" stroke-linecap="round" fill="none"/></svg> Shopping List</div>
         <div class="shopping-stats">
           <div><div class="shopping-stat-num">8</div><div class="shopping-stat-lbl">Items</div></div>
           <div><div class="shopping-stat-num">3</div><div class="shopping-stat-lbl">Got it</div></div>
@@ -1816,7 +1925,7 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
 
     <!-- MEMBERS TAB -->
     <div class="tab-screen hidden" id="tab-members">
-      <div class="screen-title">👥 Members</div>
+      <div class="screen-title"><svg width="20" height="20" viewBox="0 0 100 100" fill="none" style="display:inline-block;vertical-align:middle;margin-right:8px;stroke:currentColor"><circle cx="50" cy="28" r="14" stroke-width="6"/><path d="M18 85 Q18 60 50 60 Q82 60 82 85" stroke-width="6" stroke-linecap="round" fill="none"/><circle cx="22" cy="33" r="10" stroke-width="5"/><path d="M4 78 Q4 58 22 58 Q30 58 36 63" stroke-width="5" stroke-linecap="round" fill="none"/><circle cx="78" cy="33" r="10" stroke-width="5"/><path d="M96 78 Q96 58 78 58 Q70 58 64 63" stroke-width="5" stroke-linecap="round" fill="none"/></svg> Members</div>
 
       <div class="family-code-card">
         <div>
@@ -1832,28 +1941,28 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
           <div class="member-name-lg">Sarah</div>
           <div class="member-role-lg">Parent · Admin</div>
           <div class="member-tasks-lg">1 task today</div>
-          <div class="member-location-row">📍 Downtown Office</div>
+          <div class="member-location-row">Downtown Office</div>
         </div>
         <div class="member-card" onclick="showMemberDetail('Marcus','Parent','marcus@email.com','#7A9E87')">
           <div class="member-avatar-lg" style="background:#7A9E87">M</div>
           <div class="member-name-lg">Marcus</div>
           <div class="member-role-lg">Parent</div>
           <div class="member-tasks-lg">1 task today</div>
-          <div class="member-location-row">📍 Home</div>
+          <div class="member-location-row">Home</div>
         </div>
         <div class="member-card" onclick="showMemberDetail('Lily','Kid','','#8B7EA8')">
           <div class="member-avatar-lg" style="background:#8B7EA8">L<div class="member-online"></div></div>
           <div class="member-name-lg">Lily</div>
           <div class="member-role-lg">Kid</div>
           <div class="member-tasks-lg">2 tasks today</div>
-          <div class="member-location-row">📍 School</div>
+          <div class="member-location-row">School</div>
         </div>
         <div class="member-card" onclick="showMemberDetail('Jake','Kid','','#5A8BAA')">
           <div class="member-avatar-lg" style="background:#5A8BAA">J<div class="member-online"></div></div>
           <div class="member-name-lg">Jake</div>
           <div class="member-role-lg">Kid</div>
           <div class="member-tasks-lg">1 task today</div>
-          <div class="member-location-row">📍 School</div>
+          <div class="member-location-row">School</div>
         </div>
       </div>
 
@@ -1902,47 +2011,90 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
       </div>
 
       <div class="settings-section">
+        <div class="settings-section-title">Calendar Connections</div>
+        <div class="settings-group">
+
+          <!-- Google Calendar -->
+          <div class="settings-row cal-connect-row" id="googleCalRow">
+            <span class="settings-row-icon">
+              <svg width="18" height="18" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M11.7 35.1L6 40.8V8.4C6 7.1 7.1 6 8.4 6h31.2C40.9 6 42 7.1 42 8.4v27.6c0 1.3-1.1 2.4-2.4 2.4H11.7z" stroke="currentColor" stroke-width="3" fill="none"/>
+                <line x1="6" y1="16" x2="42" y2="16" stroke="currentColor" stroke-width="3"/>
+                <line x1="18" y1="6" x2="18" y2="16" stroke="currentColor" stroke-width="3"/>
+                <line x1="30" y1="6" x2="30" y2="16" stroke="currentColor" stroke-width="3"/>
+              </svg>
+            </span>
+            <div style="flex:1">
+              <div class="settings-row-label">Google Calendar</div>
+              <div class="cal-status-text" id="googleCalStatus">Not connected</div>
+            </div>
+            <button class="cal-connect-btn" id="googleCalBtn" onclick="connectCalendar('google')">Connect</button>
+          </div>
+
+          <!-- Apple Calendar -->
+          <div class="settings-row cal-connect-row" id="appleCalRow">
+            <span class="settings-row-icon">
+              <svg width="18" height="18" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="6" y="10" width="36" height="32" rx="4" stroke="currentColor" stroke-width="3" fill="none"/>
+                <line x1="6" y1="20" x2="42" y2="20" stroke="currentColor" stroke-width="3"/>
+                <line x1="16" y1="6" x2="16" y2="14" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                <line x1="32" y1="6" x2="32" y2="14" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                <circle cx="24" cy="31" r="4" fill="currentColor"/>
+              </svg>
+            </span>
+            <div style="flex:1">
+              <div class="settings-row-label">Apple Calendar</div>
+              <div class="cal-status-text" id="appleCalStatus">Not connected</div>
+            </div>
+            <button class="cal-connect-btn" id="appleCalBtn" onclick="connectCalendar('apple')">Connect</button>
+          </div>
+
+        </div>
+        <div style="font-size:0.72rem;color:var(--text-light);padding:0.5rem 0.25rem">Events from connected calendars will sync automatically to Family Time.</div>
+      </div>
+
+      <div class="settings-section">
         <div class="settings-section-title">Account</div>
         <div class="settings-group">
-          <div class="settings-row"><span class="settings-row-icon">👤</span><span class="settings-row-label">Edit Profile</span><span class="settings-row-arrow">›</span></div>
-          <div class="settings-row"><span class="settings-row-icon">🔑</span><span class="settings-row-label">Change Password</span><span class="settings-row-arrow">›</span></div>
-          <div class="settings-row"><span class="settings-row-icon">📧</span><span class="settings-row-label">Change Email</span><span class="settings-row-arrow">›</span></div>
+          <div class="settings-row"><span class="settings-row-icon"></span><span class="settings-row-label">Edit Profile</span><span class="settings-row-arrow">›</span></div>
+          <div class="settings-row"><span class="settings-row-icon"></span><span class="settings-row-label">Change Password</span><span class="settings-row-arrow">›</span></div>
+          <div class="settings-row"><span class="settings-row-icon"></span><span class="settings-row-label">Change Email</span><span class="settings-row-arrow">›</span></div>
         </div>
       </div>
 
       <div class="settings-section">
         <div class="settings-section-title">Family</div>
         <div class="settings-group">
-          <div class="settings-row"><span class="settings-row-icon">👥</span><span class="settings-row-label">Manage Members</span><span class="settings-row-arrow">›</span></div>
-          <div class="settings-row"><span class="settings-row-icon">🏡</span><span class="settings-row-label">Family Name</span><span class="settings-row-value" id="settingsFamilyName">The Thompsons</span><span class="settings-row-arrow">›</span></div>
-          <div class="settings-row"><span class="settings-row-icon">🔗</span><span class="settings-row-label">Invite Code</span><span class="settings-row-value" id="settingsInviteCode">NS-4821</span><span class="settings-row-arrow">›</span></div>
+          <div class="settings-row"><span class="settings-row-icon"><svg width="18" height="18" viewBox="0 0 100 100" fill="none" style="display:block;stroke:currentColor"><circle cx="50" cy="28" r="14" stroke-width="6"/><path d="M18 85 Q18 60 50 60 Q82 60 82 85" stroke-width="6" stroke-linecap="round" fill="none"/><circle cx="22" cy="33" r="10" stroke-width="5"/><path d="M4 78 Q4 58 22 58 Q30 58 36 63" stroke-width="5" stroke-linecap="round" fill="none"/><circle cx="78" cy="33" r="10" stroke-width="5"/><path d="M96 78 Q96 58 78 58 Q70 58 64 63" stroke-width="5" stroke-linecap="round" fill="none"/></svg></span><span class="settings-row-label">Manage Members</span><span class="settings-row-arrow">›</span></div>
+          <div class="settings-row"><span class="settings-row-icon"></span><span class="settings-row-label">Family Name</span><span class="settings-row-value" id="settingsFamilyName">The Thompsons</span><span class="settings-row-arrow">›</span></div>
+          <div class="settings-row"><span class="settings-row-icon"></span><span class="settings-row-label">Invite Code</span><span class="settings-row-value" id="settingsInviteCode">NS-4821</span><span class="settings-row-arrow">›</span></div>
         </div>
       </div>
 
       <div class="settings-section">
         <div class="settings-section-title">Notifications</div>
         <div class="settings-group">
-          <div class="settings-row"><span class="settings-row-icon">📍</span><span class="settings-row-label">Location & Safety Alerts</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
-          <div class="settings-row"><span class="settings-row-icon">📅</span><span class="settings-row-label">Schedule Alerts</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
-          <div class="settings-row"><span class="settings-row-icon">🧹</span><span class="settings-row-label">Chore Reminders</span><div class="toggle" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
-          <div class="settings-row"><span class="settings-row-icon">🌙</span><span class="settings-row-label">Quiet Hours (10pm–7am)</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
+          <div class="settings-row"><span class="settings-row-icon"></span><span class="settings-row-label">Location & Safety Alerts</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
+          <div class="settings-row"><span class="settings-row-icon"><svg width="18" height="18" viewBox="0 0 100 100" fill="none" style="display:block;stroke:currentColor"><rect x="8" y="18" width="84" height="74" rx="10" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><line x1="8" y1="42" x2="92" y2="42" stroke-width="8" stroke-linecap="round"/><line x1="32" y1="8" x2="32" y2="28" stroke-width="8" stroke-linecap="round"/><line x1="68" y1="8" x2="68" y2="28" stroke-width="8" stroke-linecap="round"/></svg></span><span class="settings-row-label">Schedule Alerts</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
+          <div class="settings-row"><span class="settings-row-icon"><svg width="18" height="18" viewBox="0 0 100 100" fill="none" style="display:block;stroke:currentColor"><rect x="15" y="8" width="70" height="84" rx="10" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><line x1="30" y1="35" x2="70" y2="35" stroke-width="7" stroke-linecap="round"/><line x1="30" y1="50" x2="70" y2="50" stroke-width="7" stroke-linecap="round"/><line x1="30" y1="65" x2="55" y2="65" stroke-width="7" stroke-linecap="round"/></svg></span><span class="settings-row-label">Chore Reminders</span><div class="toggle" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
+          <div class="settings-row"><span class="settings-row-icon"></span><span class="settings-row-label">Quiet Hours (10pm–7am)</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
         </div>
       </div>
 
       <div class="settings-section">
         <div class="settings-section-title">Privacy & Safety</div>
         <div class="settings-group">
-          <div class="settings-row"><span class="settings-row-icon">📍</span><span class="settings-row-label">Share My Location</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
-          <div class="settings-row"><span class="settings-row-icon">👁</span><span class="settings-row-label">Location Precision</span><span class="settings-row-value">Exact</span><span class="settings-row-arrow">›</span></div>
-          <div class="settings-row"><span class="settings-row-icon">📤</span><span class="settings-row-label">Export My Data</span><span class="settings-row-arrow">›</span></div>
+          <div class="settings-row"><span class="settings-row-icon"></span><span class="settings-row-label">Share My Location</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
+          <div class="settings-row"><span class="settings-row-icon"></span><span class="settings-row-label">Location Precision</span><span class="settings-row-value">Exact</span><span class="settings-row-arrow">›</span></div>
+          <div class="settings-row"><span class="settings-row-icon"></span><span class="settings-row-label">Export My Data</span><span class="settings-row-arrow">›</span></div>
         </div>
       </div>
 
       <div class="settings-section">
         <div class="settings-section-title">App Preferences</div>
         <div class="settings-group">
-          <div class="settings-row"><span class="settings-row-icon">🌙</span><span class="settings-row-label">Dark Mode</span><div class="toggle" id="darkToggle" onclick="toggleDarkMode()"><div class="toggle-thumb"></div></div></div>
-          <div class="settings-row"><span class="settings-row-icon">📅</span><span class="settings-row-label">Week Starts On</span><span class="settings-row-value">Sunday</span><span class="settings-row-arrow">›</span></div>
+          <div class="settings-row"><span class="settings-row-icon"></span><span class="settings-row-label">Dark Mode</span><div class="toggle" id="darkToggle" onclick="toggleDarkMode()"><div class="toggle-thumb"></div></div></div>
+          <div class="settings-row"><span class="settings-row-icon"><svg width="18" height="18" viewBox="0 0 100 100" fill="none" style="display:block;stroke:currentColor"><rect x="8" y="18" width="84" height="74" rx="10" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><line x1="8" y1="42" x2="92" y2="42" stroke-width="8" stroke-linecap="round"/><line x1="32" y1="8" x2="32" y2="28" stroke-width="8" stroke-linecap="round"/><line x1="68" y1="8" x2="68" y2="28" stroke-width="8" stroke-linecap="round"/></svg></span><span class="settings-row-label">Week Starts On</span><span class="settings-row-value">Sunday</span><span class="settings-row-arrow">›</span></div>
           <div class="settings-row"><span class="settings-row-icon">📏</span><span class="settings-row-label">Distance Units</span><span class="settings-row-value">Miles</span><span class="settings-row-arrow">›</span></div>
         </div>
       </div>
@@ -1950,7 +2102,7 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
       <div class="settings-section">
         <div class="settings-section-title">Subscription</div>
         <div class="settings-group">
-          <div class="settings-row"><span class="settings-row-icon">⭐</span><span class="settings-row-label">Current Plan</span><span class="settings-row-value">Free</span><span class="settings-row-arrow">›</span></div>
+          <div class="settings-row"><span class="settings-row-icon"></span><span class="settings-row-label">Current Plan</span><span class="settings-row-value">Free</span><span class="settings-row-arrow">›</span></div>
           <div class="settings-row"><span class="settings-row-icon">💳</span><span class="settings-row-label">Billing & Payment</span><span class="settings-row-arrow">›</span></div>
           <div class="settings-row" style="color:var(--alert)"><span class="settings-row-icon">🗑</span><span class="settings-row-label" style="color:var(--alert)">Delete Account</span><span class="settings-row-arrow" style="color:var(--alert)">›</span></div>
         </div>
@@ -1963,12 +2115,22 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
 
   <!-- BOTTOM NAV -->
   <div class="bottom-nav">
-    <div class="nav-item active" onclick="switchTab('dashboard')"><span class="nav-icon">🏠</span><span class="nav-label">Dashboard</span><div class="nav-dot"></div></div>
-    <div class="nav-item" onclick="switchTab('family-time')"><span class="nav-icon">📅</span><span class="nav-label">Family Time</span><div class="nav-dot"></div></div>
-    <div class="nav-item" onclick="switchTab('tasks')"><span class="nav-icon">🧹</span><span class="nav-label">Tasks</span><div class="nav-dot"></div></div>
-    <div class="nav-item" onclick="switchTab('shopping')"><span class="nav-icon">🛒</span><span class="nav-label">Shopping</span><div class="nav-dot"></div></div>
-    <div class="nav-item" onclick="switchTab('members')"><span class="nav-icon">👥</span><span class="nav-label">Members</span><div class="nav-dot"></div></div>
+    <div class="nav-item active" onclick="switchTab('dashboard')"><span class="nav-icon"><svg width="22" height="22" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;stroke:currentColor"><path d="M15 50 L15 85 Q15 90 20 90 L40 90 L40 62 Q40 57 45 57 L55 57 Q60 57 60 62 L60 90 L80 90 Q85 90 85 85 L85 50" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/><polyline points="5,55 50,15 95,55" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></span><div class="nav-dot"></div></div>
+    <div class="nav-item" onclick="switchTab('family-time')"><span class="nav-icon"><svg width="22" height="22" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;stroke:currentColor"><rect x="8" y="18" width="84" height="74" rx="10" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><line x1="8" y1="42" x2="92" y2="42" stroke-width="7" stroke-linecap="round"/><line x1="32" y1="8" x2="32" y2="28" stroke-width="7" stroke-linecap="round"/><line x1="68" y1="8" x2="68" y2="28" stroke-width="7" stroke-linecap="round"/></svg></span><div class="nav-dot"></div></div>
+    <div class="nav-item" onclick="switchTab('tasks')"><span class="nav-icon"><svg width="22" height="22" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;stroke:currentColor"><rect x="15" y="8" width="70" height="84" rx="10" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><line x1="30" y1="35" x2="70" y2="35" stroke-width="6" stroke-linecap="round"/><line x1="30" y1="50" x2="70" y2="50" stroke-width="6" stroke-linecap="round"/><line x1="30" y1="65" x2="55" y2="65" stroke-width="6" stroke-linecap="round"/><polyline points="20,35 26,41 36,28" stroke-width="0" fill="none"/></svg></span><div class="nav-dot"></div></div>
+    <div class="nav-item" onclick="switchTab('shopping')"><span class="nav-icon"><svg width="22" height="22" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;stroke:currentColor"><rect x="10" y="45" width="80" height="47" rx="8" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><line x1="30" y1="45" x2="20" y2="20" stroke-width="7" stroke-linecap="round"/><line x1="70" y1="45" x2="80" y2="20" stroke-width="7" stroke-linecap="round"/><line x1="10" y1="60" x2="90" y2="60" stroke-width="5" stroke-linecap="round"/><line x1="10" y1="75" x2="90" y2="75" stroke-width="5" stroke-linecap="round"/><line x1="35" y1="45" x2="35" y2="92" stroke-width="5" stroke-linecap="round"/><line x1="55" y1="45" x2="55" y2="92" stroke-width="5" stroke-linecap="round"/><line x1="75" y1="45" x2="75" y2="92" stroke-width="5" stroke-linecap="round"/><path d="M30 20 Q50 5 70 20" stroke-width="7" stroke-linecap="round" fill="none"/></svg></span><div class="nav-dot"></div></div>
+    <div class="nav-item" onclick="switchTab('members')"><span class="nav-icon"><svg width="22" height="22" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;stroke:currentColor"><circle cx="50" cy="28" r="14" stroke-width="6"/><path d="M18 85 Q18 60 50 60 Q82 60 82 85" stroke-width="6" stroke-linecap="round" fill="none"/><circle cx="22" cy="33" r="10" stroke-width="5"/><path d="M4 78 Q4 58 22 58 Q30 58 36 63" stroke-width="5" stroke-linecap="round" fill="none"/><circle cx="78" cy="33" r="10" stroke-width="5"/><path d="M96 78 Q96 58 78 58 Q70 58 64 63" stroke-width="5" stroke-linecap="round" fill="none"/></svg></span><div class="nav-dot"></div></div>
+    <div class="nav-item" onclick="switchTab('settings')"><span class="nav-icon"><svg width="22" height="22" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;stroke:currentColor"><circle cx="50" cy="50" r="14" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M50 12 L50 20 M50 80 L50 88 M12 50 L20 50 M80 50 L88 50 M23 23 L29 29 M71 71 L77 77 M77 23 L71 29 M29 71 L23 77" stroke-width="6" stroke-linecap="round"/><circle cx="50" cy="50" r="26" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 8"/></svg></span><div class="nav-dot"></div></div>
   </div>
+
+<!-- CALENDAR CONNECT SHEET -->
+<div class="overlay" id="calOverlay" onclick="closeCalSheet()"></div>
+<div class="bottom-sheet" id="calSheet">
+  <div class="sheet-handle"></div>
+  <div id="calSheetContent">
+    <!-- filled by JS -->
+  </div>
+</div>
 
 </div><!-- end mainApp -->
 
@@ -2024,8 +2186,8 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
   </div>
   <div style="font-size:0.75rem;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem">Notification Override</div>
   <div style="background:var(--card-bg);border-radius:14px;overflow:hidden;margin-bottom:1rem">
-    <div class="settings-row"><span class="settings-row-icon">📍</span><span class="settings-row-label">Location Alerts</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
-    <div class="settings-row"><span class="settings-row-icon">🧹</span><span class="settings-row-label">Chore Reminders</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
+    <div class="settings-row"><span class="settings-row-icon"></span><span class="settings-row-label">Location Alerts</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
+    <div class="settings-row"><span class="settings-row-icon"><svg width="18" height="18" viewBox="0 0 100 100" fill="none" style="display:block;stroke:currentColor"><rect x="15" y="8" width="70" height="84" rx="10" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><line x1="30" y1="35" x2="70" y2="35" stroke-width="7" stroke-linecap="round"/><line x1="30" y1="50" x2="70" y2="50" stroke-width="7" stroke-linecap="round"/><line x1="30" y1="65" x2="55" y2="65" stroke-width="7" stroke-linecap="round"/></svg></span><span class="settings-row-label">Chore Reminders</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div></div>
   </div>
   <button class="sheet-confirm" style="background:var(--alert)" onclick="closeMemberSheet();showToast('Member removed')">Remove from Family</button>
 </div>
@@ -2382,6 +2544,7 @@ window.addEventListener('load', () => {
 
   buildColorGrid();
   buildCalendar();
+  initDinnerSuggestions();
 
   // Dark mode from system
   if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -2612,7 +2775,7 @@ function buildCalendar() {
     el.textContent = d;
     if (d === today.getDate() && month === today.getMonth() && year === today.getFullYear()) el.classList.add('today');
     if (eventDays.includes(d)) el.classList.add('has-event');
-    el.onclick = () => showToast(`📅 ${months[month]} ${d}`);
+    el.onclick = () => showToast(`${months[month]} ${d}`);
     grid.appendChild(el);
   }
 
@@ -2684,7 +2847,7 @@ function closeMemberSheet() {
 function copyCode() {
   const code = document.getElementById('displayInviteCode').textContent;
   if (navigator.clipboard) navigator.clipboard.writeText(code);
-  showToast('📋 Code copied: ' + code);
+  showToast('Code copied: ' + code);
 }
 
 // ============ GROCERY SEARCH ============
@@ -2845,7 +3008,203 @@ function getEmoji(term) {
   return '🛒';
 }
 
-// ============ INSTALL ============
+// ============ DINNER SUGGESTIONS (Family Voting) ============
+const MEMBERS = [
+  { name: 'Sarah', color: '#C97B52', initial: 'S' },
+  { name: 'Marcus', color: '#8B7EA8', initial: 'M' },
+  { name: 'Lily',   color: '#7A9E87', initial: 'L' },
+  { name: 'Jake',   color: '#5C8FBF', initial: 'J' },
+];
+
+let dinnerSuggestions = [];
+let selectedDinnerWho = MEMBERS[0];
+
+function initDinnerSuggestions() {
+  renderDinnerList();
+}
+
+function renderDinnerList() {
+  const list = document.getElementById('dinnerList');
+  const empty = document.getElementById('dinnerEmpty');
+  if (!list) return;
+
+  if (!dinnerSuggestions.length) {
+    list.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  // Sort by votes desc
+  const sorted = [...dinnerSuggestions].sort((a, b) => b.votes - a.votes);
+  const maxVotes = sorted[0]?.votes || 0;
+
+  list.innerHTML = sorted.map((s, i) => {
+    const isWinner = s.votes > 0 && s.votes === maxVotes;
+    const member = MEMBERS.find(m => m.name === s.by) || MEMBERS[0];
+    return `
+      <div class="dinner-item ${isWinner ? 'winner' : ''}">
+        <div class="dinner-av" style="background:${member.color}">${member.initial}</div>
+        <div class="dinner-item-info">
+          <div class="dinner-item-name">${s.name}</div>
+          <div class="dinner-item-by">${s.by}'s pick${isWinner && s.votes > 0 ? '' : ''}</div>
+        </div>
+        ${isWinner && s.votes > 0 ? '<span class="dinner-winner-badge">Winning</span>' : ''}
+        <div class="dinner-vote-area">
+          <span class="dinner-votes">${s.votes}</span>
+          <button class="dinner-vote-btn ${s.votedByMe ? 'voted' : ''}" onclick="voteDinner(${s.id})">
+            ${s.votedByMe ? '♥' : '♡'}
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openDinnerInput() {
+  document.getElementById('dinnerInput').value = '';
+  document.getElementById('dinnerSubmitBtn').disabled = true;
+  document.getElementById('dinnerOverlay').classList.add('open');
+  document.getElementById('dinnerSheet').classList.add('open');
+  setTimeout(() => document.getElementById('dinnerInput').focus(), 350);
+}
+
+function closeDinnerInput() {
+  document.getElementById('dinnerOverlay').classList.remove('open');
+  document.getElementById('dinnerSheet').classList.remove('open');
+}
+
+function selectDinnerWho(el) {
+  document.querySelectorAll('.dinner-who').forEach(w => w.classList.remove('active'));
+  el.classList.add('active');
+  selectedDinnerWho = MEMBERS.find(m => m.name === el.dataset.name) || MEMBERS[0];
+}
+
+function updateDinnerSubmit() {
+  const val = document.getElementById('dinnerInput').value.trim();
+  document.getElementById('dinnerSubmitBtn').disabled = val.length < 2;
+}
+
+function submitDinnerSuggestion() {
+  const name = document.getElementById('dinnerInput').value.trim();
+  if (!name) return;
+  dinnerSuggestions.push({ id: Date.now(), name, by: selectedDinnerWho.name, votes: 0, votedByMe: false });
+  renderDinnerList();
+  closeDinnerInput();
+  showToast(`${selectedDinnerWho.name} suggested ${name}!`);
+}
+
+function voteDinner(id) {
+  const s = dinnerSuggestions.find(d => d.id === id);
+  if (!s) return;
+  if (s.votedByMe) { s.votes--; s.votedByMe = false; }
+  else { s.votes++; s.votedByMe = true; }
+  renderDinnerList();
+}
+
+// ============ CALENDAR CONNECTIONS ============
+const calState = { google: { connected: false, email: '' }, apple: { connected: false, email: '' } };
+
+function connectCalendar(provider) {
+  const isConnected = calState[provider].connected;
+  const content = document.getElementById('calSheetContent');
+
+  if (isConnected) {
+    // Show disconnect screen
+    const email = calState[provider].email;
+    const label = provider === 'google' ? 'Google Calendar' : 'Apple Calendar';
+    content.innerHTML = `
+      <div class="cal-connected-state">
+        <div style="font-size:3rem;margin-bottom:0.5rem">${provider === 'google' ? '📆' : '🗓'}</div>
+        <div class="cal-connected-label">Connected</div>
+        <div class="cal-connected-email">${email}</div>
+        <div style="font-size:0.82rem;color:var(--text-light);margin-bottom:1.5rem">Syncing events automatically · Last synced just now</div>
+        <button class="cal-disconnect-btn" onclick="disconnectCalendar('${provider}')">Disconnect ${label}</button>
+      </div>
+      <button class="cal-cancel-btn" onclick="closeCalSheet()">Cancel</button>
+    `;
+  } else {
+    // Show connect screen
+    const isGoogle = provider === 'google';
+    const label = isGoogle ? 'Google Calendar' : 'Apple Calendar';
+    const color = isGoogle ? '#4285F4' : '#000';
+    content.innerHTML = `
+      <div class="cal-sheet-logo" style="background:${isGoogle ? '#EAF1FF' : '#F2F2F2'}">
+        ${isGoogle
+          ? `<svg width="28" height="28" viewBox="0 0 48 48" fill="none"><path d="M11.7 35.1L6 40.8V8.4C6 7.1 7.1 6 8.4 6h31.2C40.9 6 42 7.1 42 8.4v27.6c0 1.3-1.1 2.4-2.4 2.4H11.7z" stroke="#4285F4" stroke-width="3" fill="none"/><line x1="6" y1="16" x2="42" y2="16" stroke="#4285F4" stroke-width="3"/><line x1="18" y1="6" x2="18" y2="16" stroke="#4285F4" stroke-width="3"/><line x1="30" y1="6" x2="30" y2="16" stroke="#4285F4" stroke-width="3"/></svg>`
+          : `<svg width="28" height="28" viewBox="0 0 48 48" fill="none"><rect x="6" y="10" width="36" height="32" rx="4" stroke="#555" stroke-width="3" fill="none"/><line x1="6" y1="20" x2="42" y2="20" stroke="#555" stroke-width="3"/><line x1="16" y1="6" x2="16" y2="14" stroke="#555" stroke-width="3" stroke-linecap="round"/><line x1="32" y1="6" x2="32" y2="14" stroke="#555" stroke-width="3" stroke-linecap="round"/><circle cx="24" cy="31" r="4" fill="#555"/></svg>`
+        }
+      </div>
+      <div class="cal-sheet-title">Connect ${label}</div>
+      <div class="cal-sheet-sub">NestSync will sync your calendar events to the Family Time tab. You can disconnect anytime.</div>
+      <div class="cal-perms-list">
+        <div class="cal-perm-item"><div class="cal-perm-check">✓</div><span>Read your calendar events</span></div>
+        <div class="cal-perm-item"><div class="cal-perm-check">✓</div><span>Add NestSync family events</span></div>
+        <div class="cal-perm-item"><div class="cal-perm-check">✓</div><span>Detect scheduling conflicts</span></div>
+      </div>
+      <button class="cal-auth-btn ${provider}" onclick="authorizeCalendar('${provider}')">
+        Sign in with ${isGoogle ? 'Google' : 'Apple'}
+      </button>
+      <button class="cal-cancel-btn" onclick="closeCalSheet()">Cancel</button>
+    `;
+  }
+
+  document.getElementById('calOverlay').classList.add('open');
+  document.getElementById('calSheet').classList.add('open');
+}
+
+function authorizeCalendar(provider) {
+  const btn = document.querySelector('.cal-auth-btn');
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spin">↻</span> Connecting...`;
+
+  // Simulate OAuth flow (replace with real OAuth redirect in production)
+  // Real implementation:
+  // Google: window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT&response_type=code&scope=https://www.googleapis.com/auth/calendar&access_type=offline`
+  // Apple: window.location.href = `https://appleid.apple.com/auth/authorize?client_id=YOUR_SERVICE_ID&redirect_uri=YOUR_REDIRECT&response_type=code&scope=name email`
+
+  setTimeout(() => {
+    const mockEmails = { google: 'sarah@gmail.com', apple: 'sarah@icloud.com' };
+    calState[provider].connected = true;
+    calState[provider].email = mockEmails[provider];
+    updateCalUI(provider);
+    closeCalSheet();
+    showToast(`Calendar connected successfully`);
+  }, 2000);
+}
+
+function disconnectCalendar(provider) {
+  calState[provider].connected = false;
+  calState[provider].email = '';
+  updateCalUI(provider);
+  closeCalSheet();
+  showToast(`Calendar disconnected`);
+}
+
+function updateCalUI(provider) {
+  const connected = calState[provider].connected;
+  const email = calState[provider].email;
+  const statusEl = document.getElementById(`${provider}CalStatus`);
+  const btnEl = document.getElementById(`${provider}CalBtn`);
+  if (connected) {
+    statusEl.textContent = `Connected · ${email}`;
+    statusEl.classList.add('connected');
+    btnEl.textContent = 'Manage';
+    btnEl.classList.add('connected');
+  } else {
+    statusEl.textContent = 'Not connected';
+    statusEl.classList.remove('connected');
+    btnEl.textContent = 'Connect';
+    btnEl.classList.remove('connected');
+  }
+}
+
+function closeCalSheet() {
+  document.getElementById('calOverlay').classList.remove('open');
+  document.getElementById('calSheet').classList.remove('open');
+}
+
+
 function showInstallInstructions() {
   document.getElementById('installOverlay').classList.add('open');
   document.getElementById('installSheet').classList.add('open');
