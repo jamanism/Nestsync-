@@ -2,15 +2,14 @@
 <html lang="en">
 <!--
   ╔══════════════════════════════════════════════════════════════════════╗
-  ║  NESTSYNC - Family OS with Pexels Integration                       ║
+  ║  NESTSYNC - Family OS with Spoonacular Integration                  ║
   ║                                                                      ║
-  ║  🔑 SETUP INSTRUCTIONS:                                             ║
-  ║  1. Get your FREE Pexels API key from: https://www.pexels.com/api/  ║
-  ║  2. Search for "PEXELS_API_KEY" in this file (around line 2710)     ║
-  ║  3. Replace 'YOUR_PEXELS_API_KEY' with your actual API key          ║
+  ║  🍕 SPOONACULAR API INTEGRATED                                       ║
+  ║  - Real food/ingredient images from Spoonacular                      ║
+  ║  - API Key already configured and ready to use!                      ║
   ║                                                                      ║
   ║  ✨ Features:                                                        ║
-  ║  - Real product images fetched from Pexels API                       ║
+  ║  - Real product images fetched from Spoonacular API                  ║
   ║  - Image caching to minimize API calls                              ║
   ║  - Automatic fallback to emoji placeholders                          ║
   ║  - Async image loading with smooth UX                               ║
@@ -1218,6 +1217,16 @@ body.dark .location-map { background: linear-gradient(135deg, #1a2e1d 0%, #1e352
 .sheet-loading { grid-column: span 2; text-align: center; color: var(--text-light); font-size: 0.85rem; padding: 2rem; display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
 .spinner { width: 26px; height: 26px; border: 3px solid var(--border); border-top-color: var(--clay); border-radius: 50%; animation: spin 0.7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* ============ TOAST ANIMATIONS ============ */
+@keyframes toastSlideUp {
+  from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+@keyframes toastSlideDown {
+  from { opacity: 1; transform: translateX(-50%) translateY(0); }
+  to { opacity: 0; transform: translateX(-50%) translateY(20px); }
+}
 
 .sheet-confirm {
   background: var(--clay);
@@ -2610,6 +2619,40 @@ function toggleDarkMode() {
   document.getElementById('darkToggle').classList.toggle('on');
 }
 
+// ============ TOAST NOTIFICATIONS ============
+function showToast(message) {
+  // Remove any existing toasts
+  const existing = document.querySelector('.toast-notification');
+  if (existing) existing.remove();
+  
+  // Create new toast
+  const toast = document.createElement('div');
+  toast.className = 'toast-notification';
+  toast.textContent = message;
+  toast.style.cssText = `
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bark);
+    color: white;
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    z-index: 10000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    animation: toastSlideUp 0.3s ease;
+  `;
+  
+  document.body.appendChild(toast);
+  
+  setTimeout(() => {
+    toast.style.animation = 'toastSlideDown 0.3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, 2500);
+}
+
 // ============ MEMBERS ============
 function showMemberDetail(name, role, email, color) {
   document.getElementById('sheetMemberAvatar').textContent = name[0];
@@ -2633,34 +2676,45 @@ function copyCode() {
   showToast('📋 Code copied: ' + code);
 }
 
-// ============ PEXELS API ============
-const PEXELS_API_KEY = 'YOUR_PEXELS_API_KEY'; // Replace with your actual Pexels API key
+// ============ SPOONACULAR API ============
+// Spoonacular API for food/grocery product images
+const SPOONACULAR_API_KEY = 'a1343fcfa97e4a9484583b4f6ad12d49';
 const imageCache = new Map(); // Cache for fetched images
 
-async function fetchPexelsImage(query) {
+async function fetchSpoonacularImage(productName) {
   // Check cache first
-  if (imageCache.has(query)) {
-    return imageCache.get(query);
+  if (imageCache.has(productName)) {
+    return imageCache.get(productName);
   }
 
   try {
-    const response = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(query + ' food product')}&per_page=1&orientation=square`, {
-      headers: {
-        'Authorization': PEXELS_API_KEY
-      }
-    });
+    // Use Spoonacular's ingredient search to find matching food items
+    const searchUrl = `https://api.spoonacular.com/food/ingredients/search?query=${encodeURIComponent(productName)}&number=1&apiKey=${SPOONACULAR_API_KEY}`;
+    const searchResponse = await fetch(searchUrl);
     
-    if (!response.ok) throw new Error('Pexels API error');
+    if (!searchResponse.ok) {
+      console.warn(`Spoonacular API returned status ${searchResponse.status}`);
+      imageCache.set(productName, null);
+      return null;
+    }
     
-    const data = await response.json();
-    const imageUrl = data.photos?.[0]?.src?.medium || null;
+    const searchData = await searchResponse.json();
     
-    // Cache the result
-    imageCache.set(query, imageUrl);
-    return imageUrl;
+    if (searchData.results && searchData.results.length > 0) {
+      const ingredient = searchData.results[0];
+      // Spoonacular provides ingredient images in this format
+      const imageUrl = `https://spoonacular.com/cdn/ingredients_500x500/${ingredient.image}`;
+      imageCache.set(productName, imageUrl);
+      return imageUrl;
+    }
+    
+    // No results found
+    imageCache.set(productName, null);
+    return null;
+    
   } catch (error) {
-    console.error('Error fetching Pexels image:', error);
-    imageCache.set(query, null);
+    console.warn('Could not fetch Spoonacular image:', error.message);
+    imageCache.set(productName, null);
     return null;
   }
 }
@@ -2757,8 +2811,8 @@ async function renderResults(products) {
     card.onclick = () => selectProduct(card, p);
     results.appendChild(card);
     
-    // Fetch Pexels image asynchronously
-    fetchPexelsImage(p.product_name).then(imageUrl => {
+    // Fetch Spoonacular image asynchronously
+    fetchSpoonacularImage(p.product_name).then(imageUrl => {
       if (imageUrl) {
         const img = document.createElement('img');
         img.src = imageUrl;
@@ -2787,8 +2841,8 @@ async function confirmAdd() {
   if (!selectedProduct2) return;
   const p = selectedProduct2;
 
-  // Fetch Pexels image
-  const imageUrl = await fetchPexelsImage(p.product_name);
+  // Fetch Spoonacular image
+  const imageUrl = await fetchSpoonacularImage(p.product_name);
 
   // Add to shopping tab
   const section = document.querySelector('#tab-shopping .shopping-section:last-of-type');
@@ -2890,4 +2944,13 @@ function getEmoji(term) {
 // ============ INSTALL ============
 function showInstallInstructions() {
   document.getElementById('installOverlay').classList.add('open');
-  document.g
+  document.getElementById('installSheet').classList.add('open');
+}
+
+function closeInstall() {
+  document.getElementById('installOverlay').classList.remove('open');
+  document.getElementById('installSheet').classList.remove('open');
+}
+</script>
+</body>
+</html>
